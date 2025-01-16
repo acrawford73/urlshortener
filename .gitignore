@@ -1,6 +1,11 @@
 bin/
 lib/
 __pycache__/
+src/custom_auth/__pycache__/
+src/custom_auth/migrations/__pycache__/
+src/shortener/__pycache__/
+src/shortener/migrations/__pycache__/
+src/psinergy/__pycache__/
 *.pyc
 pyvenv.cfg
 .env
