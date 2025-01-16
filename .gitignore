@@ -1,6 +1,8 @@
 bin/
 lib/
 __pycache__/
+*/__pycache__/
+*/migrations/__init__.py
 pyvenv.cfg
 .env
 .DS_Store
