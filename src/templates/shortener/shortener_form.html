@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+
+<!-- Begin page content -->
+<main class="flex-shrink-0">
+  <div class="container">
+    <p>&nbsp;</p>
+	<h1 class="mt-5"><strong>URL Shortener</strong></h1>
+
+	<form id="shorten-form" method="POST">
+		{% csrf_token %}
+		<input type="text" name="url" placeholder="Enter URL" required />
+		{{ form|crispy }}
+		<button type="submit">Shorten</button>
+	</form>
+	<p id="result"></p>
+
+     <!-- container end -->
+  </div>
+
+</main>
+
+{% endblock %}

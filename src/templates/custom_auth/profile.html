@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load sgc_extras %}
+
+{% block title %}Account Profile{% endblock %}
+
+{% block content %}
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+{% row %}
+{% col %}
+<h3>Hello, {{ request.user.first_name }} {{ request.user.last_name }}.</h3>
+<p>&nbsp;</p>
+<h5>You're logged in as <strong>{{ request.user.email }}</strong>.</h5>
+<p>&nbsp;</p>
+<p><strong>Admin:</strong> {% if request.user.is_superuser == True %}Yes{% else %}No{% endif %}</p>
+<p><strong>Staff:</strong> {% if request.user.is_staff == True %}Yes{% else %}No{% endif %}</p>
+<p><strong>Active:</strong> {% if request.user.is_active == True %}Yes{% else %}No{% endif %}</p>
+<p><strong>Last Login:</strong> {{ request.user.last_login }}</p>
+<p><strong>Date Joined:</strong> {{ request.user.date_joined }}</p>
+<p>&nbsp;</p>
+{% endcol %}
+{% endrow %}
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load sgc_extras %}
+
+{% block title %}Activation Complete{% endblock %}
+
+{% block content %}
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+{% row "justify-content-center" %}
+{% col "col-md-6" %}
+<h2>Activation Complete</h2>
+<p>Your account is now activated. You can now login and use Roku Media API.</p>
+<p><a href="{% url 'login' %}">Login</a></p>
+{% endcol %}
+{% endrow %}
+
+{% endblock %}

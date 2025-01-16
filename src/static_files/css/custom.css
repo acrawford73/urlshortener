@@ -1,0 +1,40 @@
+body {
+  padding-bottom: 20px;
+  /* Show it is fixed to the top */
+  /*
+  min-height: 75rem;
+  padding-top: 4.5rem;
+   */
+}
+
+.jumbotron h1 {
+	font-size: 40px;
+}
+
+.success {
+	text-align: center;
+	font-size: 32px;
+}
+
+.navbar-brand {
+	font-size: 20px;
+	color: white;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+
+.bd-placeholder-img {
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
+}
