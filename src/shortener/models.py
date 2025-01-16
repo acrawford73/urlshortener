@@ -6,7 +6,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class ShortURL(models.Model):
-	short_alias = models.CharField(max_length=8, null=False, blank=False, unique=True, editable=False)
+	short_alias = models.CharField(max_length=8, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", null=False, blank=False)
 	created_at = models.DateTimeField(auto_now_add=True, editable=False)
 	click_count = models.PositiveIntegerField(default=0, editable=False)
