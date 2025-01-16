@@ -3,4 +3,4 @@
 - Register account
 - Shorten URLs
 - List shortened URLs
-- Top clicked links
+- Top clicked
