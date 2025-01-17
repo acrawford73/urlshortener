@@ -31,6 +31,8 @@ class ShortenerTopListView(LoginRequiredMixin, ListView):
 	ordering = ['-click_count']
 
 
+# -----
+
 def generate_short_alias():
 	return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
@@ -49,7 +51,8 @@ def shorten_url(request):
 		# Save to database
 		url = ShortURL.objects.create(
 			short_alias=short_alias,
-			long_url=long_url
+			long_url=long_url,
+			owner=self.request.user
 		)
 
 		return JsonResponse({'short_url': f"http://psinergy.link/{short_alias}"})
