@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
     'django.contrib.sites',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -236,14 +237,14 @@ LOGGING = {
         'django': {
             #'handlers': ['file', 'console'],
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
     'root': {
         #'handlers': ['file', 'console'],
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'DEBUG',
     },
 }
 

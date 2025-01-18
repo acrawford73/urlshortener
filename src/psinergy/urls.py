@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import include,path
+from django.urls import include, path
 from django.conf import settings
 import custom_auth.views
 from django_registration.backends.activation.views import RegistrationView
@@ -25,6 +25,7 @@ from custom_auth.forms import PsinergyRegistrationForm
 urlpatterns = [
 
     # Admin
+    path('admin/docs/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
 
     #Apps

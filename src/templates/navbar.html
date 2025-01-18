@@ -4,7 +4,7 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a>
+      <a class="navbar-brand" href="{% url 'my-links-list' %}"><strong>Psinergy.Link</strong></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -14,11 +14,11 @@
         {% if user.is_authenticated %}
         
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="#">My Links</a>
+            <a class="nav-link inactive" aria-current="page" href="{% url 'my-links-list' %}">My Links</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="#">Top Links</a>
+            <a class="nav-link inactive" aria-current="page" href="{% url 'top-links-list' %}">Top Links</a>
           </li>
 
           {% if user.is_staff %}
