@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
 
+	path('', views.ShortenerListView.as_view()),
+	
 	path('create/', views.ShortenerCreateView.as_view(), name='shortener-create'),
 	path('my-links/', views.ShortenerListView.as_view(), name='shortener-list'),
 	path('top-links/', views.ShortenerTopListView.as_view(), name='top-list'),
