@@ -3,7 +3,7 @@ from .models import ShortURL
 
 
 class ShortURLAdmin(admin.ModelAdmin):
-	list_display = ['short_alias', 'created_at', 'click_count']
+	list_display = ['short_alias', 'created_at', 'clicks']
 	search_fields = ['short_alias']
 	class Meta:
 		model = ShortURL
