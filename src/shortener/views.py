@@ -28,7 +28,7 @@ class ShortenerTopListView(LoginRequiredMixin, ListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
-	ordering = ['-click_count']
+	ordering = ['-clicks']
 
 
 # -----
