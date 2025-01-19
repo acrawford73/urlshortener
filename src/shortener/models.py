@@ -9,7 +9,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 class ShortURL(models.Model):
 	short_alias = models.CharField(max_length=8, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", null=False, blank=False)
-	long_url_sha256 = models.CharField(max_length=64, editable=False, unique=True) # if already exists
+	long_url_sha256 = models.CharField(max_length=64, default="", editable=False, unique=True) # if already exists
 	created_at = models.DateTimeField(auto_now_add=True, editable=False)
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

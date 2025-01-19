@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import User, UserProfile
 
 
-class SGCUserAdmin(UserAdmin):
+class CustomUserAdmin(UserAdmin):
 	fieldsets = (
 		(None, {"fields": ("email", "password")}),
 		(_("Personal info"), {"fields": ("first_name", "last_name")}),
@@ -32,9 +32,9 @@ class SGCUserAdmin(UserAdmin):
 			},
 		),
 	)
-	list_display = ("email", "first_name", "last_name", "is_staff")
+	list_display = ("email", "first_name", "last_name", "is_staff", "is_active")
 	search_fields = ("email", "first_name", "last_name")
 	ordering = ("email",)
 
-admin.site.register(User, SGCUserAdmin)
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(UserProfile)

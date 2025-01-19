@@ -16,9 +16,11 @@
 <p>&nbsp;</p>
 <h5>You're logged in as <strong>{{ request.user.email }}</strong>.</h5>
 <p>&nbsp;</p>
+{% if request.user.is_staff %}
 <p><strong>Admin:</strong> {% if request.user.is_superuser == True %}Yes{% else %}No{% endif %}</p>
 <p><strong>Staff:</strong> {% if request.user.is_staff == True %}Yes{% else %}No{% endif %}</p>
 <p><strong>Active:</strong> {% if request.user.is_active == True %}Yes{% else %}No{% endif %}</p>
+{% endif %}
 <p><strong>Last Login:</strong> {{ request.user.last_login }}</p>
 <p><strong>Date Joined:</strong> {{ request.user.date_joined }}</p>
 <p>&nbsp;</p>

@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from psinergy import settings
 
 
-class PsinergyUserManager(UserManager):
+class CustomUserManager(UserManager):
 	def _create_user(self, email, password, **extra_fields):
 		if not email:
 			raise ValueError("Email must be set")
@@ -33,7 +33,7 @@ class PsinergyUserManager(UserManager):
 class User(AbstractUser):
 	username = None
 	email = models.EmailField(_("email address"), unique=True,)
-	objects = PsinergyUserManager()
+	objects = CustomUserManager()
 	USERNAME_FIELD = "email"
 	REQUIRED_FIELDS = []
 	def __str__(self):

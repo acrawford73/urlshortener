@@ -19,7 +19,7 @@ from django.urls import include, path
 from django.conf import settings
 import custom_auth.views
 from django_registration.backends.activation.views import RegistrationView
-from custom_auth.forms import PsinergyRegistrationForm
+from custom_auth.forms import CustomRegistrationForm
 
 
 urlpatterns = [
@@ -46,7 +46,7 @@ urlpatterns = [
     # accounts/reset/done/ [name='password_reset_complete']
 
     # Django-Registration
-    path('user/register/', RegistrationView.as_view(form_class=PsinergyRegistrationForm), name='django_registration_register'),
+    #path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
     path('user/', include('django_registration.backends.activation.urls')),
 
 ]
