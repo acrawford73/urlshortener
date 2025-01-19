@@ -17,7 +17,6 @@ class ShortenerCreateView(LoginRequiredMixin, CreateView):
 	template_name = 'shortener/shortener_form.html'
 	fields = ['long_url']
 
-
 class ShortenerListView(LoginRequiredMixin, ListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'

@@ -6,24 +6,33 @@
 
 {% block content %}
 
-
-
 <!-- Begin page content -->
 <main class="flex-shrink-0">
-  <div class="container">
-    <p>&nbsp;</p>
-	<h1 class="mt-5"><strong>URL Shortener</strong></h1>
+	<div class="container" align="center">
 
-	<form id="shorten-form" method="POST">
-		{% csrf_token %}
-		<input type="text" name="url" placeholder="Enter URL" required />
-		{{ form|crispy }}
-		<button type="submit">Shorten</button>
-	</form>
-	<p id="result"></p>
+		<p>&nbsp;</p>
+		<h1 class="mt-3">&nbsp;</h1>
+		<br />
 
-     <!-- container end -->
-  </div>
+		{% if not form.instance.pk %}
+
+		<form id="shorten-form" method="POST">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type="submit" onclick="window.location.href='{% url 'shorten-url' %}';return false;">Shrink that link!</button>
+		</form>
+		<p>&nbsp;</p>
+		<img src="{% static 'img/black-dynamite-can-you-dig-it.gif' %}" width="350" alt="Can you dig it?">
+
+		{% else %}
+
+		<p id="result"></p>
+		<p>&nbsp;</p>
+		<img src="{% static 'img/black-dynamite-i-can-dig-it.gif' %}" width="350" alt="I can dig it.">
+
+		{% endif %}
+	<!-- container end -->
+	</div>
 
 </main>
 

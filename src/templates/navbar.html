@@ -14,11 +14,11 @@
         {% if user.is_authenticated %}
         
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="{% url 'my-links-list' %}">My Links</a>
+            <a class="nav-link inactive" aria-current="page" href="{% url 'my-links-list' %}">Mine</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="{% url 'top-links-list' %}">Top Links</a>
+            <a class="nav-link inactive" aria-current="page" href="{% url 'top-links-list' %}">Top</a>
           </li>
 
           {% if user.is_staff %}
