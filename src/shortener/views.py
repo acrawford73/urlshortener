@@ -17,16 +17,44 @@ class ShortenerCreateView(LoginRequiredMixin, CreateView):
 	template_name = 'shortener/shortener_form.html'
 	fields = ['long_url']
 
+	def save(self, request):
+		long_url = request.url
+		print(long_url)
+		if not long_url:
+			return JsonResponse({'error': 'URL is required'}, status=400)
+		
+		# Check for existing short alias by sha256
+		long_url_hash = hashlib.sha256(long_url)
+		url_hash = long_url_hash.hexdigest()
+		if ShortURL.objects.filter(long_url_sha256=url_hash).exists():
+			return JsonResponse({'error': 'Already exists'}, status=400)
+
+		# Generate unique short alias
+		short_alias = generate_short_alias()
+		while ShortURL.objects.filter(short_alias=short_alias).exists():
+			short_alias = generate_short_alias()
+
+		# Save to database
+		url = ShortURL.objects.create(
+			short_alias=short_alias,
+			long_url=long_url,
+			#owner=self.request.user
+		)
+		return JsonResponse({'short_url': f"http://psinergy.link/{short_alias}"})
+
+
 class ShortenerListView(LoginRequiredMixin, ListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
 
+
 class ShortenerDetailView(LoginRequiredMixin, DetailView):
 	model = ShortURL
 	template_name = 'shortener/shortener_detail.html'
 	context_object_name = 'link'
+
 
 class ShortenerTopListView(LoginRequiredMixin, ListView):
 	model = ShortURL

@@ -19,7 +19,7 @@
 		<form id="shorten-form" method="POST">
 			{% csrf_token %}
 			{{ form|crispy }}
-			<button type="submit" class="btn btn-primary rounded-pill px-3" onclick="window.location.href='{% url 'shorten-url' %}';return false;"><strong>Shrink that link!</strong></button>
+			<button type="submit" class="btn btn-primary rounded-pill px-3">Shrink that link!</button>
 		</form>
 		<p>&nbsp;</p>
 		<img src="{% static 'img/black-dynamite-can-you-dig-it.gif' %}" width="350" alt="Can you dig it?">
