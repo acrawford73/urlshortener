@@ -1,8 +1,7 @@
 bin/
 lib/
 static_cdn/
-src/*/__pycache__/
-src/*/migrations/__pycache__/
+__pycache__/
 *.pyc
 pyvenv.cfg
 .env
