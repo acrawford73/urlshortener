@@ -7,7 +7,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class ShortURL(models.Model):
-	short_alias = models.CharField(max_length=8, null=False, unique=True, editable=False)
+	short_alias = models.CharField(max_length=6, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", null=False, blank=False, help_text="Paste in the full URL starting with HTTP or HTTPS.")
 	long_url_sha256 = models.CharField(max_length=64, default="", editable=False, unique=True) # if already exists
 	created_at = models.DateTimeField(auto_now_add=True, editable=False)
@@ -40,8 +40,8 @@ class ShortURL(models.Model):
 	# <meta name="twitter:image" content="https://domain.com/image.jpg" />
 	# <meta name="twitter:image:alt" content="Alt text for image">
 
-	# def get_absolute_url(self):
-	# 	return reverse('shortener-detail', kwargs={'pk': self.pk})
+	def get_absolute_url(self):
+		return reverse('shortener-detail', kwargs={'pk': self.pk})
 	class Meta:
 		ordering = ['-created_at']
 	def __str__(self):

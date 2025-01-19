@@ -1,13 +1,13 @@
 import random
 import string
-from datetime import timedelta, datetime
+import hashlib
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
 from .models import ShortURL
 
@@ -23,6 +23,11 @@ class ShortenerListView(LoginRequiredMixin, ListView):
 	context_object_name = 'links'
 	ordering = ['-created_at']
 
+class ShortenerDetailView(LoginRequiredMixin, DetailView):
+	model = ShortURL
+	template_name = 'shortener/shortener_detail.html'
+	context_object_name = 'link'
+
 class ShortenerTopListView(LoginRequiredMixin, ListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
@@ -33,7 +38,7 @@ class ShortenerTopListView(LoginRequiredMixin, ListView):
 # -----
 
 def generate_short_alias():
-	return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+	return ''.join(random.choices(string.ascii_letters + string.digits, k=6))
 
 @login_required
 def shorten_url(request):
@@ -41,6 +46,11 @@ def shorten_url(request):
 		long_url = request.POST.get('url')
 		if not long_url:
 			return JsonResponse({'error': 'URL is required'}, status=400)
+
+		# check for existing long_url sha256
+		long_url_hash = hashlib.sha256(long_url)
+		if ShortURL.objects.filter(long_url_sha256=long_url_hash).exists():
+			return False
 
 		# Generate unique short alias
 		short_alias = generate_short_alias()
