@@ -6,22 +6,22 @@
 
 {% block content %}
 
+
 <!-- JavaScript for randomizing button text -->
 <script>
-    const button = document.getElementById('randomTextButton');
-    const buttonTexts = [
-        "Shrink that link!",
-        "Give'r!",
-        "Shrink that mofo!",
-        "Shrink it or link it!",
-        "Shrink any link that comes around!",
-    ];
-
-    button.addEventListener('click', () => {
-        const randomIndex = Math.floor(Math.random() * buttonTexts.length);
-        button.textContent = buttonTexts[randomIndex];
-    });
+	const button = document.getElementById('randomTextButton');
+	const buttonTexts = [
+		"Shrink that link!",
+		"Give'r!",
+		"Shrink that mofo!",
+		"Shrink it or link it!",
+		"Shrink any link that comes around!",
+	];
+	// Set random button text on page load
+	const randomIndex = Math.floor(Math.random() * buttonTexts.length);
+	button.textContent = buttonTexts[randomIndex];
 </script>
+
 
 <!-- Begin page content -->
 <main class="flex-shrink-0">
