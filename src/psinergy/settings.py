@@ -63,7 +63,7 @@ else:
 SITE_ID = int(config('SITE_ID'))
 AUTH_USER_MODEL = 'custom_auth.User'
 ACCOUNT_ACTIVATION_DAYS = 7
-REGISTRATION_OPEN = True
+REGISTRATION_OPEN = False
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -189,15 +189,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
+
 ### CACHING
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'django-local-cache',
-        #'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        #'LOCATION': '/var/tmp/django_cache',
+        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        #'LOCATION': 'django-local-cache',
+        # /etc/memcached.conf - customize settings like memory allocation, maximum connections, and logging.
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': ['127.0.0.1:11211'],
     }
 }
+
 
 ## Logging
 LOGGING = {
@@ -246,4 +249,3 @@ LOGGING = {
         'level': 'INFO',
     },
 }
-
