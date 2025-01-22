@@ -6,6 +6,7 @@
 
 {% block content %}
 
+
 <!-- Begin page content -->
 <main class="flex-shrink-0">
 	<div class="container" align="center">
@@ -19,7 +20,7 @@
 		<form id="shorten-form" method="POST">
 			{% csrf_token %}
 			{{ form|crispy }}
-			<button type="submit" class="btn btn-primary rounded-pill px-3">Shrink that link!</button>
+			<button id="randomTextButton" type="submit" class="btn btn-primary rounded-pill px-3">Shrink that link!</button>
 		</form>
 		<p>&nbsp;</p>
 		<img src="{% static 'img/black-dynamite-can-you-dig-it.gif' %}" width="350" alt="Can you dig it?">
@@ -39,5 +40,20 @@
 	</div>
 
 </main>
+
+<!-- JavaScript for randomizing button text -->
+<script>
+	const button = document.getElementById('randomTextButton');
+	const buttonTexts = [
+		"Shrink that link!",
+		"Give'r!",
+		"Shrink that mofo!",
+		"Shrink it or link it!",
+		"Shrink any link that comes around!",
+	];
+	// Set random button text on page load
+	const randomIndex = Math.floor(Math.random() * buttonTexts.length);
+	button.textContent = buttonTexts[randomIndex];
+</script>
 
 {% endblock %}
