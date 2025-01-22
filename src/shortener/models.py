@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -14,7 +15,7 @@ class ShortURL(models.Model):
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
-	# Open Graph Protocol
+	# Open Graph
 	og_site_name = models.CharField(max_length=200, null=True, blank=True)
 	og_type = models.CharField(max_length=200, null=True, blank=True)
 	og_title = models.CharField(max_length=200, null=True, blank=True)
@@ -28,7 +29,7 @@ class ShortURL(models.Model):
 	# <meta property="og:url" content="https://domain.com/" />
 	# <meta property="og:image" content="https://domain.com/image.jpg" />
 
-	#Twits
+	# Twits
 	tw_site = models.CharField(max_length=200, null=True, blank=True)
 	tw_title = models.CharField(max_length=200, null=True, blank=True)
 	tw_description = models.CharField(max_length=500, null=True, blank=True)

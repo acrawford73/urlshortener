@@ -21,7 +21,8 @@
             
             <thead>
               <tr align="center" class="table-primary">
-                <th>Link</th>
+                <th>Short URL</th>
+                <th>Long URL</th>
                 <th>Created</th>
                 <th>Views</th>
               </tr>
@@ -30,7 +31,8 @@
             <tbody>
               {% for link in links %}
               <tr align="center">
-                <td align="left"><a href="{% url 'redirect-url' link.short_alias %}">{{ link.short_alias }}</a></td>
+                <td align="left"><a href="{% url 'redirect-url' link.id %}" target="_blank">{{ link.short_alias }}</a></td>
+                <td align="left"><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></td>
                 <td>{{ link.created_at|date:"F d Y, g:i:s A" }}</td>
                 <td>{{ link.clicks }}</td>
               </tr>
