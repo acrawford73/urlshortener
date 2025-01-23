@@ -44,6 +44,12 @@ class ShortenerDetailView(OwnerDetailView):
 	template_name = 'shortener/shortener_detail.html'
 	context_object_name = 'link'
 
+class ShortenerUpdateView(OwnerDetailView):
+	model = ShortURL
+	template_name = 'shortener/shortener_update.html'
+	context_object_name = 'link'
+	fields = ['title', 'long_url']
+
 
 class ShortenerTopListView(OwnerListView):
 	model = ShortURL

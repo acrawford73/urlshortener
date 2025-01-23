@@ -8,6 +8,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class ShortURL(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
 	short_alias = models.CharField(max_length=6, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", null=False, blank=False, help_text="Paste in the full URL starting with HTTP or HTTPS.")
 	#long_url_sha256 = models.CharField(max_length=64, default="", editable=False, unique=True) # if already exists
