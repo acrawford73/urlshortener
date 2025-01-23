@@ -43,7 +43,8 @@ class ShortURL(models.Model):
 	# <meta name="twitter:image:alt" content="Alt text for image">
 
 	def get_absolute_url(self):
-		return reverse('shortener-detail', kwargs={'pk': self.pk})
+		#return reverse('shortener-detail', kwargs={'pk': self.pk})
+		return reverse('shortener-list')
 	class Meta:
 		ordering = ['-created_at']
 	def __str__(self):
