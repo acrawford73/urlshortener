@@ -84,7 +84,7 @@ def shorten_url(request):
 def redirect_url(request, alias):
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	# Increment click count and redirect
-	url.click_count += 1
+	url.clicks += 1
 	url.save()
 	return HttpResponseRedirect(url.long_url)
 
