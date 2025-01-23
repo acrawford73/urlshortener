@@ -8,13 +8,13 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, DetailView
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
-
+from .forms import ShortURLForm
 from .models import ShortURL
 
 
 class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
-	form_class = URLForm
+	form_class = ShortURLForm
 	template_name = 'shortener/shortener_form.html'
 	fields = ['long_url']
 

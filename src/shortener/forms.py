@@ -13,7 +13,7 @@ from .models import ShortURL
 # 			Field('long_url', wrapper_class='form-group', label="Long URL")
 # 		)
 
-class URLForm(forms.ModelForm):
+class ShortURLForm(forms.ModelForm):
     class Meta:
         model = ShortURL
-        fields = ['long_url']
+        fields = ['Long_url']
