@@ -16,7 +16,7 @@ class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
 	form_class = ShortURLForm
 	template_name = 'shortener/shortener_form.html'
-	fields = ['long_url']
+	#fields = ['long_url']
 
 	def form_valid(self, form):
 		short_alias = generate_unique_alias()
