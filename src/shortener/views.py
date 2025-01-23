@@ -27,6 +27,7 @@ class ShortenerCreateView(OwnerCreateView):
 		# Check for existing short alias by sha256
 		long_url_hash = hashlib.sha256(long_url)
 		long_url_sha256 = long_url_hash.hexdigest()
+		print(long_url_sha256)
 		if ShortURL.objects.filter(long_url_sha256=long_url_sha256).exists():
 			return JsonResponse({'error': 'Already exists'}, status=400)
 

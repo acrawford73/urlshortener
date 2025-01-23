@@ -57,7 +57,7 @@ else:
     SECRET_KEY = config('DEBUG_SECRET_KEY')
     ALLOWED_HOSTS = config('DEBUG_ALLOWED_HOSTS', cast=Csv())
 
-    
+
 ### USER AUTHENTICATION
 
 SITE_ID = int(config('SITE_ID'))
@@ -249,3 +249,61 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+
+## REDIS STORE
+
+# REDIS_LOCATION = "redis://127.0.0.1:6379/1"
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": REDIS_LOCATION,
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         },
+#     }
+# }
+
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+
+
+### CELERY
+# from celery.schedules import crontab
+
+# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+# CELERY_EMAIL_TASK_CONFIG = {
+#     "queue": "short_tasks",
+# }
+
+# BROKER_URL = REDIS_LOCATION
+# CELERY_RESULT_BACKEND = BROKER_URL
+# CELERY_ACCEPT_CONTENT = ["application/json"]
+# CELERY_TASK_SERIALIZER = "json"
+# CELERY_RESULT_SERIALIZER = "json"
+# CELERY_TIMEZONE = TIME_ZONE
+# CELERY_SOFT_TIME_LIMIT = 2 * 60 * 60
+# CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+# CELERYD_PREFETCH_MULTIPLIER = 1
+
+# CELERY_BEAT_SCHEDULE = {
+#     # Clear expired sessions, every sunday 1:01am 
+#     # By default Django has 2 week expire date
+#     "clear_sessions": {
+#         "task": "clear_sessions",
+#         "schedule": crontab(hour=1, minute=1, day_of_week=6),
+#     },
+#     "get_list_of_popular_media": {
+#         "task": "get_list_of_popular_media",
+#         "schedule": crontab(minute=1, hour="*/10"),
+#     },
+#     "update_listings_thumbnails": {
+#         "task": "update_listings_thumbnails",
+#         "schedule": crontab(minute=2, hour="*/30"),
+#     },
+# }
+
+# CELERY_TASK_ALWAYS_EAGER = False
+# if os.environ.get("TESTING"):
+#     CELERY_TASK_ALWAYS_EAGER = True
