@@ -7,7 +7,7 @@ urlpatterns = [
 	path('', views.ShortenerListView.as_view(), name='all'),
 	
 	path('create/', views.ShortenerCreateView.as_view(), name='shortener-create'),
-	path('short/', views.ShortenerDetailView.as_view(), name='shortener-detail'),
+	path('short/<int:pk>/', views.ShortenerDetailView.as_view(), name='shortener-detail'),
 	path('mylinks/', views.ShortenerListView.as_view(), name='my-links-list'),
 	path('toplinks/', views.ShortenerTopListView.as_view(), name='top-links-list'),
 
