@@ -17,11 +17,11 @@ class ShortenerCreateView(OwnerCreateView):
 	fields = ['long_url']
 
 	def form_valid(self, form):
-        short_alias = generate_unique_alias()
-        while ShortURL.objects.filter(short_alias=short_alias).exists():
+		short_alias = generate_unique_alias()
+		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			short_alias = generate_unique_alias()
-        form.instance.short_alias = short_alias
-        return super().form_valid(form)
+		form.instance.short_alias = short_alias
+		return super().form_valid(form)
 
 
 class ShortenerListView(OwnerListView):
