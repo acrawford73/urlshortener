@@ -16,4 +16,4 @@ from .models import ShortURL
 class ShortURLForm(forms.ModelForm):
     class Meta:
         model = ShortURL
-        fields = ['Long_url']
+        fields = ['long_url']
