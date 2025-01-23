@@ -1,5 +1,6 @@
 import random
 import string
+import hashlib
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
@@ -20,7 +21,12 @@ class ShortenerCreateView(OwnerCreateView):
 		short_alias = generate_unique_alias()
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			short_alias = generate_unique_alias()
+
+		url_hash = hashlib.sha256(long_url.encode())
+		long_url_sha26 = url_hash.hexdigest()
+		
 		form.instance.short_alias = short_alias
+		form.instance.long_url_sha26 = long_url_sha26
 		return super().form_valid(form)
 
 
