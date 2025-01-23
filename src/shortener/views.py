@@ -23,7 +23,8 @@ class ShortenerCreateView(OwnerCreateView):
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			short_alias = generate_unique_alias()
 
-		url_hash = hashlib.sha256(long_url.encode())
+		longurl = self.request.long_url
+		url_hash = hashlib.sha256(longurl.encode())
 		long_url_sha26 = url_hash.hexdigest()
 		
 		form.instance.short_alias = short_alias
