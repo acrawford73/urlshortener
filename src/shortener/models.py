@@ -46,4 +46,6 @@ class ShortURL(models.Model):
 	class Meta:
 		ordering = ['-created_at']
 	def __str__(self):
-		return self.short_alias
+        return f"{self.short_alias} -> {self.original_url}"
+	# def __str__(self):
+	# 	return self.short_alias
