@@ -21,6 +21,7 @@
             
             <thead>
               <tr align="center" class="table-primary">
+                <th>Edit | Delete</th>
                 <th>Short URL</th>
                 <th>Long URL</th>
                 <th>Created</th>
@@ -31,8 +32,9 @@
             <tbody>
               {% for link in links %}
               <tr align="center">
-                <td align="left"><a href="{% url 'redirect-url' link.id %}" target="_blank">{{ link.short_alias }}</a></td>
-                <td align="left"><a href="{{ link.long_url }}" target="_blank">{{ link.long_url|slice:50 }}</a></td>
+                <td><i class="bi bi-file-earmark-text"></i> | <i class="bi bi-file-earmark-x"></i></td>
+                <td align="left"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank">{{ link.short_alias }}</a></td>
+                <td align="left">{{ link.long_url|slice:60 }}</td>
                 <td>{{ link.created_at|date:"F d Y, g:i:s A" }}</td>
                 <td>{{ link.clicks }}</td>
               </tr>
