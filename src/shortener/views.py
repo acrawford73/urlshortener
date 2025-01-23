@@ -14,6 +14,7 @@ from .models import ShortURL
 
 class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
+	form_class = URLForm
 	template_name = 'shortener/shortener_form.html'
 	fields = ['long_url']
 
