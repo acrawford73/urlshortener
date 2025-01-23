@@ -12,7 +12,6 @@
     
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-    <p>&nbsp;</p>
     <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten another URL</button></a></p><br />
     
     <div class="row">
@@ -23,7 +22,6 @@
           <h3>Shortened URL</h3>
           <p><a href="{% url 'redirect-url' link.short_alias %}">https://psnergy.link/{{ link.short_alias}}</a></p>
 
-          <p>&nbsp;</p>
           <p>&nbsp;</p>
           <img src="{% static 'img/black-dynamite-yeah-i-can-dig-it.gif' %}" width="350" alt="Yeah, I can dig it.">
         
