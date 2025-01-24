@@ -131,7 +131,7 @@ def get_soup_title(soup):
 		if tag.get('property', None) == "og:title":
 			title = tag.get('content', None)[:255]
 			print("og:title = " + title)
-			return title
+	return title
 
 
 # Generate the unique alias code
