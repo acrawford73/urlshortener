@@ -67,7 +67,7 @@ class ShortenerDeleteView(OwnerDeleteView):
 	success_url = reverse_lazy('shortener-list')
 
 
-# -----
+# - - - - -
 
 # Capture the title of the long url that is being shortened
 def get_title(url):
@@ -91,15 +91,17 @@ def get_title(url):
 		soup = BeautifulSoup(response.text, 'html.parser')
 
 		# Attempt 1
-		# title_tag = soup.title
-		# if title_tag:
-		# 	title = strip_tags(title_tag.text[:255])
-		# 	pass
+		title_tag = soup.title
+		if title_tag:
+			title = strip_tags(title_tag.text[:255])
+			print("soup.title = " + title)
+			pass
 
 		# Attempt 2
 		title_tag = soup.find("title")
 		if title_tag:
 			title = strip_tags(title_tag.text[:255])
+			print("soup.find = " + title)
 
 	except requests.exceptions.HTTPError as err:
 		print(f'HTTP Error: {err}')
@@ -111,7 +113,7 @@ def get_title(url):
 		print(f'Oops: Something Else: {errr}')				
 	finally:
 		rs.close()
-	return title
+		return title
 
 
 # Generate the unique alias code
