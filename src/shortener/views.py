@@ -90,9 +90,31 @@ def get_title(url):
 		response = rs.get(url, timeout=10, headers=headers)
 		response.raise_for_status()
 		soup = BeautifulSoup(response.text, 'html.parser')
+		
+		# Attempt 1
+		title_tag = soup.title
+		if title_tag:
+			title = strip_tags(title_tag.text)[:255]
+			print("soup.title = " + title)
+			rs.close()
+			return title
 
-		print(soup)
-		title = get_soup_title(soup)
+		# Attempt 2
+		title_tag = soup.find("title")
+		if title_tag:
+			title = strip_tags(title_tag.text)[:255]
+			print("soup.find = " + title)
+			rs.close()
+			return title
+
+		# Attempt 3
+		tags = soup.find("meta")
+		for tag in tags:
+			if tag.get('property', None) == "og:title":
+				title = tag.get('content', None)[:255]
+				print("og:title = " + title)
+		rs.close()
+		return title
 
 	except requests.exceptions.HTTPError as err:
 		print(f'HTTP Error: {err}')
@@ -105,33 +127,6 @@ def get_title(url):
 	finally:
 		rs.close()
 		return title
-
-
-# Get the title from the soup text
-def get_soup_title(soup):
-	title = None
-
-	# Attempt 1
-	title_tag = soup.title
-	if title_tag:
-		title = strip_tags(title_tag.text)[:255]
-		print("soup.title = " + title)
-		return title
-
-	# Attempt 2
-	title_tag = soup.find("title")
-	if title_tag:
-		title = strip_tags(title_tag.text)[:255]
-		print("soup.find = " + title)
-		return title
-
-	# Attempt 3
-	tags = soup.find("meta")
-	for tag in tags:
-		if tag.get('property', None) == "og:title":
-			title = tag.get('content', None)[:255]
-			print("og:title = " + title)
-	return title
 
 
 # Generate the unique alias code
