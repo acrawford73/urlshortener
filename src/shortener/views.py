@@ -89,7 +89,8 @@ def get_title(url):
 		rs = requests.Session()
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
-		soup = BeautifulSoup(response.text, 'html.parser')
+		soup = BeautifulSoup(response.content, 'html.parser')
+
 		print(soup)
 		title = get_soup_title(soup)
 
