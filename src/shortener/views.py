@@ -90,24 +90,7 @@ def get_title(url):
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
 		soup = BeautifulSoup(response.text, 'html.parser')
-
-		# Attempt 1
-		title_tag = soup.title
-		if title_tag:
-			title = strip_tags(title_tag.text[:255])
-			print("soup.title = " + title)
-
-		# Attempt 2
-		title_tag = soup.find("title")
-		if title_tag:
-			title = strip_tags(title_tag.text[:255])
-			print("soup.find = " + title)
-
-		# Attempt 3
-		for tag in soup.find_all("meta"):
-			if tag.get("property", None) == "og:title":
-				title = tag.get("content", None)[:255]
-				print("og:title = " + title)
+		title = get_soup_title(soup)
 
 	except requests.exceptions.HTTPError as err:
 		print(f'HTTP Error: {err}')
@@ -119,6 +102,28 @@ def get_title(url):
 		print(f'Oops: Something Else: {errr}')				
 	finally:
 		rs.close()
+		return title
+
+def get_soup_title(soup):
+	# Attempt 1
+	title_tag = soup.title
+	if title_tag:
+		title = strip_tags(title_tag.text[:255])
+		print("soup.title = " + title)
+		return title
+
+	# Attempt 2
+	title_tag = soup.find("title")
+	if title_tag:
+		title = strip_tags(title_tag.text[:255])
+		print("soup.find = " + title)
+		return title
+
+	# Attempt 3
+	title_tag = soup.find("meta", {"property":"og:title"})
+	if title_tag:
+		title = title_tag["content"][:255]
+		print("og:title = " + title)
 		return title
 
 
