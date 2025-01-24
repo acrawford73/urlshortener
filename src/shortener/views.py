@@ -97,6 +97,7 @@ def get_title(url):
 		# 	response = rs.get(new_location, timeout=10, allow_redirects=False, headers=headers)
 		# 	response.raise_for_status()
 		soup = BeautifulSoup(response.text, 'html.parser')
+		print(soup)
 		
 		# Attempt 1
 		title_tag = soup.title
