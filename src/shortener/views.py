@@ -96,13 +96,18 @@ def get_title(url):
 		if title_tag:
 			title = strip_tags(title_tag.text[:255])
 			print("soup.title = " + title)
-			pass
 
 		# Attempt 2
 		title_tag = soup.find("title")
 		if title_tag:
 			title = strip_tags(title_tag.text[:255])
 			print("soup.find = " + title)
+
+		# Attempt 3
+		for tag in soup.find_all("meta"):
+			if tag.get("property", None) == "og:title":
+				title = tag.get("content", None)[:255]
+				print("og:title = " + title)
 
 	except requests.exceptions.HTTPError as err:
 		print(f'HTTP Error: {err}')
