@@ -90,6 +90,7 @@ def get_title(url):
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
 		soup = BeautifulSoup(response.content, 'html.parser')
+		print(soup)
 		title = get_soup_title(soup)
 
 	except requests.exceptions.HTTPError as err:
