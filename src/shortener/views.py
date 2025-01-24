@@ -89,7 +89,7 @@ def get_title(url):
 		rs = requests.Session()
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
-		soup = BeautifulSoup(response.text, 'html.parser')
+		soup = BeautifulSoup(response.content, 'html.parser')
 		title = get_soup_title(soup)
 
 	except requests.exceptions.HTTPError as err:
@@ -105,6 +105,7 @@ def get_title(url):
 		return title
 
 def get_soup_title(soup):
+	title = None
 	# Attempt 1
 	title_tag = soup.title
 	if title_tag:
