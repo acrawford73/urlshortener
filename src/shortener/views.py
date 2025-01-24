@@ -79,15 +79,17 @@ def get_title(url):
 	headers = {
 		'Host': server_host,
 		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-		'Accept-Language': 'en-CA,en-US;q=0.7,en;q=0.3',
+		'Accept-Language': 'en-US;q=0.7,en;q=0.3',
 		'Accept-Encoding': 'gzip, deflate, br, zstd',
 		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
 		'Connection':'keep-alive',
+		'Cache-Control': 'max-age=0',
+		'Upgrade-Insecure-Requests': '1',
 	}
 
 	try:
 		rs = requests.Session()
-		response = rs.get(url, timeout=10, headers=headers)
+		response = rs.get(url, timeout=10, allow_redirects=False, headers=headers)
 		response.raise_for_status()
 		soup = BeautifulSoup(response.text, 'html.parser')
 		
