@@ -73,7 +73,8 @@ class ShortenerDeleteView(OwnerDeleteView):
 def get_title(url):
 	title = None
 
-	domain = urlparse(url).netloc
+	host_url = url
+	domain = urlparse(host_url).netloc
 	server_host = '.'.join(domain.split('.')[-2:])
 	headers = {
 		'Host': server_host,
@@ -106,8 +107,11 @@ def get_title(url):
 		rs.close()
 		return title
 
+
+# Get the title from the soup text
 def get_soup_title(soup):
 	title = None
+
 	# Attempt 1
 	title_tag = soup.title
 	if title_tag:
