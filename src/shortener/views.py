@@ -89,7 +89,7 @@ def get_title(url):
 
 	try:
 		rs = requests.Session()
-		response = rs.get(url, timeout=10, headers=headers) #allow_redirects=False, headers=headers)
+		response = rs.get(url, timeout=10, allow_redirects=True, max_redirects=50, headers=headers)
 		response.raise_for_status()
 		# if response.status_code in (301, 302):
 		# 	new_location = response.headers['Location']
