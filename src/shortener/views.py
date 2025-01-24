@@ -118,6 +118,7 @@ def get_title(url):
 		# Attempt 3
 		tags = soup.find("meta")
 		for tag in tags:
+			print(tag)
 			if tag.get('property', None) == "og:title":
 				title = tag.get('content', None)[:255]
 				print("og:title = " + title)
