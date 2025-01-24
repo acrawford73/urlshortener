@@ -123,11 +123,12 @@ def get_soup_title(soup):
 		return title
 
 	# Attempt 3
-	title_tag = soup.find("meta", {"property":"og:title"})
-	if title_tag:
-		title = title_tag["content"][:255]
-		print("og:title = " + title)
-		return title
+	tags = soup.find("meta")
+	for tag in tags:
+		if tag.get('property', None) == "og:title":
+			title = tag.get('content', None)[:255]
+			print("og:title = " + title)
+			return title
 
 
 # Generate the unique alias code
