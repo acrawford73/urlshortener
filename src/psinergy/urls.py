@@ -17,7 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
+
+import core.views
 import custom_auth.views
+import shortener.views
+
 from django_registration.backends.activation.views import RegistrationView
 from custom_auth.forms import CustomRegistrationForm
 

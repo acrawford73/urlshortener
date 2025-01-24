@@ -82,6 +82,7 @@ def get_title(url):
 		'Accept-Encoding': 'gzip, deflate, br, zstd',
 		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
 		'Connection':'keep-alive',
+		'Upgrade-Insecure-Requests':'1',
 	}
 
 	try:

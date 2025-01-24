@@ -243,11 +243,11 @@ LOGGING = {
             'propagate': True,
         },
     },
-    'root': {
-        #'handlers': ['file', 'console'],
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
+#    'root': {
+#        #'handlers': ['file', 'console'],
+#        'handlers': ['console'],
+#        'level': 'INFO',
+#    },
 }
 
 
