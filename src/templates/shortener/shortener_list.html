@@ -45,7 +45,7 @@
                   </svg></a></td>
                 <td align="left">
                   {% if link.title == "" or link.title == None %}
-                  <strong>Title not available</strong><br />
+                  <a href="{% url 'shortener-update' link.id %}"><strong>Title not available</strong></a><br />
                   {% else %}
                   <a href="{% url 'shortener-update' link.id %}"><strong>{{ link.title|slice:60 }}</strong></a><br />
                   {% endif %}
