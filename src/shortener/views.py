@@ -74,9 +74,9 @@ def get_title(url):
 	title = None
 
 	domain = urlparse(url).netloc
-	#server_host = '.'.join(domain.split('.')[-2:])
+	server_host = '.'.join(domain.split('.')[-2:])
 	headers = {
-		'Host': domain,
+		'Host': server_host,
 		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 		'Accept-Language': 'en-CA,en-US;q=0.7,en;q=0.3',
 		'Accept-Encoding': 'gzip, deflate, br, zstd',
