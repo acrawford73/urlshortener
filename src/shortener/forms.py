@@ -17,3 +17,4 @@ class ShortURLForm(forms.ModelForm):
     class Meta:
         model = ShortURL
         fields = ['long_url']
+        hidden_fields = ['title']

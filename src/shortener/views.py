@@ -1,6 +1,9 @@
+import requests
+from django.utils.html import strip_tags
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 import random
 import string
-# import hashlib
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
@@ -16,21 +19,23 @@ class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
 	form_class = ShortURLForm
 	template_name = 'shortener/shortener_form.html'
-	#fields = ['long_url']
+	success_url = reverse_lazy('shortener-list')
 
 	def form_valid(self, form):
+		url = form.cleaned_data['long_url']
+		title = get_title(url)
+
 		short_alias = generate_unique_alias()
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			short_alias = generate_unique_alias()
-
-		# longurl = form.instance.long_url
-		# url_hash = hashlib.sha256(longurl.encode())
-		# long_url_sha26 = url_hash.hexdigest()
 		
-		form.instance.short_alias = short_alias
-		# form.instance.long_url_sha26 = long_url_sha26
+		shorturl = form.save(commit=False)
+		shorturl.owner = self.request.user
+		shorturl.title = title
+		shorturl.short_alias = short_alias
+		shorturl.save()
+		form.save_m2m()
 		return super().form_valid(form)
-
 
 class ShortenerListView(OwnerListView):
 	model = ShortURL
@@ -55,14 +60,68 @@ class ShortenerUpdateView(OwnerUpdateView):
 	context_object_name = 'link'
 	fields = ['title', 'long_url']
 
+class ShortenerDeleteView(OwnerDeleteView):
+	model = ShortURL
+	template_name = 'shortener/shortener_confirm_delete.html'
+	context_object_name = 'link'
+	success_url = reverse_lazy('shortener-list')
+
 
 # -----
 
+# Capture the title of the long url that is being shortened
+def get_title(url):
+	title = None
+
+	domain = urlparse(url).netloc
+	#server_host = '.'.join(domain.split('.')[-2:])
+	headers = {
+		'Host': domain,
+		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+		'Accept-Language': 'en-CA,en-US;q=0.7,en;q=0.3',
+		'Accept-Encoding': 'gzip, deflate, br, zstd',
+		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
+		'Connection':'keep-alive',
+	}
+
+	try:
+		rs = requests.Session()
+		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
+		response.raise_for_status()
+		soup = BeautifulSoup(response.text, 'html.parser')
+
+		# Attempt 1
+		# title_tag = soup.title
+		# if title_tag:
+		# 	title = strip_tags(title_tag.text[:255])
+		# 	pass
+
+		# Attempt 2
+		title_tag = soup.find("title")
+		if title_tag:
+			title = strip_tags(title_tag.text[:255])
+
+	except requests.exceptions.HTTPError as err:
+		print(f'HTTP Error: {err}')
+	except requests.exceptions.ConnectionError as errc:
+		print(f'Error Connecting: {errc}')
+	except requests.exceptions.Timeout as errt:
+		print(f'Timeout Error: {errt}')
+	except requests.exceptions.RequestException as errr:
+		print(f'Oops: Something Else: {errr}')				
+	finally:
+		rs.close()
+	return title
+
+
+# Generate the unique alias code
 def generate_unique_alias():
 	alias = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
 	if not ShortURL.objects.filter(short_alias=alias).exists():
 		return alias
 
+
+# Shorten the original URL
 @login_required
 def shorten_url(request):
 	if request.method == 'POST':
@@ -85,6 +144,7 @@ def shorten_url(request):
 		return JsonResponse({'short_url': f"http://psinergy.link/{short_alias}"})
 
 
+# Redirect the shortened link to the original URL
 def redirect_url(request, alias):
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	# Increment click count and redirect
