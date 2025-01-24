@@ -89,7 +89,7 @@ def get_title(url):
 		rs = requests.Session()
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
-		soup = BeautifulSoup(response.content, 'html.parser')
+		soup = BeautifulSoup(response.text, 'html.parser')
 
 		print(soup)
 		title = get_soup_title(soup)
@@ -111,14 +111,14 @@ def get_soup_title(soup):
 	# Attempt 1
 	title_tag = soup.title
 	if title_tag:
-		title = strip_tags(title_tag.text[:255])
+		title = strip_tags(title_tag.text)[:255]
 		print("soup.title = " + title)
 		return title
 
 	# Attempt 2
 	title_tag = soup.find("title")
 	if title_tag:
-		title = strip_tags(title_tag.text[:255])
+		title = strip_tags(title_tag.text)[:255]
 		print("soup.find = " + title)
 		return title
 
