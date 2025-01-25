@@ -76,6 +76,9 @@ class ShortenerDeleteView(OwnerDeleteView):
 def get_soap_title(url):
 	title = None
 	
+	# try the soup method first, then selenium as last resort
+
+
 	# Set up options for Firefox
 	# Only needed if Firefox is in a custom location
 	firefox_binary_path = settings.FIREFOX_PATH
@@ -84,6 +87,8 @@ def get_soap_title(url):
 	options.add_argument('--no-sandbox')
 	options.add_argument('--headless')
 	options.add_argument('--disable-dev-shm-usage')
+	options.add_argument('--headless')
+	options.add_argument('--disable-gpu')
 
 	# Set up the GeckoDriver service
 	# Download Gecko driver from github.com/mozilla/geckodriver/releases
