@@ -46,8 +46,7 @@
                   {% else %}
                   <a href="{% url 'shortener-update' link.id %}"><strong>{{ link.title|slice:60 }}</strong></a><br />
                   {% endif %}
-                  {{ link.long_url|slice:60 }}
-                </td>
+                  {{ link.long_url|slice:60 }}</td>
 <!--                 <td>
                   {{ link.created_at|date:"F d, Y" }}<br />
                   {{ link.created_at|date:"g:i:s A" }}

@@ -1,7 +1,3 @@
-import requests
-from django.utils.html import strip_tags
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
 import random
 import string
 from django.http import JsonResponse, HttpResponseRedirect
@@ -14,6 +10,10 @@ from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateV
 from .forms import ShortURLForm
 from .models import ShortURL
 
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+
 
 class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
@@ -23,7 +23,9 @@ class ShortenerCreateView(OwnerCreateView):
 
 	def form_valid(self, form):
 		url = form.cleaned_data['long_url']
-		title = get_title(url)
+		
+		title = None
+		title = get_soap_title(url)
 
 		short_alias = generate_unique_alias()
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
@@ -70,72 +72,25 @@ class ShortenerDeleteView(OwnerDeleteView):
 # - - - - -
 
 # Capture the title of the long url that is being shortened
-def get_title(url):
+def get_soap_title(url):
 	title = None
+	
+	# Set up options for Firefox
+	# Only needed if Firefox is in a custom location
+	firefox_binary_path = "/usr/bin/firefox"
+	options = Options()
+	options.binary_location = firefox_binary_path
+	
+	# Set up the GeckoDriver service
+	# Download Gecko driver from github.com/mozilla/geckodriver/releases
+	geckodriver_path = "/usr/bin/geckodriver" 
+	service = Service(geckodriver_path)
 
-	host_url = url
-	domain = urlparse(host_url).netloc
-	server_host = '.'.join(domain.split('.')[-2:])
-	headers = {
-		'Host': server_host,
-		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-		'Accept-Language': 'en-US;q=0.7,en;q=0.3',
-		'Accept-Encoding': 'gzip, deflate, br, zstd',
-		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
-		'Connection':'keep-alive',
-		'Cache-Control': 'max-age=0',
-		'Upgrade-Insecure-Requests': '1',
-	}
-
-	try:
-		rs = requests.Session()
-		response = rs.get(url, timeout=10, allow_redirects=True, max_redirects=50, headers=headers)
-		response.raise_for_status()
-		# if response.status_code in (301, 302):
-		# 	new_location = response.headers['Location']
-		# 	print(f'Redirect to {new_location}')
-		# 	response = rs.get(new_location, timeout=10, allow_redirects=False, headers=headers)
-		# 	response.raise_for_status()
-		soup = BeautifulSoup(response.text, 'html.parser')
-		print(soup)
-		
-		# Attempt 1
-		title_tag = soup.title
-		if title_tag:
-			title = strip_tags(title_tag.text)[:255]
-			print("soup.title = " + title)
-			rs.close()
-			return title
-
-		# Attempt 2
-		title_tag = soup.find("title")
-		if title_tag:
-			title = strip_tags(title_tag.text)[:255]
-			print("soup.find = " + title)
-			rs.close()
-			return title
-
-		# Attempt 3
-		tags = soup.find("meta")
-		for tag in tags:
-			print(tag)
-			if tag.get('property', None) == "og:title":
-				title = tag.get('content', None)[:255]
-				print("og:title = " + title)
-		rs.close()
-		return title
-
-	except requests.exceptions.HTTPError as err:
-		print(f'HTTP Error: {err}')
-	except requests.exceptions.ConnectionError as errc:
-		print(f'Error Connecting: {errc}')
-	except requests.exceptions.Timeout as errt:
-		print(f'Timeout Error: {errt}')
-	except requests.exceptions.RequestException as errr:
-		print(f'Oops: Something Else: {errr}')				
-	finally:
-		rs.close()
-		return title
+	driver = webdriver.Firefox(service=service, options=options)
+	driver.get(url)
+	title = driver.title
+	driver.quit()
+	return title
 
 
 # Generate the unique alias code

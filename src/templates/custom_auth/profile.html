@@ -12,9 +12,9 @@
 
 {% row %}
 {% col %}
-<h3>Hello, {{ request.user.first_name }} {{ request.user.last_name }}.</h3>
-<p>&nbsp;</p>
-<h5>You're logged in as <strong>{{ request.user.email }}</strong>.</h5>
+<!-- <h3>Hello, {{ request.user.first_name }} {{ request.user.last_name }}.</h3>
+<p>&nbsp;</p> -->
+<h3><strong>{{ request.user.email }}</strong></h3>
 <p>&nbsp;</p>
 {% if request.user.is_staff %}
 <p><strong>Admin:</strong> {% if request.user.is_superuser == True %}Yes{% else %}No{% endif %}</p>
