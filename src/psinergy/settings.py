@@ -251,6 +251,10 @@ LOGGING = {
 }
 
 
+## Selenium
+GECKO_PATH = "/usr/bin/geckodriver"
+FIREFOX_PATH = "/usr/bin/firefox"
+
 ## REDIS STORE
 
 # REDIS_LOCATION = "redis://127.0.0.1:6379/1"

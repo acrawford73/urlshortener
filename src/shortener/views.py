@@ -1,5 +1,6 @@
 import random
 import string
+from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
@@ -77,14 +78,16 @@ def get_soap_title(url):
 	
 	# Set up options for Firefox
 	# Only needed if Firefox is in a custom location
-	firefox_binary_path = "/usr/bin/firefox"
+	firefox_binary_path = settings.FIREFOX_PATH
 	options = Options()
 	options.binary_location = firefox_binary_path
-	
+	options.add_argument('--no-sandbox')
+	options.add_argument('--headless')
+	options.add_argument('--disable-dev-shm-usage')
+
 	# Set up the GeckoDriver service
 	# Download Gecko driver from github.com/mozilla/geckodriver/releases
-	geckodriver_path = "/usr/bin/geckodriver" 
-	service = Service(geckodriver_path)
+	service = Service(settings.GECKO_PATH)
 
 	driver = webdriver.Firefox(service=service, options=options)
 	driver.get(url)
