@@ -1,3 +1,6 @@
+import re
+import asyncio
+from playwright.async_api import async_playwright
 import random
 import string
 from django.conf import settings
@@ -11,10 +14,6 @@ from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateV
 from .forms import ShortURLForm
 from .models import ShortURL
 
-from selenium import webdriver
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
-
 
 class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
@@ -26,7 +25,7 @@ class ShortenerCreateView(OwnerCreateView):
 		url = form.cleaned_data['long_url']
 		
 		title = None
-		title = get_soap_title(url)
+		title = get_page_title(url)
 
 		short_alias = generate_unique_alias()
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
@@ -73,31 +72,79 @@ class ShortenerDeleteView(OwnerDeleteView):
 # - - - - -
 
 # Capture the title of the long url that is being shortened
-def get_soap_title(url):
+def get_page_title(url):
 	title = None
-	
-	# try the soup method first, then selenium as last resort
+	import requests
+	from bs4 import BeautifulSoup
+	from urllib.parse import urlparse
+	from django.utils.html import strip_tags
+
+	# First Attempt
+	host_url = url
+	domain = urlparse(host_url).netloc
+	#server_host = '.'.join(domain.split('.')[-2:])
+	server_host = domain
+
+	if server_host.split('.')[-2].lower() != "google": # due to google redirects
+		headers = {
+			'Host': server_host,
+			'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+			'Accept-Language': 'en-US;q=0.7,en;q=0.3',
+			'Accept-Encoding': 'gzip, deflate, br, zstd',
+			'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
+			'Connection':'keep-alive',
+			'Cache-Control': 'max-age=0',
+			'Upgrade-Insecure-Requests': '1',
+		}
+		
+		try:
+			rs = requests.Session()
+			response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
+			response.raise_for_status()
+			soup = BeautifulSoup(response.text, 'html.parser')
+			if soup.title:
+				title = strip_tags(soup.title.text)
+				title = title.strip()[:255]
+				rs.close()
+				return title
+		except requests.exceptions.HTTPError as err:
+			print(f'HTTP Error: {err}')
+		except requests.exceptions.ConnectionError as errc:
+			print(f'Error Connecting: {errc}')
+		except requests.exceptions.Timeout as errt:
+			print(f'Timeout Error: {errt}')
+		except requests.exceptions.TooManyRedirects as errtm:
+			print(f'Too Many Redirects: {errtm}')
+		except requests.exceptions.RequestException as errre:
+			print(f'Oops: Something Else: {errre}')				
+		finally:
+			rs.close()
+
+	# Last Attempt uses browser simulator
+	title = asyncio.run(async_get_title_playwright(url))
+	return title
 
 
-	# Set up options for Firefox
-	# Only needed if Firefox is in a custom location
-	firefox_binary_path = settings.FIREFOX_PATH
-	options = Options()
-	options.binary_location = firefox_binary_path
-	options.add_argument('--no-sandbox')
-	options.add_argument('--headless')
-	options.add_argument('--disable-dev-shm-usage')
-	options.add_argument('--headless')
-	options.add_argument('--disable-gpu')
-
-	# Set up the GeckoDriver service
-	# Download Gecko driver from github.com/mozilla/geckodriver/releases
-	service = Service(settings.GECKO_PATH)
-
-	driver = webdriver.Firefox(service=service, options=options)
-	driver.get(url)
-	title = driver.title[:255]
-	driver.quit()
+async def async_get_title_playwright(url):
+	title = None
+	try:
+		async with async_playwright() as p:
+			# Launch a browser
+			browser = await p.chromium.launch(headless=True)  # Set headless=False if you want to see the browser
+			context = await browser.new_context()
+			page = await context.new_page()
+			page.set_default_navigation_timeout(30000.0) # no await needed
+			# Filter out media content, not necessary for HTML parsing
+			await page.route(re.compile(r"\.(qt|mov|mp4|jpg|png|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+			await page.goto(url)
+			# Wait for the page to load completely
+			#page.wait_for_load_state('networkidle')
+			title = await page.title()
+			title = title.strip()[:255]
+	except Exception as e:
+		print(f"Exception occurred: {e}")
+	finally:
+		await browser.close()
 	return title
 
 
