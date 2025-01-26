@@ -27,8 +27,13 @@ from custom_auth.forms import CustomRegistrationForm
 urlpatterns = [
 
     # Admin
-    path('admin/docs/', include('django.contrib.admindocs.urls')),
-    path('admin/', admin.site.urls),
+    #path('admin/docs/', include('django.contrib.admindocs.urls')),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('himitsu/', admin.site.urls),
+
+    #Apps
+    path('', include('core.urls')),
+    path('', include('shortener.urls')),
 
     # Custom Auth
     path('accounts/', include('django.contrib.auth.urls')),
@@ -46,10 +51,6 @@ urlpatterns = [
     # Django-Registration
     #path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
     #path('user/', include('django_registration.backends.activation.urls')),
-
-    #Apps
-    path('', include('core.urls')),
-    path('', include('shortener.urls')),
 
 ]
 

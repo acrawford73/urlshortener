@@ -78,13 +78,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admindocs',
+    #'django.contrib.admindocs',
     'django.contrib.sites',
+    'admin_honeypot',
     'crispy_forms',
     'crispy_bootstrap5',
     'shortener',
     'core',
 ]
+
+ADMIN_HONEYPOT_EMAIL_ADMINS = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
