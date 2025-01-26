@@ -24,7 +24,6 @@ class ShortenerCreateView(OwnerCreateView):
 	def form_valid(self, form):
 		url = form.cleaned_data['long_url']
 		
-		title = None
 		title = get_page_title(url)
 
 		short_alias = generate_unique_alias()
