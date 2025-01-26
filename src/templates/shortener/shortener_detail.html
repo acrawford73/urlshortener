@@ -22,13 +22,11 @@
         <div class="table-responsive">
         
           {% if link.owner == user %}
-          <h3>Shortened URL: <a href="{% url 'redirect-url' link.short_alias %}" target="_blank">{{ link.short_alias }}</a></h3>
-          <br />
           <p><strong>{{ link.title}}</strong><br />
           <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
           
           <br />
-          <p><strong>Original URL:</strong><br /> {{ link.long_url}}</p>
+          <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
 
           <p>&nbsp;</p>
           <img src="{% static 'img/black-dynamite-yeah-i-can-dig-it.gif' %}" width="350" alt="Yeah, I can dig it.">
