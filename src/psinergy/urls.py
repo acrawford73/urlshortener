@@ -30,10 +30,6 @@ urlpatterns = [
     path('admin/docs/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
 
-    #Apps
-    path('', include('shortener.urls')),
-    path('', include('core.urls')),
-
     # Custom Auth
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', custom_auth.views.profile, name='profile'),
@@ -49,7 +45,11 @@ urlpatterns = [
 
     # Django-Registration
     #path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
-    path('user/', include('django_registration.backends.activation.urls')),
+    #path('user/', include('django_registration.backends.activation.urls')),
+
+    #Apps
+    path('', include('core.urls')),
+    path('', include('shortener.urls')),
 
 ]
 

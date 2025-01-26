@@ -14,7 +14,7 @@
 		<h1 class="mt-3">&nbsp;</h1>
 		<br />
 
-		{% if not form.instance.pk %}
+		{% if user.is_authenticated %}
 
 		<form id="shorten-form" method="POST">
 			{% csrf_token %}
@@ -23,17 +23,19 @@
 		</form>
 		<p>&nbsp;</p>
 		<img src="{% static 'img/black-dynamite-can-you-dig-it.gif' %}" width="350" alt="Can you dig it?">
-
+		
 		{% else %}
-
-		<p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten another URL</button></a></p><br />
-
+		
+		<p>Must be logged in to view.</p>
+		
 		{% endif %}
+
 	<!-- container end -->
 	</div>
 
 </main>
 
+{% if user.is_authenticated %}
 <!-- JavaScript for randomizing button text -->
 <script>
 	const button = document.getElementById('randomTextButton');
@@ -58,5 +60,6 @@
 	const randomIndex = Math.floor(Math.random() * buttonTexts.length);
 	button.textContent = buttonTexts[randomIndex];
 </script>
+{% endif %}
 
 {% endblock %}

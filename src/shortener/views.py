@@ -96,7 +96,7 @@ def get_soap_title(url):
 
 	driver = webdriver.Firefox(service=service, options=options)
 	driver.get(url)
-	title = driver.title
+	title = driver.title[:255]
 	driver.quit()
 	return title
 

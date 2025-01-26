@@ -12,14 +12,23 @@
 
 		<p>&nbsp;</p>
 		<p>&nbsp;</p>
-		<h1 class="mt-3">Update Alias: {{ link.short_alias }}</h1>
-		<br />
+		{% if user.is_authenticated %}
+			{% if link.owner == user %}
+			<h1 class="mt-3">Update Alias: {{ link.short_alias }}</h1>
+			<br />
 
-		<form id="shorten-form" method="POST">
-			{% csrf_token %}
-			{{ form|crispy }}
-			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
-		</form>
+			<form id="shorten-form" method="POST">
+				{% csrf_token %}
+				{{ form|crispy }}
+				<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
+			</form>
+			<p>&nbsp;</p>
+	        {% else %}
+	        <h3>You ain't authorized to view this page.</h3>
+			{% endif %}
+		{% else %}
+		<p>Must be logged in to view.</p>
+    	{% endif %}
 
 	<!-- container end -->
 	</div>
