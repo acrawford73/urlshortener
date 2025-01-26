@@ -14,8 +14,8 @@ from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateV
 from .forms import ShortURLForm
 from .models import ShortURL
 
-from django.core.cache import cache
-from django.views.decorators.cache import cache_page
+#from django.core.cache import cache
+#from django.views.decorators.cache import cache_page
 
 
 class ShortenerCreateView(OwnerCreateView):
@@ -69,11 +69,11 @@ class ShortenerDeleteView(OwnerDeleteView):
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
 	success_url = reverse_lazy('shortener-list')
-	def delete(self, request, *args, **kwargs):
-		obj = self.get_object()
-		cache_key = f"ShortURL_{obj.pk}"
-		cache.delete(cache_key)
-		return super().delete(request, *args, **kwargs)
+	# def delete(self, request, *args, **kwargs):
+	# 	obj = self.get_object()
+	# 	cache_key = f"ShortURL_{obj.pk}"
+	# 	cache.delete(cache_key)
+	# 	return super().delete(request, *args, **kwargs)
 
 # - - - - -
 
@@ -145,6 +145,10 @@ async def async_get_title_playwright(url):
 			await page.goto(url)
 			# Wait for the page to load completely
 			#page.wait_for_load_state('networkidle')
+			# og_title = await page.locator('meta[property="og:title"]').nth(0).get_attribute('content')
+			# if og_title:
+			# 	title = og_title.strip()[:255]
+			# else:
 			title = await page.title()
 			title = title.strip()[:255]
 	except Exception as e:
@@ -185,7 +189,7 @@ def shorten_url(request):
 
 
 # Redirect the shortened link to the original URL
-@cache_page(60 * 15)  # Cache for 15 minutes
+#@cache_page(60 * 15)  # Cache for 15 minutes
 def redirect_url(request, alias):
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	url.clicks += 1
