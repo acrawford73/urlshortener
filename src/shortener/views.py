@@ -1,8 +1,14 @@
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+from django.utils.html import strip_tags
+
 import re
 import asyncio
 from playwright.async_api import async_playwright
 import random
 import string
+
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -31,9 +37,9 @@ class ShortenerCreateView(OwnerCreateView):
 		
 		title = get_page_title(url)
 
-		short_alias = generate_unique_alias()
+		short_alias = generate_unique_alias(url)
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
-			short_alias = generate_unique_alias()
+			short_alias = generate_unique_alias(url)
 		
 		shorturl = form.save(commit=False)
 		shorturl.owner = self.request.user
@@ -82,10 +88,6 @@ class ShortenerDeleteView(OwnerDeleteView):
 # Capture the title of the long url that is being shortened
 def get_page_title(url):
 	title = None
-	import requests
-	from bs4 import BeautifulSoup
-	from urllib.parse import urlparse
-	from django.utils.html import strip_tags
 
 	# First Attempt
 	host_url = url
@@ -161,8 +163,14 @@ async def async_get_title_playwright(url):
 
 
 # Generate the unique alias code
-def generate_unique_alias():
+def generate_unique_alias(url):
 	alias = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+	## alias_code + domain
+	#alias_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+	#domain = urlparse(url).netloc  # www.domain.com
+	#host = '.'.join(domain.split('.')[-2:])  # domain.com
+	#aname = host.split('.')[0]  # domain
+	#alias = alias_code + "-" + aname
 	if not ShortURL.objects.filter(short_alias=alias).exists():
 		return alias
 
@@ -176,9 +184,9 @@ def shorten_url(request):
 			return JsonResponse({'error': 'URL is required'}, status=400)
 
 		# Generate unique short alias
-		short_alias = generate_unique_alias()
+		short_alias = generate_unique_alias(long_url)
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
-			short_alias = generate_unique_alias()
+			short_alias = generate_unique_alias(long_url)
 
 		# Save to database
 		url = ShortURL.objects.create(

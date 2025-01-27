@@ -6,9 +6,12 @@
       <a href="#top">Back to top</a>
     </p>
 
-    <p>&copy; {% now "Y" %} Psinergy.Link [BETA]</p>
+    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list' %}">Psinergy.Link</a> [BETA]</p>
     
     <p>
+      {% if user.is_authenticated %}
+      <a style="margin-right:25px;" href="{% url 'guidelines' %}">Guidelines</a>
+      {% endif %}
       <a style="margin-right:25px;" href="{% url 'terms' %}">Terms</a>
       <a style="margin-right:25px;" href="{% url 'privacy' %}">Privacy</a>
       <a style="margin-right:25px;" href="{% url 'help' %}">Help</a>

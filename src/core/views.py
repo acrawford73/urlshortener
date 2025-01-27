@@ -13,3 +13,6 @@ class Help(TemplateView):
 
 class License(TemplateView):
 	template_name = 'core/license.html'
+
+class Guidelines(TemplateView):
+	template_name = 'core/guidelines.html'
