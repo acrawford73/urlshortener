@@ -14,8 +14,8 @@ from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateV
 from .forms import ShortURLForm
 from .models import ShortURL
 
-#from django.core.cache import cache
-#from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 
 class ShortenerCreateView(OwnerCreateView):
@@ -191,7 +191,7 @@ def shorten_url(request):
 
 
 # Redirect the shortened link to the original URL
-#@cache_page(60 * 15)  # Cache for 15 minutes
+@cache_page(60 * 15)  # Cache for 15 minutes
 def redirect_url(request, alias):
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	url.clicks += 1
