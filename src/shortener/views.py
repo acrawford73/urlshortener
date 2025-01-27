@@ -22,7 +22,9 @@ class ShortenerCreateView(OwnerCreateView):
 	model = ShortURL
 	form_class = ShortURLForm
 	template_name = 'shortener/shortener_form.html'
-	success_url = reverse_lazy('shortener-list')
+
+	def get_success_url(self):
+		return reverse('shortener-detail', kwargs={'pk': self.object.pk})
 
 	def form_valid(self, form):
 		url = form.cleaned_data['long_url']
