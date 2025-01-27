@@ -146,7 +146,7 @@ async def async_get_title_playwright(url):
 			await page.route(re.compile(r"\.(qt|mov|mp4|jpg|png|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
 			# Wait for the page to load completely
-			#page.wait_for_load_state('networkidle')
+			# await page.wait_for_load_state('networkidle')
 			# og_title = await page.locator('meta[property="og:title"]').nth(0).get_attribute('content')
 			# if og_title:
 			# 	title = og_title.strip()[:255]
