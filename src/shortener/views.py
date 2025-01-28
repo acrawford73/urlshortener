@@ -1,11 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-from django.utils.html import strip_tags
 
 import re
 import asyncio
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, Error
 import random
 import string
 
@@ -95,42 +94,42 @@ def get_page_title(url):
 	#server_host = '.'.join(domain.split('.')[-2:])
 	server_host = domain
 
-	if server_host.split('.')[-2].lower() != "google": # due to google redirects
-		headers = {
-			'Host': server_host,
-			'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-			'Accept-Language': 'en-US;q=0.7,en;q=0.3',
-			'Accept-Encoding': 'gzip, deflate, br, zstd',
-			'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
-			'Connection':'keep-alive',
-			'Cache-Control': 'max-age=0',
-			'Upgrade-Insecure-Requests': '1',
-		}
-		
-		try:
-			rs = requests.Session()
-			response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
-			response.raise_for_status()
-			soup = BeautifulSoup(response.text, 'html.parser')
-			if soup.title:
-				title = strip_tags(soup.title.text)
-				title = title.strip()[:255]
-				rs.close()
-				return title
-		except requests.exceptions.HTTPError as err:
-			print(f'HTTP Error: {err}')
-		except requests.exceptions.ConnectionError as errc:
-			print(f'Error Connecting: {errc}')
-		except requests.exceptions.Timeout as errt:
-			print(f'Timeout Error: {errt}')
-		except requests.exceptions.TooManyRedirects as errtm:
-			print(f'Too Many Redirects: {errtm}')
-		except requests.exceptions.RequestException as errre:
-			print(f'Oops: Something Else: {errre}')				
-		finally:
+	#if server_host.split('.')[-2].lower() != "google": # due to google redirects
+	headers = {
+		'Host': server_host,
+		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+		'Accept-Language': 'en-US;q=0.7,en;q=0.3',
+		'Accept-Encoding': 'gzip, deflate, br, zstd',
+		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
+		'Connection':'keep-alive',
+		'Cache-Control': 'max-age=0',
+		'Upgrade-Insecure-Requests': '1',
+	}
+	
+	try:
+		rs = requests.Session()
+		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
+		response.raise_for_status()
+		soup = BeautifulSoup(response.text, 'html.parser')
+		soup_title = soup.select_one("title")
+		if soup_title:
+			title = soup_title.text.strip()[:255]
 			rs.close()
+			return title
+	except requests.exceptions.HTTPError as err:
+		print(f'HTTP Error: {err}')
+	except requests.exceptions.ConnectionError as errc:
+		print(f'Error Connecting: {errc}')
+	except requests.exceptions.Timeout as errt:
+		print(f'Timeout Error: {errt}')
+	except requests.exceptions.TooManyRedirects as errtm:
+		print(f'Too Many Redirects: {errtm}')
+	except requests.exceptions.RequestException as errre:
+		print(f'Oops: Something Else: {errre}')				
+	finally:
+		rs.close()
 
-	# Last Attempt uses browser simulator
+	# Last attempt uses browser simulator
 	title = asyncio.run(async_get_title_playwright(url))
 	return title
 
@@ -145,7 +144,7 @@ async def async_get_title_playwright(url):
 			page = await context.new_page()
 			page.set_default_navigation_timeout(30000.0) # no await needed
 			# Filter out media content, not necessary for HTML parsing
-			await page.route(re.compile(r"\.(qt|mov|mp4|jpg|png|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+			await page.route(re.compile(r"\.(qt|mov|mp4|mpg|m4v|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
 			# Wait for the page to load completely
 			# await page.wait_for_load_state('networkidle')
@@ -153,8 +152,11 @@ async def async_get_title_playwright(url):
 			# if og_title:
 			# 	title = og_title.strip()[:255]
 			# else:
+			#await page.wait_for_load_state('load')
 			title = await page.title()
 			title = title.strip()[:255]
+	except Error as err:
+		print(f"Error occurred: {err}")
 	except Exception as e:
 		print(f"Exception occurred: {e}")
 	finally:

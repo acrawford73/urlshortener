@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+APP_NAME ='Psinergy.Link'
+
 # SECURITY WARNING: Keep the secret key used in production secret!
 # SECURITY WARNING: Don't run with debug turned on in production!
 
