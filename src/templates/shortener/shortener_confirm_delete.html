@@ -10,22 +10,30 @@
 <main class="flex-shrink-0">
   <div class="container">
     <p>&nbsp;</p>
-    <h2 class="mt-5"><strong>Short URL Alias:</strong> {{ link.short_alias }}</h2>
+
+    {% if user.is_authenticated %}
+    
+    {% if link.owner == user %}
+    <h2 class="mt-5"><strong>Delete Alias:</strong> {{ link.short_alias }}</h2>
     <p>&nbsp;</p>
     <div class="row">
       <form method="post">{% csrf_token %}
-        <p>Are you sure you want to delete the following short URL ?</p>
-        <p>&nbsp;</p>
-        <h4><strong>Title:</strong> {{ link.title }}</h4>
-        <h4><strong>Alias:</strong> {{ link.short_alias }}</h4>
-        <p><strong>Original URL:</strong> {{ link.long_url }}</p>
+        <p><strong>Are you sure you want to delete {{ link.short_alias }} ?</strong></p><br />
+        <p><strong>Title: </strong>{{ link.title }}</p>
+        <p><strong>Alias: </strong><a href="{% url 'redirect-url' link.short_alias %}" target="_blank">{{ link.short_alias }}</a></p>
+        <p><strong>Original URL: </strong><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></p>
         {{ form }}
         <p>&nbsp;</p>
-        <input type="submit" value="Confirm">
+        <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
     </form>
 
     <!-- row end -->
     </div>
+    {% endif %}
+    
+    {% else %}
+    <p>Must be logged in to view.</p>
+    {% endif %}
 
   <!-- container end -->
   </div>

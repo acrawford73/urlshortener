@@ -14,14 +14,13 @@
     <p>&nbsp;</p>
 
     {% if user.is_authenticated %}
+
     {% if link.owner == user %}
     <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten up another URL yo</button></a></p><br />
-    {% endif %}
     <div class="row">
       <div class="col-lg-12">
         <div class="table-responsive">
-        
-          {% if link.owner == user %}
+
           <p><strong>{{ link.title}}</strong><br />
           <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
           
@@ -30,19 +29,13 @@
 
           <p>&nbsp;</p>
           <img src="{% static 'img/black-dynamite-yeah-i-can-dig-it.gif' %}" width="350" alt="Yeah, I can dig it.">
-        
-          {% else %}
-
-          <p>&nbsp;</p>
-          <h3>You ain't authorized to view this page.</h3>
-
-          {% endif %}
 
         </div>
       </div>
 
     <!-- row end -->
     </div>
+    {% endif %}
 
     {% else %}
     <p>Must be logged in to view.</p>

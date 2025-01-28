@@ -134,11 +134,11 @@ def get_page_title(url):
 	return title
 
 
+# https://playwright.dev/docs/api/class-page
 async def async_get_title_playwright(url):
 	title = None
 	try:
 		async with async_playwright() as p:
-			# Launch a browser
 			browser = await p.chromium.launch(headless=True)  # Set headless=False if you want to see the browser
 			context = await browser.new_context()
 			page = await context.new_page()
@@ -146,13 +146,6 @@ async def async_get_title_playwright(url):
 			# Filter out media content, not necessary for HTML parsing
 			await page.route(re.compile(r"\.(qt|mov|mp4|mpg|m4v|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
-			# Wait for the page to load completely
-			# await page.wait_for_load_state('networkidle')
-			# og_title = await page.locator('meta[property="og:title"]').nth(0).get_attribute('content')
-			# if og_title:
-			# 	title = og_title.strip()[:255]
-			# else:
-			#await page.wait_for_load_state('load')
 			title = await page.title()
 			title = title.strip()[:255]
 	except Error as err:
