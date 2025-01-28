@@ -23,13 +23,14 @@
                 <th>Upd</th>
                 <th>Alias</th>
                 <th>Original URL</th>
-                <!-- <th>Created</th> -->
                 <th>Views</th>
               </tr>
             </thead>
+            
 
             <tbody>
               {% for link in links %}
+
               {% if link.owner == user %}
               <tr align="center">
                 <td>
@@ -61,13 +62,10 @@
                   <a href="{% url 'shortener-detail' link.id %}"><strong>{{ link.title|slice:70 }}</strong></a><br />
                   {% endif %}
                   {{ link.long_url|slice:60 }}</td>
-<!--                 <td>
-                  {{ link.created_at|date:"F d, Y" }}<br />
-                  {{ link.created_at|date:"g:i:s A" }}
-                </td> -->
                 <td>{{ link.clicks }}</td>
               </tr>
               {% endif %}
+              
               {% endfor %}
 
             </tbody>
