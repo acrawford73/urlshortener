@@ -31,11 +31,11 @@ if config('PRODUCTION', default=False, cast=bool) == True:
     ALLOWED_HOSTS = config('PROD_ALLOWED_HOSTS', cast=Csv())
     ## Security
     SECURE_SSL_HOST = config('SECURE_SSL_HOST')
-    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
-    SECURE_REFERRER_POLICY = config('SECURE_REFERRER_POLICY')
-    SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS')
-    SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
+    # SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+    # SECURE_REFERRER_POLICY = config('SECURE_REFERRER_POLICY')
+    # SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS')
+    # SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
     X_FRAME_OPTIONS = config('X_FRAME_OPTIONS')
     ## Cookies
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
@@ -173,7 +173,7 @@ USE_TZ = True
 
 if config('PRODUCTION', default=False, cast=bool) == True:
     LOCAL_STATIC_CDN = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
-    STATIC_URL = '/static_cdn/'
+    STATIC_URL = '/static/'
 else:
     LOCAL_STATIC_CDN = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
     STATIC_URL = '/static/'
