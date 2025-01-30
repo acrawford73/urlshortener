@@ -44,7 +44,7 @@ if config('PRODUCTION', default=False, cast=bool) == True:
     ## Cookies
     CSRF_USE_SESSIONS = config('CSRF_USE_SESSIONS', default=False, cast=bool)
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
-    CSRF_TRUSTED_ORIGINS = ['https://psinergy.link']
+    CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
     CSRF_COOKIE_DOMAIN = config('CSRF_COOKIE_DOMAIN')
     CSRF_COOKIE_PATH = '/'
     
