@@ -45,14 +45,14 @@ if config('PRODUCTION', default=False, cast=bool) == True:
     CSRF_USE_SESSIONS = config('CSRF_USE_SESSIONS', default=False, cast=bool)
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
     CSRF_TRUSTED_ORIGINS = ['https://psinergy.link']
-    CSRF_COOKIE_DOMAIN = 'psinergy.link'
+    CSRF_COOKIE_DOMAIN = config('CSRF_COOKIE_DOMAIN')
     CSRF_COOKIE_PATH = '/'
     
     ## Session
-    SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
     SESSION_COOKIE_AGE = config('SESSION_COOKIE_AGE')
     SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME')
     SESSION_COOKIE_DOMAIN = config('SESSION_COOKIE_DOMAIN')
+    SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
     SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE')
 
     
