@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.db.models import Index
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -36,7 +37,11 @@ class ShortURL(models.Model):
 		return reverse('shortener-list')
 	class Meta:
 		ordering = ['-created_at']
+		indexes = [
+			Index(fields=['short_alias']),  # Simple index
+			Index(fields=['-created_at']),  # Descending index
+			Index(fields=['-clicks']),
+		]
 	def __str__(self):
-		#return f"{self.short_alias} -> {self.long_url}"
 		return self.short_alias
 
