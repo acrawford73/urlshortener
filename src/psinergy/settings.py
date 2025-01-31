@@ -85,7 +85,7 @@ LOGOUT_REDIRECT_URL = "/"
 
 
 ### Admin Honeypot
-
+# pip install django-admin-honeypot-updated-2021
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
 
 ### Application definition
