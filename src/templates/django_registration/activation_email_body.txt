@@ -2,7 +2,7 @@ Hello, friend.
 
 You are receiving this email because you signed up to Psinergy.Link. 
 
-Please activate your account within {{ expiration_days }} days.
+Please activate your account within {{ expiration_days }} days by clicking the activation link below.
 
 {{ scheme }}://{{ request.get_host }}{% url 'django_registration_activate' activation_key %}
 

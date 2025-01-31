@@ -38,8 +38,8 @@ class ShortURL(models.Model):
 	class Meta:
 		ordering = ['-created_at']
 		indexes = [
-			Index(fields=['short_alias']),  # Simple index
-			Index(fields=['-created_at']),  # Descending index
+			Index(fields=['short_alias']),
+			Index(fields=['-created_at']),
 			Index(fields=['-clicks']),
 		]
 	def __str__(self):
