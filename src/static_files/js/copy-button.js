@@ -9,9 +9,10 @@ copyBtn.addEventListener('click', () => {
 	// Extract the text from the element
 	const text1 = textToCopy1.innerText;
 	const text2 = textToCopy2.innerText;
+	const text = text1.concat("\n", text2)
 
 // Use the Clipboard API to write the text to the clipboard
-navigator.clipboard.writeText(text1+"/n"+text2)
+navigator.clipboard.writeText(text)
 	.then(() => {
 		// Optional: Provide feedback to the user
 		// alert('Text copied to clipboard!');
