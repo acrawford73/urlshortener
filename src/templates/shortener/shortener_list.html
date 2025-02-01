@@ -21,8 +21,10 @@
           <form method="get" action="">
             {% csrf_token %}
             {{ form|crispy }}
-            <input id="search" class="form-control" type="text" name="q" placeholder="Search by title" value="{{ request.GET.q }}"><br />
-            <button type="submit" class="btn btn-success rounded-pill px-3">Search</button>
+            <div class="input-group mb-3">
+              <input id="search" type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Search by title" aria-label="Search by title" aria-describedby="button-addon2">
+              <button class="btn btn-outline-primary" type="button" id="button-addon2">Search</button>
+            </div>
           </form>
         </div>
       <div class="col-sm-3">&nbsp;</div>
