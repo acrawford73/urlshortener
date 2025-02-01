@@ -24,7 +24,8 @@
           <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
 
           <p id="shortAlias"><strong>{{ link.title }}</strong><br />
-          <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
+          <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong><br />
+          https://psinergy.link/{{ link.short_alias }}</strong></a></p>
           
           <br />
           <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
