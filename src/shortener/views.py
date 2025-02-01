@@ -63,7 +63,7 @@ class ShortenerListView(OwnerListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 100
+	paginate_by = 50
 
 	def get_queryset(self):
 		# Get the base queryset from the parent view
@@ -80,7 +80,10 @@ class ShortenerTopListView(OwnerListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-clicks']
-	paginate_by = 100
+	paginate_by = 50
+	def get_queryset(self):
+		qs = super().get_queryset()
+		return qs.filter(clicks__gt=0)
 
 class ShortenerDetailView(OwnerDetailView):
 	model = ShortURL
