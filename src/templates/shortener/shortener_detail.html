@@ -21,8 +21,9 @@
       <div class="col-lg-12">
         <div class="table-responsive">
 
-          <button id="copyBtn">Copy</button><br />
-          <p id="shortAlias"><strong>{{ link.title}}</strong><br />
+          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
+
+          <p id="shortAlias"><strong>{{ link.title }}</strong><br />
           <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
           
           <br />
