@@ -16,7 +16,7 @@
     {% if user.is_authenticated %}
 
     {% if link.owner == user %}
-    <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten up another URL yo</button></a></p><br />
+    <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten up another link yo</button></a></p><br />
     <div class="row">
       <div class="col-lg-12">
         <div class="table-responsive">
@@ -24,8 +24,7 @@
           <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
 
           <p id="shortTitle"><strong>{{ link.title }}</strong></p>
-          <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong><br />
-          https://psinergy.link/{{ link.short_alias }}</strong></a></p>
+          <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
           
           <br />
           <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
