@@ -10,7 +10,7 @@ import string
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
@@ -33,7 +33,17 @@ class ShortenerCreateView(OwnerCreateView):
 
 	def form_valid(self, form):
 		url = form.cleaned_data['long_url']
-		
+
+		# Check if owner shortened this link already
+		existing = ShortURL.objects.filter(long_url=url, owner=self.request.user).first()
+		if existing:
+			return redirect('shortener-detail', pk=existing.pk)
+
+		# Check if anyone shortened this link already
+		existing = ShortURL.objects.filter(long_url=url).first()
+		if existing:	
+			return redirect('shortener-detail', pk=existing.pk)
+
 		title = get_page_title(url)
 
 		short_alias = generate_unique_alias(url)
