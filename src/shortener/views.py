@@ -54,6 +54,16 @@ class ShortenerListView(OwnerListView):
 	context_object_name = 'links'
 	ordering = ['-created_at']
 
+	def get_queryset(self):
+		# Get the base queryset from the parent view
+		qs = super().get_queryset()
+		# Get the search query from the GET parameters (e.g., ?q=search_term)
+		query = self.request.GET.get('q')
+		if query:
+			# Filter by title using case-insensitive containment lookup
+			qs = qs.filter(title__icontains=query)
+		return qs
+
 class ShortenerTopListView(OwnerListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
