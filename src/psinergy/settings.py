@@ -79,7 +79,7 @@ else:
 SITE_ID = int(config('SITE_ID'))
 AUTH_USER_MODEL = 'custom_auth.User'
 ACCOUNT_ACTIVATION_DAYS = 7
-REGISTRATION_OPEN = config('REGISTRATION_OPEN')
+REGISTRATION_OPEN = config('REGISTRATION_OPEN', default=False, cast=bool)
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
