@@ -7,7 +7,7 @@ const textToCopy2 = document.getElementById('shortAlias');
 const copyMessage = document.getElementById('copyMessage');
 
 // Function to display a temporary message on the page
-function showMessage(message, duration = 3000) {
+function showMessage(message, duration = 5000) {
 	copyMessage.textContent = message;
 	// Clear the message after the specified duration (default 2000ms)
 	setTimeout(() => {

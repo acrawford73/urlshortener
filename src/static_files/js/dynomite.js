@@ -2,13 +2,17 @@
 
 const button = document.getElementById('randomTextButton');
 const buttonTexts = [
+	"Shorten",
+	"Shrink that link foo!",
+	"You can stay or shrink, ya dig",
+	"This link'll be smilin'",
 	"Shrink!",
 	"Shrink it!",
 	"Shrink that link!",
 	"Give'r!",
 	"Shrink that mofo!",
 	"Shrink it or link it!",
-	"Shrink link clowns that come around!",
+	"Shrinkin' linkin' clowns that come around!",
 	"Tell that MF link to chill!",
 	"Shrink it and dig it...",
 	"I ain't playin'",
