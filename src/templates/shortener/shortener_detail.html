@@ -9,7 +9,7 @@
 <<!-- Begin page content -->
 <main class="flex-shrink-0">
   <div class="container" align="center">
-    
+
     <p>&nbsp;</p>
     <p>&nbsp;</p>
 
@@ -24,18 +24,15 @@
           {% if link.owner == user %}
 
           <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
-          
+
           <!-- Placeholder for the "Copied!" message -->
           <div id="copyMessage"></div>
 
           <p id="shortTitle"><strong>{{ link.title }}</strong></p>
           <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
-          
+
           <br />
           <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
-
-          <p>&nbsp;</p>
-          <img src="{% static 'img/black-dynamite-yeah-i-can-dig-it.gif' %}" width="350" alt="Yeah, I can dig it.">
 
           {% else %}
 
@@ -46,7 +43,7 @@
 
           <p id="shortTitle"><strong>{{ link.title }}</strong></p>
           <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
-          
+
           <br />
           <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
 
