@@ -113,13 +113,20 @@ class ShortenerDeleteView(OwnerDeleteView):
 def get_page_title(url):
 	title = None
 
+	# Google Search URLs Only
+	# Cannot reliably get the title tag so just grab it from the search parameter
+	if url.startswith("https://www.google.com/search?"):
+		match = re.search(r"q=([^&]+)&", url)
+		result = match.group(1)
+		title = result.replace("+"," ")
+		return title
+
 	# First Attempt
 	host_url = url
 	domain = urlparse(host_url).netloc
 	#server_host = '.'.join(domain.split('.')[-2:])
 	server_host = domain
 
-	#if server_host.split('.')[-2].lower() != "google": # due to google redirects
 	headers = {
 		'Host': server_host,
 		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
