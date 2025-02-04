@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<main class="flex-shrink-0">
+	<div class="container" align="center">
+	<h1 class="mt-5">&nbsp;</h1>
+
+	{% if user.is_authenticated %}
+
+	<p><strong>Hi, {{ user.email }}!</strong></p><br />
+	<p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten Link</button></a></p><br />
+
+	{% else %}
+
+	<p>Please login to begin.</p><br />
+	<p><a href="{% url 'login' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Login</button></a></p>
+
+	{% endif %}
+	</div>
+</main>
+
+{% endblock %}

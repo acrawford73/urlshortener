@@ -64,6 +64,10 @@ else:
     ALLOWED_HOSTS = config('DEBUG_ALLOWED_HOSTS', cast=Csv())
 
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
+
+
 ### E-Mail
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -80,13 +84,14 @@ SITE_ID = int(config('SITE_ID'))
 AUTH_USER_MODEL = 'custom_auth.User'
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_OPEN = config('REGISTRATION_OPEN', default=False, cast=bool)
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "shortener-list"
+LOGOUT_REDIRECT_URL = "login"
 
 
 ### Admin Honeypot
 # pip install django-admin-honeypot-updated-2021
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
+
 
 ### Application definition
 
@@ -105,6 +110,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'shortener',
     'core',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -291,9 +297,6 @@ CACHES = {
 #         },
 #     }
 # }
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
 
 
 ### CELERY

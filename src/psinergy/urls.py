@@ -32,6 +32,7 @@ urlpatterns = [
     path('himitsu/', admin.site.urls),
 
     #Apps
+    path('', include('home.urls')),
     path('', include('core.urls')),
     path('', include('shortener.urls')),
 
@@ -49,8 +50,8 @@ urlpatterns = [
     # accounts/reset/done/ [name='password_reset_complete']
 
     # Django-Registration
-    #path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
-    #path('user/', include('django_registration.backends.activation.urls')),
+    path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
+    path('user/', include('django_registration.backends.activation.urls')),
 
 ]
 
