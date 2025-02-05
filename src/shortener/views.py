@@ -116,10 +116,13 @@ def get_page_title(url):
 	# Google Search URLs Only
 	# Cannot reliably get the title tag so just grab it from the search parameter
 	if url.startswith("https://www.google.com/search?"):
-		match = re.search(r"q=([^&]+)&", url)
-		result = match.group(1)
-		title = result.replace("+"," ")
-		return title
+		# Get text between "q=" and w/wo "&"
+		pattern = r"q=([^&]+)(?:&|$)"
+		match = re.search(pattern, url)
+		if match:
+			result = match.group(1)
+			title = result.replace("+"," ")
+			return title
 
 	# First Attempt
 	host_url = url
