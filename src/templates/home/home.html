@@ -12,7 +12,8 @@
 
 	{% if user.is_authenticated %}
 
-	<p><strong>Oh Hi, you are logged in as {{ user.email }}!</strong></p><br />
+	<p>Oh Hi, you are logged in as:</p><br />
+	<p><strong>{{ user.email }}</strong></p><br />
 	<p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten Link</button></a></p><br />
 
 	{% else %}
