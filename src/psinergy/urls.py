@@ -21,6 +21,7 @@ from django.conf import settings
 import custom_auth.views
 
 from django_registration.backends.activation.views import RegistrationView
+from django_registration.backends.one_step.views import RegistrationView
 from custom_auth.forms import CustomRegistrationForm
 
 
@@ -50,7 +51,8 @@ urlpatterns = [
     # accounts/reset/done/ [name='password_reset_complete']
 
     # Django-Registration
-    path('user/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
+    path('accounts/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
+    path('accounts/', include('django_registration.backends.one_step.urls')),
     path('user/', include('django_registration.backends.activation.urls')),
 
 ]
