@@ -17,10 +17,10 @@
 <p>Please use a fake email address. Use your Telegram username with '@psinergy.link', so we know who you are.</p>
 <p>No emails are sent from this server.</p>
 <p>&nbsp;</p>
-<form method="post" action="">
-{% csrf_token %}
-{{ form|crispy }}
-<button id="register" type="submit" class="btn btn-primary rounded-pill px-3">Create Account</button>
+<form id="registration" method="post" action="">
+	{% csrf_token %}
+	{{ form|crispy }}
+	<button id="register" type="submit" class="btn btn-primary rounded-pill px-3">Create Account</button>
 </form>
 {% endcol %}
 {% endrow %}
