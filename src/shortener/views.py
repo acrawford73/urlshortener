@@ -123,7 +123,7 @@ def get_page_title(url):
 		if match:
 			result = match.group(1)
 			title = result.replace("+"," ")
-			return title
+			return "Google Search: " + str(title)
 
 	# First Attempt
 	host_url = url
