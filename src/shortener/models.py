@@ -14,7 +14,7 @@ class ShortURL(models.Model):
 	title = models.CharField(default="", max_length=255, null=True, blank=True)
 	short_alias = models.CharField(max_length=6, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", max_length=2048, null=False, blank=False, \
-		help_text="Place the full URL starting with HTTPS.")
+		help_text="Place the full URL starting with https://")
 	created_at = models.DateTimeField(auto_now_add=True, editable=False)
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
