@@ -215,29 +215,6 @@ def generate_unique_alias(url):
 		return alias
 
 
-# # Shorten the original URL
-# @login_required
-# def shorten_url(request):
-# 	if request.method == 'POST':
-# 		long_url = request.POST.get('url')
-# 		if not long_url:
-# 			return JsonResponse({'error': 'URL is required'}, status=400)
-
-# 		# Generate unique short alias
-# 		short_alias = generate_unique_alias(long_url)
-# 		while ShortURL.objects.filter(short_alias=short_alias).exists():
-# 			short_alias = generate_unique_alias(long_url)
-
-# 		# Save to database
-# 		url = ShortURL.objects.create(
-# 			short_alias=short_alias,
-# 			long_url=long_url,
-# 			owner=self.request.user
-# 		)
-
-# 		return JsonResponse({'short_url': f"http://psinergy.link/{short_alias}"})
-
-
 # Redirect the shortened link to the original URL
 @cache_page(60 * 15)  # Cache for 15 minutes
 def redirect_url(request, alias):

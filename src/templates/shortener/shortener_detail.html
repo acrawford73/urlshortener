@@ -18,8 +18,8 @@
     <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten us up another link</button></a></p><br />
 
     <div class="row">
-      <div class="col-lg-12">
-        <div class="table-responsive">
+      <div class="col-sm-2">&nbsp;</div>
+        <div class="col-sm-8 table-responsive">
 
           {% if link.owner != user %}
           <p>This link has been shortened already.</p>
@@ -29,14 +29,32 @@
 
           <div id="copyMessage"></div>
 
-          <p id="shortTitle"><strong>{{ link.title }}</strong></p>
+<!--           <p id="shortTitle"><strong>{{ link.title }}</strong></p>
           <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
 
           <br />
-          <p><strong>Original:</strong><br /><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></p>
+          <p><strong>Original:</strong><br /><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></p> -->
+
+          <table class="table">
+            <tbody>
+              <tr>
+                <th class="table-primary">Title</th>
+                <!-- <td id="shortTitle"><strong>{{ link.title }}</strong></td> -->
+                <td id="shortTitle">{{ link.title }}</td>
+              </tr>
+              <tr>
+                <th class="table-primary">Short</th>
+                <td id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Original</th>
+                <td><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></td>
+              </tr>
+            </tbody>
+          </table>
 
         </div>
-      </div>
+      <div class="col-sm-2">&nbsp;</div>
 
     <!-- row end -->
     </div>
