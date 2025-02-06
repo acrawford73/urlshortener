@@ -21,11 +21,12 @@
       <div class="col-lg-12">
         <div class="table-responsive">
 
-          {% if link.owner == user %}
+          {% if link.owner != user %}
+          <p>This link has been shortened already.</p>
+          {% endif %}
 
-          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
+          <p><a href="{% url 'shortener-update' link.id %}"><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button>&nbsp;&nbsp;<button id="editBtn" class="btn btn-success rounded-pill px-3">Edit Title</button></a></p>
 
-          <!-- Placeholder for the "Copied!" message -->
           <div id="copyMessage"></div>
 
           <p id="shortTitle"><strong>{{ link.title }}</strong></p>
@@ -33,21 +34,6 @@
 
           <br />
           <p><strong>Original:</strong><br /><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></p>
-
-          {% else %}
-
-          <p>This link has been shortened already.</p>
-          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button></p>
-
-          <div id="copyMessage"></div>
-
-          <p id="shortTitle"><strong>{{ link.title }}</strong></p>
-          <p id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></p>
-
-          <br />
-          <p><strong>Original:</strong><br /> {{ link.long_url}}</p>
-
-          {% endif %}
 
         </div>
       </div>
