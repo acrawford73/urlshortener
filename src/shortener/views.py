@@ -113,7 +113,7 @@ class ShortenerDeleteView(OwnerDeleteView):
 def get_page_title(url):
 	title = None
 
-	# Google Search URLs Only
+	# Google Search
 	# Cannot reliably get the title tag so just grab it from the search parameter
 	google_url = url
 	# First check for Google search format (*google.*/search?)
@@ -125,7 +125,15 @@ def get_page_title(url):
 			title = result.replace("+"," ")
 			return str(title) + " - Google Search"
 
-	# First Attempt
+	# Google Patents Search
+	if re.search(r'patents\.google\.[^/]+/\?', google_url):
+		match = re.search(r"q=\(([^)]+)\)(?:&|$)", google_url)
+		if match:
+			result = match.group(1)
+			title = result.replace("+"," ")
+			return str(title) + " - Google Patents"
+
+	# Requests & BeautifulSoup Attempt
 	host_url = url
 	domain = urlparse(host_url).netloc
 	#server_host = '.'.join(domain.split('.')[-2:])
@@ -165,7 +173,7 @@ def get_page_title(url):
 	finally:
 		rs.close()
 
-	# Last attempt uses browser simulator
+	# Browser Simulator - final attempt
 	title = asyncio.run(async_get_title_playwright(url))
 	return title
 
