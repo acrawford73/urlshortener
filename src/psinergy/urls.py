@@ -20,7 +20,11 @@ from django.conf import settings
 
 import custom_auth.views
 
-from django_registration.backends.activation.views import RegistrationView
+# One-step registration
+from django_registration.backends.one_step.views import RegistrationView
+# Two-step registration
+#from django_registration.backends.activation.views import RegistrationView
+
 from custom_auth.forms import CustomRegistrationForm
 
 
@@ -51,7 +55,10 @@ urlpatterns = [
 
     # Django-Registration
     path('accounts/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),
-    path('accounts/', include('django_registration.backends.activation.urls')),
+    # One-step registration
+    path('accounts/', include('django_registration.backends.one_step.urls')),
+    # Two-step registration
+    #path('accounts/', include('django_registration.backends.activation.urls')),
 
 ]
 
