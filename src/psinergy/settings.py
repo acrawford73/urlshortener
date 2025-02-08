@@ -143,6 +143,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'psinergy.wsgi.application'
 
 

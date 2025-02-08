@@ -54,7 +54,7 @@
     <script src="{% static 'js/copy-button.js' %}"></script>
 
     {% else %}
-    <p>Must be logged in to view.</p>
+    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
     {% endif %}
 
   <!-- container end -->

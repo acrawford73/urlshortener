@@ -8,6 +8,9 @@
 <main class="flex-shrink-0">
   <div class="container">
     <p>&nbsp;</p>
+
+    {% if user.is_authenticated %}
+    
     <h2 class="mt-5"><strong>Help</strong></h2><br />
 
     <p><a href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a> functions as a hyperlink (URL) shortener.</p>
@@ -35,6 +38,10 @@
     <p>If the website goes down for any extended period of time, you agree to hold us harmless. There are no financial gains attached to this website.</p>
 
     <p>In case the site gets taken offline, well, thank you for your kind contributions.</p>
+
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+    {% endif %}
 
      <!-- container end -->
   </div>

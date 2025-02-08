@@ -8,6 +8,9 @@
 <main class="flex-shrink-0">
 	<div class="container">
 		<p>&nbsp;</p>
+
+		{% if user.is_authenticated %}
+
 		<h2 class="mt-5"><strong>FAQ</strong></h2><br />
 
 		<h4>What does this website do?</h4>
@@ -42,6 +45,12 @@
 				<li>For Google Search and Google Patent Search URLs, the search query is captured for the Title of the shortened link.</li>
 			</ul>
 		</p>
+
+		{% else %}
+
+		<p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+
+		{% endif %}
 
 	<!-- container end -->
 	</div>

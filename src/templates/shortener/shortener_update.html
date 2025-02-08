@@ -27,8 +27,8 @@
 	        <h3>You ain't authorized to view this page.</h3>
 			{% endif %}
 		{% else %}
-		<p>Must be logged in to view.</p>
-    	{% endif %}
+		<p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+		{% endif %}
 
 	<!-- container end -->
 	</div>
