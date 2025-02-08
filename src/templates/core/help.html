@@ -8,12 +8,11 @@
 <main class="flex-shrink-0">
   <div class="container">
     <p>&nbsp;</p>
-    <p>&nbsp;</p>
+
+    <h2 class="mt-5"><strong>Help</strong></h2><br />
 
     {% if user.is_authenticated %}
     
-    <h2 class="mt-5"><strong>Help</strong></h2><br />
-
     <p><a href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a> functions as a hyperlink (URL) shortener.</p>
 
     <p>Click the '<strong>Shorten Link</strong>' button, then simply paste the link into the Long URL text box. Then click '<strong>Shorten</strong>'.</p>
