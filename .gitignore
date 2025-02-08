@@ -3,6 +3,7 @@ lib/
 include/
 static_cdn/
 __pycache__/
+*/__pycache__/*
 *.pyc
 pyvenv.cfg
 .env

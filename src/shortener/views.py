@@ -189,7 +189,7 @@ async def async_get_title_playwright(url):
 			page = await context.new_page()
 			page.set_default_navigation_timeout(30000.0) # no await needed
 			# Filter out media content, not necessary for HTML parsing
-			await page.route(re.compile(r"\.(qt|mov|mp4|mpg|m4v|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+			await page.route(re.compile(r"\.(qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
 			title = await page.title()
 			title = title.strip()[:255]
@@ -216,7 +216,7 @@ def generate_unique_alias(url):
 
 
 # Redirect the shortened link to the original URL
-@cache_page(60 * 15)  # Cache for 15 minutes
+@cache_page(60 * 60)  # Cache for 1 hour
 def redirect_url(request, alias):
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	url.clicks += 1
