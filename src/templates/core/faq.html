@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Begin page content -->
+<main class="flex-shrink-0">
+	<div class="container">
+		<p>&nbsp;</p>
+		<h2 class="mt-5"><strong>FAQ</strong></h2><br />
+
+		<h4>What does this website do?</h4>
+		<p>The main function is to be a Hyperlink/URL shortener.</p>
+
+		<h4>What is a URL shortener?</h4>
+		<p>A URL shortener takes any valid web address and creates an alias code specifically for that full web address URL. The alias code is combined with the domain of this website. When clicked, the short URL will redirect your browser to the original web address URL.</p>
+		<p>You may have seen shortened YouTube URLs like: <strong>youtu.be/abcd1234</strong>. Same idea.</p>
+		<p>Your shortened links look like this: <strong>psinergy.link/abc123</strong>. You copy this shortened address then paste it anywhere appropriate.</p>
+
+		<h4>Why even bother do this?</h4>
+		<p>Psinergist researchers are champions of content sharing; often Google Search URLs. Most of the time those search URLs are massive, ~1000 characters. They take up too much space when posted. So a shortened link is a more "professional" method.</p>
+
+		<h4>How long do the links persist? Do they expire?</h4>
+		<p>The shortened links do not expire. They'll persist as long as the service is available.</p>
+
+		<h4>Who is behind this? Can I contact them?</h4>
+		<p>Someone within the Psinergist community. Yes, on Telegram.</p>
+
+		<br />
+		<h3>Website Features</h3>
+		<p>
+			<ul>
+				<li>Shortens any full URL to a shortened URL.</li>
+				<li>The Title of the original website is stored with the shortened URL.</li>
+				<li>Shortened URL with the title can be easily copied using a button.</li>
+				<li>Shortened URLs and their titles can be edited.</li>
+				<li>Shortened URLs can be deleted, if necessary.</li>
+				<li>The shortener checks if a URL has been shortened already. If so, the shortened link is shown.</li>
+				<li>Shortened URLs are listed by Recent, or by Top (most clicked) in descending order.</li>
+				<li>Shortened links are searchable by Title.</li>
+				<li>For Google Search and Google Patent Search URLs, the search query is used for the Title of the shortened link.</li>
+			</ul>
+		</p>
+
+	<!-- container end -->
+	</div>
+
+</main>
+
+{% endblock %}

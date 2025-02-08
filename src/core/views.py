@@ -16,3 +16,6 @@ class License(TemplateView):
 
 class Guidelines(TemplateView):
 	template_name = 'core/guidelines.html'
+
+class FAQ(TemplateView):
+	template_name = 'core/faq.html'
