@@ -85,9 +85,9 @@ class ShortenerTopListView(OwnerListView):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
 		if query:
-			qs = qs.filter(title__icontains=query, clicks__gt=0)
-		# else:
-		# 	qs = qs.filter(clicks__gt=0)
+			qs = qs.filter(title__icontains=query)
+		else:
+			qs = qs.filter(clicks__gt=0)
 		return qs
 
 class ShortenerDetailView(OwnerDetailView):
