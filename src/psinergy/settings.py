@@ -125,6 +125,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',  # Bootstrap class
+}
+
+
 ROOT_URLCONF = 'psinergy.urls'
 
 TEMPLATES = [

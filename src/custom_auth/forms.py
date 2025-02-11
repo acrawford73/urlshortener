@@ -3,6 +3,7 @@ from crispy_forms.layout import Submit
 from django_registration.forms import RegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 from custom_auth.models import User
+from django.core.exceptions import ValidationError
 
 
 class CustomRegistrationForm(RegistrationForm):
@@ -25,5 +26,10 @@ class CustomRegistrationForm(RegistrationForm):
 class CustomAuthenticationForm(AuthenticationForm):
 	error_messages = {
 		'inactive': "The account is not active yet. Please be patient, it will be activated after review.",
-		'invalid_login': "The email or password is incorrect. Please try again. Also, the account may not be activated yet.",	
+		'invalid_login': "The email or password is incorrect. Please try again. The account may not be active yet.",
 	}
+
+	def confirm_login_allowed(self, user):
+		if not user.is_active:
+			raise ValidationError(self.error_messages['inactive'], code='inactive')
+
