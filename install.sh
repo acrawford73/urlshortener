@@ -3,7 +3,7 @@
 
 ### RETRO-FIT FOR PSINERGY.LINK ... WORK IN PROGRESS
 
-echo "Welcome to the Psinergy.Link installation script!";
+echo "Welcome to the URL Shortener installation script!";
 
 if [ `id -u` -ne 0 ]
   then echo "Please run as root"
@@ -13,7 +13,7 @@ fi
 
 while true; do
     read -p "
-This script will attempt to perform a system update, install required dependencies, install and configure PostgreSQL, NGINX, Redis and a few other utilities.
+This script will attempt to perform a system update, install required dependencies, install and configure PostgreSQL, NGINX, Memcached and a few other utilities.
 It is expected to run on a new system **with no running instances of any these services**. Make sure you check the script before you continue. Then enter yes or no
 " yn
     case $yn in
@@ -25,22 +25,13 @@ done
 
 
 osVersion=$(lsb_release -d)
-if [[ $osVersion == *"Ubuntu 20"* ]] || [[ $osVersion == *"Ubuntu 22"* ]] || [[ $osVersion == *"buster"* ]] || [[ $osVersion == *"bullseye"* ]]; then
+if [[ $osVersion == *"Ubuntu 22"* ]]; then
     echo 'Performing system update and dependency installation, this will take a few minutes'
-    apt-get update && apt-get -y upgrade && apt-get install python3-venv python3-dev virtualenv redis-server postgresql nginx git gcc vim unzip imagemagick python3-certbot-nginx certbot wget xz-utils -y
+    apt-get update && apt-get -y upgrade && apt-get install python3-venv python3-dev virtualenv memcached postgresql nginx git gcc vim unzip python3-certbot-nginx certbot wget xz-utils -y
 else
-    echo "This script is tested for Ubuntu 20/22 versions only, if you want to try MediaCMS on another system you have to perform the manual installation"
+    echo "This script is tested for Ubuntu 22 versions only, if you want to try URL Shortener on another system you have to perform the manual installation"
     exit
 fi
-
-# install ffmpeg
-echo "Downloading and installing ffmpeg"
-wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
-mkdir -p tmp
-tar -xf ffmpeg-release-amd64-static.tar.xz --strip-components 1 -C tmp
-cp -v tmp/{ffmpeg,ffprobe,qt-faststart} /usr/local/bin
-rm -rf tmp ffmpeg-release-amd64-static.tar.xz
-echo "ffmpeg installed to /usr/local/bin"
 
 read -p "Enter portal URL, or press enter for localhost : " FRONTEND_HOST
 read -p "Enter portal name, or press enter for 'MediaCMS : " PORTAL_NAME
@@ -48,11 +39,11 @@ read -p "Enter portal name, or press enter for 'MediaCMS : " PORTAL_NAME
 [ -z "$PORTAL_NAME" ] && PORTAL_NAME='MediaCMS'
 [ -z "$FRONTEND_HOST" ] && FRONTEND_HOST='localhost'
 
-echo 'Creating database to be used in MediaCMS'
+echo 'Creating database to be used in URL Shortener'
 
-su -c "psql -c \"CREATE DATABASE mediacms\"" postgres
-su -c "psql -c \"CREATE USER mediacms WITH ENCRYPTED PASSWORD 'mediacms'\"" postgres
-su -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE mediacms TO mediacms\"" postgres
+su -c "psql -c \"CREATE DATABASE urlshortener\"" postgres
+su -c "psql -c \"CREATE USER urlshortener WITH ENCRYPTED PASSWORD 'urlshortener'\"" postgres
+su -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE urlshortener TO urlshortener\"" postgres
 
 echo 'Creating python virtualenv on /home/mediacms.io'
 
