@@ -35,7 +35,7 @@ urlpatterns = [
     # The password reset function is overridden to show the user a reset link instead
     path('accounts/password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path('accounts/password_reset/done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('accounts/reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('accounts/reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
     # https://django-registration.readthedocs.io/en/stable/quickstart.html
     #path('accounts/register/', RegistrationView.as_view(form_class=CustomRegistrationForm), name='django_registration_register'),

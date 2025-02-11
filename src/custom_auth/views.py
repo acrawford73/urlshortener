@@ -48,12 +48,12 @@ class CustomPasswordResetView(FormView):
 					reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
 				)
 			return render(request, 'registration/password_reset_link.html', {'reset_link': reset_link})
-		return render(request, 'registration/password_reset_done.html')  # If email not found, let them think it worked
+		return render(request, 'registration/password_reset_complete.html')  # If email not found, let them think it worked
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirm.html'  # Use your custom template
-    success_url = reverse_lazy('password_reset_done')  # Redirect after successful reset
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
