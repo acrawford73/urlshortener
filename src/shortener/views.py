@@ -83,7 +83,12 @@ class ShortenerTopListView(OwnerListView):
 	paginate_by = 50
 	def get_queryset(self):
 		qs = super().get_queryset()
-		return qs.filter(clicks__gt=0)
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(title__icontains=query, clicks__gt=0)
+		# else:
+		# 	qs = qs.filter(clicks__gt=0)
+		return qs
 
 class ShortenerDetailView(OwnerDetailView):
 	model = ShortURL
