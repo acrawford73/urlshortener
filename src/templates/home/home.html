@@ -10,7 +10,8 @@
 	<div class="container" align="center">
 	<p>&nbsp;</p>
 	<p>&nbsp;</p>
-	<h2 class="mt-5">Expand Yourself.</h2>
+	<h2 class="mt-5">Expand Yourself.</h2><br />
+	<h5>Share important knowledge via condensed links.</h5><br />
 
 	{% if user.is_authenticated %}
 
@@ -19,7 +20,7 @@
 
 	{% else %}
 
-	<p>Please login to begin.</p><br />
+<!-- 	<p>Please login to begin.</p><br /> -->
 	<p><a href="{% url 'login' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Login</button></a></p>
 
 	{% endif %}

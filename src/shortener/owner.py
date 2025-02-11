@@ -7,12 +7,10 @@ class OwnerListView(ListView):
     Sub-class the ListView to pass the request to the form.
     """
 
-
 class OwnerDetailView(DetailView):
     """
     Sub-class the DetailView to pass the request to the form.
     """
-
 
 class OwnerCreateView(LoginRequiredMixin, CreateView):
     """

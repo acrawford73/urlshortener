@@ -82,11 +82,11 @@ SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
 
 SITE_ID = int(config('SITE_ID'))
 AUTH_USER_MODEL = 'custom_auth.User'
-ACCOUNT_ACTIVATION_DAYS = 7
+ACCOUNT_ACTIVATION_DAYS = None
 REGISTRATION_OPEN = config('REGISTRATION_OPEN', default=False, cast=bool)
-REGISTRATION_AUTO_LOGIN = config('REGISTRATION_AUTO_LOGIN', default=False, cast=bool)
-LOGIN_REDIRECT_URL = "shortener-list"
-LOGOUT_REDIRECT_URL = "login"
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 
 ### Admin Honeypot
@@ -165,7 +165,6 @@ DATABASES = {
 
 # Password Validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},

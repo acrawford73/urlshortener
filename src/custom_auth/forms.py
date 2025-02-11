@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django_registration.forms import RegistrationForm
+from django.contrib.auth.forms import AuthenticationForm
 from custom_auth.models import User
 
 
@@ -12,3 +13,17 @@ class CustomRegistrationForm(RegistrationForm):
 		super(CustomRegistrationForm, self).__init__(*args, **kwargs)
 		self.helper = FormHelper()
 		self.helper.add_input(Submit('submit', 'Register'))
+
+	def save(self, commit=True):
+		user = super().save(commit=False)
+		user.is_active = False
+		if commit:
+			user.save()
+		return user
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+	error_messages = {
+		'inactive': "The account is not active yet. Please be patient, it will be activated after review.",
+		'invalid_login': "The email or password is incorrect. Please try again. Also, the account may not be activated yet.",	
+	}
