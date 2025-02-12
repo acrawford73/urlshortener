@@ -1,8 +1,6 @@
 #!/bin/bash
 # should be run as root and only on Ubuntu 22 version!
 
-### RETRO-FIT FOR PSINERGY.LINK ... WORK IN PROGRESS
-
 echo "Welcome to the URL Shortener installation script!";
 
 if [ `id -u` -ne 0 ]
@@ -10,7 +8,7 @@ if [ `id -u` -ne 0 ]
   exit
 fi
 
-
+# Confirm installing on a fresh machine
 while true; do
     read -p "
 This script will attempt to perform a system update, install required dependencies, install and configure PostgreSQL, NGINX, Memcached and a few other utilities.
@@ -23,72 +21,84 @@ It is expected to run on a new system **with no running instances of any these s
     esac
 done
 
-
+# OS Check
 osVersion=$(lsb_release -d)
 if [[ $osVersion == *"Ubuntu 22"* ]]; then
     echo 'Performing system update and dependency installation, this will take a few minutes'
-    apt-get update && apt-get -y upgrade && apt-get install python3-venv python3-dev virtualenv memcached postgresql nginx git gcc vim unzip python3-certbot-nginx certbot wget xz-utils -y
+    apt-get update && apt-get -y upgrade && apt-get install python3 python3-dev python3-venv virtualenv memcached postgresql gunicorn nginx git python3-certbot-nginx certbot wget -y
 else
-    echo "This script is tested for Ubuntu 22 versions only, if you want to try URL Shortener on another system you have to perform the manual installation"
+    echo "This script is tested for Ubuntu 22.04 only, if you want to try URL Shortener on another system you have to perform the manual installation."
     exit
 fi
 
-read -p "Enter portal URL, or press enter for localhost : " FRONTEND_HOST
-read -p "Enter portal name, or press enter for 'MediaCMS : " PORTAL_NAME
-
-[ -z "$PORTAL_NAME" ] && PORTAL_NAME='MediaCMS'
+# Host and Portal names
+read -p "Enter portal domain name without https://, or press enter for localhost : " FRONTEND_HOST
+read -p "Enter portal name, or press enter for 'URL Shortener : " PORTAL_NAME
+[ -z "$PORTAL_NAME" ] && PORTAL_NAME='URL Shortener'
 [ -z "$FRONTEND_HOST" ] && FRONTEND_HOST='localhost'
 
-echo 'Creating database to be used in URL Shortener'
-
+# Database
+echo 'Creating database to be used for URL Shortener'
 su -c "psql -c \"CREATE DATABASE urlshortener\"" postgres
-su -c "psql -c \"CREATE USER urlshortener WITH ENCRYPTED PASSWORD 'urlshortener'\"" postgres
+su -c "psql -c \"CREATE USER urlshortener WITH ENCRYPTED PASSWORD 'urlshortening'\"" postgres
 su -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE urlshortener TO urlshortener\"" postgres
 
-echo 'Creating python virtualenv on /home/mediacms.io'
+# Create Django user
+echo 'Creating django user'
+useradd -m django
+usermod -aG admin django
+passwd django
 
-cd /home/mediacms.io
-virtualenv . --python=python3
-source  /home/mediacms.io/bin/activate
-cd mediacms
+# Deploy source code
+cd /home/django
+git clone git@github.com:acrawford73/urlshortener.git
+chown -R django:django ulshortener
+
+# cd /home/mediacms.io
+# virtualenv . --python=python3
+# source  /home/mediacms.io/bin/activate
+cd urlshortener
 pip install -r requirements.txt
 
+# Secret keys
 SECRET_KEY=`python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
 
 # remove http or https prefix
 FRONTEND_HOST=`echo "$FRONTEND_HOST" | sed -r 's/http:\/\///g'`
 FRONTEND_HOST=`echo "$FRONTEND_HOST" | sed -r 's/https:\/\///g'`
-
 sed -i s/localhost/$FRONTEND_HOST/g deploy/local_install/mediacms.io
-
 FRONTEND_HOST_HTTP_PREFIX='http://'$FRONTEND_HOST
 
+# Update settings.py
 echo 'FRONTEND_HOST='\'"$FRONTEND_HOST_HTTP_PREFIX"\' >> cms/local_settings.py
 echo 'PORTAL_NAME='\'"$PORTAL_NAME"\' >> cms/local_settings.py
 echo "SSL_FRONTEND_HOST = FRONTEND_HOST.replace('http', 'https')" >> cms/local_settings.py
-
 echo 'SECRET_KEY='\'"$SECRET_KEY"\' >> cms/local_settings.py
-echo "LOCAL_INSTALL = True" >> cms/local_settings.py
+#echo "LOCAL_INSTALL = True" >> cms/local_settings.py
 
+# Migrate database
 mkdir logs
 mkdir pids
+python manage.py makemigrations
 python manage.py migrate
-python manage.py loaddata fixtures/encoding_profiles.json
-python manage.py loaddata fixtures/categories.json
+#python manage.py loaddata fixtures/encoding_profiles.json
+#python manage.py loaddata fixtures/categories.json
 python manage.py collectstatic --noinput
 
+# Prep admin password
 ADMIN_PASS=`python -c "import secrets;chars = 'abcdefghijklmnopqrstuvwxyz0123456789';print(''.join(secrets.choice(chars) for i in range(10)))"`
 echo "from users.models import User; User.objects.create_superuser('admin', 'admin@example.com', '$ADMIN_PASS')" | python manage.py shell
-
 echo "from django.contrib.sites.models import Site; Site.objects.update(name='$FRONTEND_HOST', domain='$FRONTEND_HOST')" | python manage.py shell
 
-chown -R www-data. /home/mediacms.io/
-cp deploy/local_install/celery_long.service /etc/systemd/system/celery_long.service && systemctl enable celery_long && systemctl start celery_long
-cp deploy/local_install/celery_short.service /etc/systemd/system/celery_short.service && systemctl enable celery_short && systemctl start celery_short
-cp deploy/local_install/celery_beat.service /etc/systemd/system/celery_beat.service && systemctl enable celery_beat &&systemctl start celery_beat
-cp deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service && systemctl enable mediacms.service && systemctl start mediacms.service
+# Deploy project files
+chown -R www-data. /home/django/urlshortener/
+#cp deploy/local_install/celery_long.service /etc/systemd/system/celery_long.service && systemctl enable celery_long && systemctl start celery_long
+#cp deploy/local_install/celery_short.service /etc/systemd/system/celery_short.service && systemctl enable celery_short && systemctl start celery_short
+#cp deploy/local_install/celery_beat.service /etc/systemd/system/celery_beat.service && systemctl enable celery_beat &&systemctl start celery_beat
+#cp deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service && systemctl enable mediacms.service && systemctl start mediacms.service
+cp deploy/local_install/gunicorn.service /etc/systemd/system/gunicorn.service && systemctl enable gunicorn.service && systemctl start gunicorn.service
 
-mkdir -p /etc/letsencrypt/live/mediacms.io/
+mkdir -p /etc/letsencrypt/live/urlshortener/
 mkdir -p /etc/letsencrypt/live/$FRONTEND_HOST
 mkdir -p /etc/nginx/sites-enabled
 mkdir -p /etc/nginx/sites-available
@@ -126,13 +136,6 @@ if [ "$FRONTEND_HOST" != "localhost" ]; then
 else
     echo "will not generate new DH params for url 'localhost', using default DH params"
 fi
-
-# Bento4 utility installation, for HLS
-
-cd /home/mediacms.io/mediacms
-wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
-unzip Bento4-SDK-1-6-0-637.x86_64-unknown-linux.zip
-mkdir /home/mediacms.io/mediacms/media_files/hls
 
 # last, set default owner
 chown -R www-data. /home/mediacms.io/

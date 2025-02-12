@@ -49,7 +49,7 @@ class ShortenerCreateView(OwnerCreateView):
 		short_alias = generate_unique_alias(url)
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			short_alias = generate_unique_alias(url)
-		
+
 		shorturl = form.save(commit=False)
 		shorturl.owner = self.request.user
 		shorturl.title = title
@@ -57,6 +57,7 @@ class ShortenerCreateView(OwnerCreateView):
 		shorturl.save()
 		form.save_m2m()
 		return super().form_valid(form)
+
 
 class ShortenerListView(OwnerListView):
 	model = ShortURL
@@ -75,6 +76,7 @@ class ShortenerListView(OwnerListView):
 			qs = qs.filter(title__icontains=query)
 		return qs
 
+
 class ShortenerTopListView(OwnerListView):
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
@@ -90,10 +92,12 @@ class ShortenerTopListView(OwnerListView):
 			qs = qs.filter(clicks__gt=0)
 		return qs
 
+
 class ShortenerDetailView(OwnerDetailView):
 	model = ShortURL
 	template_name = 'shortener/shortener_detail.html'
 	context_object_name = 'link'
+
 
 class ShortenerUpdateView(OwnerUpdateView):
 	model = ShortURL
@@ -101,18 +105,16 @@ class ShortenerUpdateView(OwnerUpdateView):
 	context_object_name = 'link'
 	fields = ['title', 'long_url']
 
+
 class ShortenerDeleteView(OwnerDeleteView):
 	model = ShortURL
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
 	success_url = reverse_lazy('shortener-list')
-	# def delete(self, request, *args, **kwargs):
-	# 	obj = self.get_object()
-	# 	cache_key = f"ShortURL_{obj.pk}"
-	# 	cache.delete(cache_key)
-	# 	return super().delete(request, *args, **kwargs)
+
 
 # - - - - -
+
 
 # Capture the title of the long url that is being shortened
 def get_page_title(url):
@@ -155,7 +157,7 @@ def get_page_title(url):
 		'Cache-Control': 'max-age=0',
 		'Upgrade-Insecure-Requests': '1',
 	}
-	
+
 	try:
 		rs = requests.Session()
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)

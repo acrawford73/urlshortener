@@ -5,7 +5,7 @@ from .models import ShortURL
 
 
 class ShortURLForm(forms.ModelForm):
-    class Meta:
-        model = ShortURL
-        fields = ['long_url']
-        hidden_fields = ['title']
+	class Meta:
+		model = ShortURL
+		fields = ['long_url']
+		hidden_fields = ['title']
