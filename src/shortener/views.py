@@ -162,6 +162,15 @@ def get_page_title(url):
 		rs = requests.Session()
 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
 		response.raise_for_status()
+
+		# Check raw title tags first
+		match = re.search(r'<title>(.*?)</title>', response.text, re.IGNORECASE)
+		if match:
+			title = match.group(1)
+			rs.close()
+			return title.strip()[:255]
+
+		# BS4 then
 		soup = BeautifulSoup(response.text, 'html.parser')
 		soup_title = soup.select_one("title")
 		if soup_title:
@@ -181,7 +190,7 @@ def get_page_title(url):
 	finally:
 		rs.close()
 
-	## Browser Simulator - final attempt (Level 3)
+	## Browser Simulator - final attempt (Level 4)
 	title = asyncio.run(async_get_title_playwright(url))
 	return title
 
