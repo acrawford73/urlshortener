@@ -11,7 +11,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 class ShortURL(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	title = models.CharField(default="", max_length=255, null=True, blank=True)
+	title = models.CharField(default="", max_length=500, null=True, blank=True)
 	short_alias = models.CharField(max_length=6, null=False, unique=True, editable=False)
 	long_url = models.URLField(default="", max_length=2048, null=False, blank=False, \
 		help_text="Place the full URL starting with https://")

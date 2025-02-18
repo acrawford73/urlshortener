@@ -73,7 +73,7 @@ class ShortenerListView(OwnerListView):
 		query = self.request.GET.get('q')
 		if query:
 			# Filter by title using case-insensitive containment lookup
-			qs = qs.filter(title__icontains=query)
+			qs = qs.filter(title__icontains=query, owner=self.request.user)
 		return qs
 
 
@@ -83,13 +83,14 @@ class ShortenerTopListView(OwnerListView):
 	context_object_name = 'links'
 	ordering = ['-clicks']
 	paginate_by = 50
+
 	def get_queryset(self):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
 		if query:
-			qs = qs.filter(title__icontains=query)
+			qs = qs.filter(title__icontains=query, owner=self.request.user)
 		else:
-			qs = qs.filter(clicks__gt=0)
+			qs = qs.filter(clicks__gt=0, owner=self.request.user)
 		return qs
 
 
