@@ -69,6 +69,7 @@ class ShortenerListView(OwnerListView):
 	def get_queryset(self):
 		# Get the base queryset from the parent view
 		qs = super().get_queryset()
+		qs = qs.filter(owner=self.request.user)
 		# Get the search query from the GET parameters (e.g., ?q=search_term)
 		query = self.request.GET.get('q')
 		if query:
