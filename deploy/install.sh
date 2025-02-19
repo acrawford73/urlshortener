@@ -1,6 +1,10 @@
 #!/bin/bash
 # should be run as root and only on Ubuntu 22 version!
 
+
+### !!! WORK IN PROGRESS - DO NOT RUN !!!
+
+
 echo "Welcome to the URL Shortener installation script!";
 
 if [ `id -u` -ne 0 ]
@@ -140,4 +144,4 @@ fi
 # last, set default owner
 chown -R www-data. /home/mediacms.io/
 
-echo 'MediaCMS installation completed, open browser on http://'"$FRONTEND_HOST"' and login with user admin and password '"$ADMIN_PASS"''
+echo 'ShortURL installation completed, open browser on http://'"$FRONTEND_HOST"' and login with user admin and password '"$ADMIN_PASS"''
