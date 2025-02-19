@@ -15,6 +15,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, DetailView
+from django.db.models import Q
+
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 from .forms import ShortURLForm, ShortURLUpdateForm
 from .models import ShortURL
@@ -114,7 +116,7 @@ class ShortenerListView(OwnerListView):
 		query = self.request.GET.get('q')
 		if query:
 			# Filter by title using case-insensitive containment lookup
-			qs = qs.filter(title__icontains=query, owner=self.request.user)
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
 		else:
 			qs = qs.filter(owner=self.request.user)
 		return qs
@@ -131,7 +133,7 @@ class ShortenerTopListView(OwnerListView):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
 		if query:
-			qs = qs.filter(title__icontains=query, owner=self.request.user)
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
 		else:
 			qs = qs.filter(clicks__gt=0, owner=self.request.user)
 		return qs
