@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'admin_honeypot',
     'crispy_forms',
     'crispy_bootstrap5',
+    'taggit',
     'shortener',
     'core',
     'home',
@@ -217,6 +218,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ### FORMS
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+### TAGGIT
+TAGGIT_CASE_INSENSITIVE = True
 
 
 ## Logging

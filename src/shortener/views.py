@@ -16,11 +16,52 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, DetailView
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
-from .forms import ShortURLForm
+from .forms import ShortURLForm, ShortURLUpdateForm
 from .models import ShortURL
+from taggit.models import Tag
 
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
+
+
+# def tags_autocomplete(request):
+# 	if 'term' in request.GET:
+# 		term = request.GET['term']
+# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
+# 		return JsonResponse([{'id': tag, 'text': tag} for tag in tags], safe=False)
+
+class ShortenerListByTagView(OwnerListView):
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 50
+
+	def get_queryset(self):
+		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+
+
+def tags_autocomplete(request):
+    """Return JSON list of tags matching the search term."""
+    if 'term' in request.GET:
+        term = request.GET['term']
+        tags = Tag.objects.filter(name__icontains=term)  # Get matching tags
+        tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
+        return JsonResponse(tag_list, safe=False)
+    return JsonResponse([], safe=False)
+
+
+# class TagAutocompleteView(OwnerListView):
+# 	def get(self, request):
+# 		# query = request.GET.get('term', '')
+# 		# tags = Tag.objects.filter(name__icontains=query)[:10]
+# 		# return JsonResponse([{'id': tag.id, 'text': tag.name} for tag in tags], safe=False)
+# 		if 'term' in request.GET:
+# 			term = request.GET['term']
+# 			tags = Tag.objects.filter(name__icontains=term)  # Get matching tags
+# 			tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
+# 			return JsonResponse(tag_list, safe=False)
+# 		return JsonResponse([], safe=False)
 
 
 class ShortenerCreateView(OwnerCreateView):
@@ -69,12 +110,13 @@ class ShortenerListView(OwnerListView):
 	def get_queryset(self):
 		# Get the base queryset from the parent view
 		qs = super().get_queryset()
-		qs = qs.filter(owner=self.request.user)
 		# Get the search query from the GET parameters (e.g., ?q=search_term)
 		query = self.request.GET.get('q')
 		if query:
 			# Filter by title using case-insensitive containment lookup
 			qs = qs.filter(title__icontains=query, owner=self.request.user)
+		else:
+			qs = qs.filter(owner=self.request.user)
 		return qs
 
 
@@ -103,9 +145,9 @@ class ShortenerDetailView(OwnerDetailView):
 
 class ShortenerUpdateView(OwnerUpdateView):
 	model = ShortURL
+	form_class = ShortURLUpdateForm
 	template_name = 'shortener/shortener_update.html'
 	context_object_name = 'link'
-	fields = ['title', 'long_url']
 
 
 class ShortenerDeleteView(OwnerDeleteView):

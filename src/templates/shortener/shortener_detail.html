@@ -25,7 +25,7 @@
           <p>This link has been shortened already.</p>
           {% endif %}
 
-          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy Title &amp; Short Link</button>&nbsp;&nbsp;<a href="{% url 'shortener-update' link.id %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit Title</button></a></p>
+          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy Title &amp; Short Link</button>&nbsp;&nbsp;<a href="{% url 'shortener-update' link.id %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit This</button></a></p>
 
           <div id="copyMessage"></div><br />
 
@@ -38,6 +38,14 @@
               <tr>
                 <th class="table-primary">Short</th>
                 <td id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Tags</th>
+                <td>
+                  {% for tag in link.tags.all %}
+                    <span class="badge bg-primary">{{ tag.name }}</span>
+                  {% endfor %}
+                </td>
               </tr>
               <tr>
                 <th class="table-primary">Original</th>

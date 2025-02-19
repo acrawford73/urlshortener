@@ -80,6 +80,12 @@
                   {% else %}
                   <a href="{% url 'shortener-detail' link.id %}"><strong>{{ link.title|slice:70 }}</strong></a><br />
                   {% endif %}
+                  {% if link.tags.count > 0 %}
+                    {% for tag in link.tags.all %}
+                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge bg-primary">{{ tag.name }}</span></a>
+                    {% endfor %}
+                    <br />
+                  {% endif %}
                   {{ link.long_url|slice:60 }}</td>
                 <td>{{ link.clicks }}</td>
               </tr>
