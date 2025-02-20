@@ -241,7 +241,7 @@ sudo systemctl restart nginx
 
 ## Final Test
 
-Using your browser, navigate to [https://domain.com](https://domain.com).
+Using your browser, navigate to your custom domain [https://domain.com](https://domain.com).
 
 The website should appear successfully. Login with the admin user that was created during the installation guide.
 
