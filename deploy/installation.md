@@ -1,6 +1,8 @@
 # Installation Guide
 
-The following project installation guide is based on Digital Ocean's Marketplace Django pre-installed image. This image uses Django v5.0, but will be changed to v4.2.18.
+The following project installation guide is based on Digital Ocean's Marketplace Django pre-installed image. 
+
+This image uses Django v5.0, but this project uses the latest v4.2.x version. It also includes Nginx, PostgreSQL, Certbot, and Gunicorn.
 
 For demonstration purposes, the guide will use "psinergy.link" as the web domain.
 
