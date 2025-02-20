@@ -1,6 +1,6 @@
 ## URL Shortener
 
-Purpose: To shorten URLs with an alias.
+Purpose: To condense long web URLs to shareable URLs using an alias code.
 
 Example: https://yourdomain.com/a1b2c3
 
