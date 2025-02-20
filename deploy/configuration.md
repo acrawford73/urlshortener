@@ -1,6 +1,6 @@
 # Configuration Guide
 
-## Configure Gunicorn Daemon
+## Configure Gunicorn Service
 
 ### /etc/systemd/system/gunicorn.service
 
@@ -22,9 +22,9 @@ Group=django
 WantedBy=multi-user.target
 ```
 
-### NOTE: /etc/gunicorn.d/gunicorn.py
+#### NOTE: /etc/gunicorn.d/gunicorn.py
 
-For reference only. This is created by the DO Marketplace Django droplet.
+For reference only.
 
 ```
 """gunicorn WSGI server configuration."""
@@ -39,7 +39,7 @@ worker_class = 'gevent'
 workers = max_workers()
 ```
 
-After any Gunicorn changes:
+### After any Gunicorn changes:
 
 ```
 sudo systemctl daemon-reload
@@ -48,7 +48,7 @@ sudo systemctl restart gunicorn.service
 
 ## Configure NGINX
 
-1. Add a new website configuration
+1. Add a new website configuration.
 
 #### /etc/nginx/nginx.conf
 
@@ -116,7 +116,7 @@ http {
 }
 ```
 
-2. Copy default server config to psinergy.link, then create symlink
+2. Copy default server config to psinergy.link, then create symlink.
 
 ```
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/psinergy.link

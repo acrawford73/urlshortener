@@ -17,7 +17,7 @@ For demonstration purposes, the guide will use "psinergy.link" as the web domain
 9. Complete Server Configuration Guide.
 
 
-## Install and Update System Packages
+## Update System Packages
 
 ```
 sudo apt-get update
@@ -47,19 +47,19 @@ cp .ssh/authorized_keys /home/django/.ssh/
 chown django:django /home/django/.ssh/authorized_keys
 ```
 
-3. Configure the SSHD service to only accept logins from the 'django' user. 
+3. Configure the SSHD service to only accept logins from the 'django' user.
 
 ```
 vi /etc/ssh/sshd_config
 ```
 
-4. Add the following:
+4. Allow logins for the 'django' user.
 
 ```
 AllowUsers django
 ```
 
-5. Disable 'root' user logins.
+5. Disable logins for the 'root' user.
 
 ```
 PermitRootLogin no
@@ -87,16 +87,42 @@ sudo passwd postgres
 
 ## Install system packages for project
 
-1. Disable unattended upgrades first
+**NOTE:** The remainder of the installation will be performed as the 'django' user.
+
+1. Disable unattended upgrades.
 
 ```
 sudo dpkg-reconfigure unattended-upgrades
 ```
 
-2. Install memcached caching service
+2. Install memcached caching service.
 
 ```
 sudo apt-get install memcached
+```
+
+3. Memcache configuration in Django settings.py (done later):
+
+- For Memcached local:
+
+```
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': ['127.0.0.1:11211'],
+    },
+}
+```
+
+- For Memcached cluster (replace IPs):
+
+```
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': ['1.2.3.4:11211','1.2.3.5:11211','1.2.3.6:11211'],
+    },
+}
 ```
 
 ## Database
@@ -156,6 +182,7 @@ sudo timedatectl set-timezone America/New_York
 - Get the project source from Github.
 
 ```
+cd /home/django
 git clone git@github.com:acrawford73/psinergy.link.git
 ```
 
@@ -261,4 +288,3 @@ Complete the [Configuration Guide](configuration.md)
 - Configure Gunicorn & Nginx.
 - Install LetsEncrypt certificate with Certbot.
 - Review configurations and test.
-
