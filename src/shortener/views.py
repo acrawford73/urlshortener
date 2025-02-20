@@ -150,14 +150,33 @@ class ShortenerUpdateView(OwnerUpdateView):
 	form_class = ShortURLUpdateForm
 	template_name = 'shortener/shortener_update.html'
 	context_object_name = 'link'
+	#success_url = reverse_lazy('shortener-list')
+
+	def get_success_url(self):
+		# Capture the page number from the GET request, default to 1
+		page = self.request.GET.get('page', 1)
+		return f"{reverse('shortener-list')}?page={page}"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		return context
 
 
 class ShortenerDeleteView(OwnerDeleteView):
 	model = ShortURL
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
-	success_url = reverse_lazy('shortener-list')
+	#success_url = reverse_lazy('shortener-list')
 
+	def get_success_url(self):
+		page = self.request.GET.get('page', 1)
+		return f"{reverse('shortener-list')}?page={page}"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		return context
 
 # - - - - -
 
