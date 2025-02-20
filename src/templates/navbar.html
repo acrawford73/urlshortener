@@ -13,25 +13,25 @@
         {% if user.is_authenticated %}
         
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="{% url 'shortener-list' %}">Recent</a>
+            <a class="nav-link {% if '/recent' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list' %}">Recent</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link inactive" aria-current="page" href="{% url 'shortener-list-top' %}">Top</a>
+            <a class="nav-link  {% if '/top' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top' %}">Top</a>
           </li>
 
           <li class="nav-item">
             <li class="nav-item">
-              <a class="nav-link inactive" aria-current="page" href="{% url 'profile' %}">Profile</a>
+              <a class="nav-link  {% if '/accounts/profile' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'profile' %}">Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link inactive" aria-current="page" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-link  {% if '/accounts/logout' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'logout' %}">Logout</a>
             </li>
           </li>
 
           {% if user.is_staff %}
             <li class="nav-item">
-              <a class="nav-link inactive" aria-current="page" href="/himitsu/" target="_blank">Admin</a>
+              <a class="nav-link  {% if '/himitsu' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="/himitsu/" target="_blank">Admin</a>
             </li>
           {% endif %}
 
@@ -39,10 +39,10 @@
           
           <li class="nav-item">
              <li class="nav-item">
-              <a class="nav-link inactive" aria-current="page" href="{% url 'django_registration_register' %}">Register</a>
+              <a class="nav-link {% if '/accounts/register' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'django_registration_register' %}">Register</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
+              <a class="nav-link {% if '/login' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'login' %}">Login</a>
             </li>
           </li>
 
