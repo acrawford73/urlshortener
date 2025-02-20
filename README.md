@@ -2,18 +2,21 @@
 
 Purpose: To shorten URLs with an alias.
 
-Example: https://psinergy.link/abc123
+Example: https://yourdomain.com/a1b2c3
 
-OS Requirement: Ubuntu Linux with Python 3.10+
+Operating System: Ubuntu Linux with Python 3.10+
 
 Tested on Ubuntu 22.04 LTS
 
-## Dev Install
+## Dev Environment
+
+- Ubuntu 22 VM with 1 Core & 2 GB memory
+- Virtualbox
 
 ### System packages
 
 ```code
-sudo apt-get install python3 python3-pip virtualenv
+sudo apt-get install python3 python3-dev python3-pip virtualenv
 ```
 
 ### Python packages
@@ -24,14 +27,12 @@ git clone https://github.com/acrawford73/psinergy.link.git
 virtualenv -p /usr/bin/python3 psinergy.link
 cd psinergy.link
 source bin/activate
-pip install Django==4.2.18
-pip install django-registration django[argon2] bs4 requests playwright python-decouple psycopg[binary] django-crispy-forms crispy-bootstrap5
-pip install playwright
+pip install -r requirements.txt
 playwright install-deps
 playwright install
 ```
 
-## Prod Install
+## Prod Environment
 
 Digital Ocean
 
@@ -42,8 +43,8 @@ Beta:
 Production:
 
 - Load Balancer
-- Memcached host
-- PostgreSQL Database host
+- Memcached host, internal network
+- PostgreSQL Database host, internal network
 - Minimum two hosts with Django marketplace droplets with minimum 2 Core & 4 GB memory.
 
 ### Python packages
@@ -63,8 +64,8 @@ playwright install
 
 ### Server Installation
 
-Follow the ServerInstallation.md instructions.
+Follow the Deploy/Installation.md instructions.
 
 ### Server Configuration
 
-Follow the ServerConfiguration.md instructions.
+Follow the Deploy/Configuration.md instructions.
