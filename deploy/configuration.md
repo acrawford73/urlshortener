@@ -1,5 +1,12 @@
 # Configuration Guide
 
+## Summary
+
+1. Configure Gunicorn
+2. Configure Nginx
+3. Create LetsEncrypt Certificates
+4. Final Test
+
 ## Configure Gunicorn Service
 
 ### /etc/systemd/system/gunicorn.service
@@ -201,11 +208,11 @@ sudo systemctl reload nginx
 sudo systemctl restart nginx
 ```
 
-## Certbot
+## Create LetsEncrypt Certificates
 
 [Certbot Commands](https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-commands)
 
-### Run certbot commands
+### Create LetsEncrypt Certificates with Certbot
 
 The **--nginx** parameter installs certificate, key, and configures Nginx configuration files.
 
