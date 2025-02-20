@@ -78,13 +78,13 @@ systemctl restart sshd
 1. As root, set the password.
 
 ```
-sudo passwd
+passwd
 ```
 
 2. As root, set the password for the 'postgres' user.
 
 ```
-sudo passwd postgres
+passwd postgres
 ```
 
 ## Install system packages for project
