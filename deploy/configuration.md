@@ -2,10 +2,37 @@
 
 ## Summary
 
-1. Configure Gunicorn
-2. Configure Nginx
-3. Create LetsEncrypt Certificates
-4. Final Test
+1. Update DNS records
+2. Configure Gunicorn
+3. Configure Nginx
+4. Create LetsEncrypt Certificates
+5. Final Test
+
+## Update DNS records
+
+1. The domain you purchased at the domain registrar must point to Digital Ocean nameservers.
+
+```
+ns1.digitalocean.com
+ns2.digitalocean.com
+ns3.digitalocean.com
+```
+
+2. In the Network section of your Digital Ocean account, add the domain.
+
+3. Three DNS records are added: A, CNAME, and CAA.
+
+The A record points to the droplet created.
+
+The CNAME is 'www' and points to the A record.
+
+The CAA record is for whitelisting 'letsencrypt.com'. Settings:
+
+- Hostname = @
+- Authority Granted For = psinergy.link (your domain)
+- Tag = issue
+- Flags = 0
+- TTL = 3600 (default)
 
 ## Configure Gunicorn Service
 
