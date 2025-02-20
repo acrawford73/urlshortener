@@ -29,7 +29,7 @@ The CNAME is 'www' and points to the A record.
 The CAA record is for whitelisting 'letsencrypt.com'. Settings:
 
 - Hostname = @
-- Authority Granted For = psinergy.link (your domain)
+- Authority Granted For = letsencrypt.com
 - Tag = issue
 - Flags = 0
 - TTL = 3600 (default)
