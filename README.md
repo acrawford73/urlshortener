@@ -64,8 +64,8 @@ playwright install
 
 ### Server Installation
 
-Follow the deploy/installation.md instructions.
+Follow the [Installation](deploy/installation.md) instructions.
 
 ### Server Configuration
 
-Follow the deploy/configuration.md instructions.
+Follow the [Configuration](deploy/configuration.md) instructions.
