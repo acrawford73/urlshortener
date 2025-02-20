@@ -126,7 +126,7 @@ ln -s /etc/nginx/sites-available/psinergy.link /etc/nginx/sites-enabled/psinergy
 
 3. Configure /etc/nginx/sites-available/psinergy.link
 
-(SSL configurations are added by Certbot installer)
+The SSL configurations will be missing from the configuration file. SSL configurations are added by the Certbot installer).
 
 ```
 upstream app_server {
@@ -147,15 +147,12 @@ server {
     
     listen 443 ssl;
     #listen [::]:80 ipv6only=on;
-    ssl_certificate /etc/letsencrypt/live/psinergy.link/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/psinergy.link/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     root /usr/share/nginx/html;
     index index.html index.htm;
 
     client_max_body_size 4G;
+
     server_name psinergy.link;
 
     keepalive_timeout 5;
@@ -178,7 +175,6 @@ server {
 
     location / {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            # For HSTS header
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_set_header Host $host;
             proxy_redirect off;
@@ -219,7 +215,19 @@ The **--nginx** parameter installs certificate, key, and configures Nginx config
 sudo certbot --nginx -d psinergy.link
 ```
 
-2. Certbot adds a few lines to the Nginx configuration. Review the sites-enabled/psinergy.link file. If it appears okay then run:
+2. Certbot adds a few lines to the Nginx configuration. Review the sites-enabled/psinergy.link file. 
+
+```
+listen 443 ssl;
+...
+ssl_certificate /etc/letsencrypt/live/psinergy.link/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/psinergy.link/privkey.pem;
+include /etc/letsencrypt/options-ssl-nginx.conf;
+ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+...
+```
+
+If the configuration appears okay then run:
 
 ```
 sudo nginx -t
@@ -230,3 +238,10 @@ sudo systemctl reload nginx
 # Full restart
 sudo systemctl restart nginx
 ```
+
+## Final Test
+
+Using your browser, navigate to [https://psinergy.link](https://psinergy.link).
+
+The website should appear successfully. Login with the admin user that was created during the installation guide.
+

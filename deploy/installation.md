@@ -65,10 +65,9 @@ AllowUsers django
 PermitRootLogin no
 ```
 
-6. Save then restart the SSHD service.
+6. Restart the SSHD service.
 
 ```
-:wq
 systemctl restart sshd
 ```
 
@@ -96,7 +95,7 @@ sudo passwd postgres
 sudo dpkg-reconfigure unattended-upgrades
 ```
 
-2. Install memcached caching service.
+2. Install Memcached caching service. 
 
 ```
 sudo apt-get install memcached
@@ -136,7 +135,7 @@ CACHES = {
 su - postgres
 ```
 
-2. Create database and assign user 'django' to it.
+2. Create database and assign user 'django' to it. Use database name that represents your project.
 
 ```
 createdb psinergydb
@@ -177,7 +176,12 @@ timedatectl list-timezones
 sudo timedatectl set-timezone America/New_York
 ```
 
-## Deploy new Django project source.
+### Prepare new **PostgreSQL** managed database on Digital Ocean.
+
+1. TBD
+
+
+## Deploy Django project source.
 
 - Navigate to **/home/django**
 - Get the project source from Github.
@@ -189,12 +193,18 @@ git clone git@github.com:acrawford73/psinergy.link.git
 
 ### Configure Environment File
 
+1. Copy the sample environment file.
+
 ```
-cp /home/django/psinergy.link/env_example /home/django/psinergy.link/.env
+cp /home/django/psinergy.link/deploy/env_example /home/django/psinergy.link/.env
+chmod 644 /home/django/psinergy.link/.env
 ```
 
+2. Adjust `.env` parameters.
+
 - PRODUCTION = True
-- Add unique SECRET_KEYS by going to https://djecrety.ir/
+- Add unique SECRET_KEYS by going to [https://djecrety.ir/](https://djecrety.ir/)
+- Add Domain information.
 - Add Database information.
 - Modify the file according to this example
 
@@ -207,7 +217,7 @@ SECURE_SSL_HOST='psinergy.link'
 SECURE_SSL_REDIRECT=False
 SECURE_REFERRER_POLICY='same-origin'
 SECURE_HSTS_SECONDS=3600
-SECURE_HSTS_PRELOAD=False
+SECURE_HSTS_PRELOAD=True
 SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 SECURE_CONTENT_TYPE_NOSNIFF=True
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin'
