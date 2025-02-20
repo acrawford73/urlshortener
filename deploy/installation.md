@@ -65,9 +65,10 @@ AllowUsers django
 PermitRootLogin no
 ```
 
-6. Restart the SSHD service.
+6. Save then restart the SSHD service.
 
 ```
+:wq
 systemctl restart sshd
 ```
 
