@@ -188,13 +188,13 @@ server {
 
 4. After any Nginx configuration changes:
 
-- Check for valid configuration
+- Check for valid configuration.
 
 ```
 sudo nginx -t
 ```
 
-- Restart Nginx
+- Restart Nginx.
 
 ```
 sudo systemctl reload nginx
