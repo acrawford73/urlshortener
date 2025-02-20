@@ -78,7 +78,7 @@
                   {% if link.title == "" or link.title == None %}
                   <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}"><strong>Title not available</strong></a><br />
                   {% else %}
-                  <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}"><strong>{{ link.title|slice:70 }}</strong></a><br />
+                  <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}"><strong>{{ link.title|truncatechars:70 }}</strong></a><br />
                   {% endif %}
                   {% if link.tags.count > 0 %}
                     {% for tag in link.tags.all %}
@@ -86,7 +86,7 @@
                     {% endfor %}
                     <br />
                   {% endif %}
-                  {{ link.long_url|slice:60 }}</td>
+                  {{ link.long_url|truncatechars:60 }}</td>
                 <td>{{ link.clicks }}</td>
               </tr>
               {% endif %}
