@@ -45,19 +45,6 @@ Production:
 - PostgreSQL Database host, internal network
 - Minimum two hosts with Django marketplace droplets with minimum 2 Core & 4 GB memory.
 
-### Python packages
-
-```code
-git clone https://github.com/acrawford73/psinergy.link.git
-
-cd psinergy.link
-
-pip install -r requirements.txt
-pip install playwright
-playwright install-deps
-playwright install
-```
-
 ## Setup
 
 ### Server Installation

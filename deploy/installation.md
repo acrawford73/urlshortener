@@ -265,6 +265,14 @@ cd /home/django/psinergy.link/
 pip install -r requirements.txt
 ```
 
+3. Install Playwright browser simulator.
+
+```
+pip install playwright
+playwright install-deps
+playwright install
+```
+
 ## Prepare Django Project
 
 1. Migrate database.
