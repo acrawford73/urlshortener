@@ -127,7 +127,23 @@ CACHES = {
 }
 ```
 
-## Database
+## PostgreSQL Database
+
+### Change idle session timeout
+
+- There is an idle connection issue with PostgreSQL and Django 4.x. The database setting CONN_MAX_AGE is not honored.
+
+1. Edit /etc/postgresql/14/main/postgresql.conf
+
+```
+idle_session_timeout = 60000
+```
+
+2. Restart PostgreSQL database
+
+```
+sudo systemctl restart postgresql
+```
 
 ### Prepare new **PostgreSQL** database on the same droplet.
 
