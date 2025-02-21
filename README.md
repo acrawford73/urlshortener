@@ -4,9 +4,7 @@ Purpose: To condense long web URLs to shareable URLs using an alias code.
 
 Example: https://yourdomain.com/a1b2c3
 
-Operating System: Ubuntu Linux with Python 3.10+
-
-Tested on Ubuntu 22.04 LTS
+Operating System: Ubuntu 22.04 LTS with Python 3.10+
 
 ## Dev Environment
 
