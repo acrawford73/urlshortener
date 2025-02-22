@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, DetailView
 from django.db.models import Q
 
@@ -26,7 +27,14 @@ from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 
 
-class TagsListView(ListView):
+# from django.contrib.auth.mixins import UserPassesTestMixin
+# class StaffOrOwnerMixin(UserPassesTestMixin):
+# 	def test_func(self):
+# 		obj = self.get_object()
+# 		return self.request.user.is_staff or obj.owner == self.request.user
+
+
+class TagsListView(LoginRequiredMixin, ListView):
 	model = Tag
 	template_name = 'shortener/tags_list.html'
 	context_object_name = 'tagslist'
