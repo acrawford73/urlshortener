@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     'django_registration',
     #'django.contrib.admindocs',
     'django.contrib.sites',
+    'django_crontab',
     'admin_honeypot',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -343,3 +344,24 @@ CACHES = {
 # CELERY_TASK_ALWAYS_EAGER = False
 # if os.environ.get("TESTING"):
 #     CELERY_TASK_ALWAYS_EAGER = True
+
+
+### CRON JOBS
+# https://pypi.org/project/django-crontab/
+# pip install django-crontab
+# Apply your cron jobs, this will install the cron jobs defined in your CRONJOBS setting.
+# python manage.py crontab add
+# To view the list of installed cron jobs:
+# python manage.py crontab show
+# To remove all installed cron jobs:
+# python manage.py crontab remove
+# Format: ('0 9 1 1 *', '/path/to/your_script.sh'),
+# minute(0-59) hour(0-23) dayofmonth(1-31) monthofyear(1-12) dayofweek(1-7,SUN-SAT)
+# '*'=any, ','=separate values, '-'=range, '/'=divides into increments, ex. /30 every half hour 
+# CRONJOBS = [
+#     ('* * * * *', 'psinergy.crontasks.backupdb'),
+#     # Add more cron jobs as needed
+# ]
+CRONJOBS = [
+    ('0 6 * * *', '/home/django/scripts/backup_db.sh', '>> /home/django/backups/cron.log 2>&1'),
+]
