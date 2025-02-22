@@ -14,14 +14,42 @@
     {% if user.is_authenticated %}
     
     {% if link.owner == user %}
-    <h2 class="mt-5"><strong>Delete Alias:</strong> {{ link.short_alias }}</h2>
+    <h3 class="mt-5"><strong>Delete Alias:</strong> {{ link.short_alias }}</h3>
     <p>&nbsp;</p>
     <div class="row">
-      <form method="post">{% csrf_token %}
-        <p><strong>Are you sure you want to delete {{ link.short_alias }} ?</strong></p><br />
-        <p><strong>Title: </strong>{{ link.title }}</p>
-        <p><strong>Alias: </strong><a href="{% url 'redirect-url' link.short_alias %}" target="_blank">{{ link.short_alias }}</a></p>
-        <p><strong>Original URL: </strong><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></p>
+      <form method="post">
+        {% csrf_token %}
+        <p><strong>Are you sure you want to delete this?</strong></p><br />
+
+        <table class="table">
+            <tbody>
+              <tr>
+                <th class="table-primary">Title</th>
+                <td>{{ link.title }}</td>
+              </tr>
+              <tr>
+                <th class="table-primary">Short</th>
+                <td><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Tags</th>
+                <td>
+                  {% for tag in link.tags.all %}
+                    <span class="badge bg-primary">{{ tag.name }}</span>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <th class="table-primary">Original</th>
+                <td><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Views</th>
+                <td>{{ link.clicks }}</td>
+              </tr>
+            </tbody>
+        </table>
+
         {{ form }}
         <p>&nbsp;</p>
         <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
