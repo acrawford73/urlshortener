@@ -20,6 +20,12 @@
             <a class="nav-link {% if '/top' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top' %}">Top</a>
           </li>
 
+          {% if user.is_staff %}
+            <li class="nav-item">
+              <a class="nav-link {% if '/tags' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Tags</a>
+            </li>
+          {% endif %}
+
           <li class="nav-item">
             <li class="nav-item">
               <a class="nav-link {% if '/accounts/profile' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'profile' %}">Profile</a>
@@ -32,9 +38,6 @@
           {% if user.is_staff %}
             <li class="nav-item">
               <a class="nav-link {% if '/himitsu' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="/himitsu/" target="_blank">Admin</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {% if '/tags' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Tags</a>
             </li>
           {% endif %}
 

@@ -36,7 +36,7 @@ class TagsListView(ListView):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
 		if query:
-			qs = qs.filter(tags__name__icontains=query)
+			qs = qs.filter(name__icontains=query)
 		return qs
 
 
