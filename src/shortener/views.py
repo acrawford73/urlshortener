@@ -26,11 +26,19 @@ from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 
 
-# def tags_autocomplete(request):
-# 	if 'term' in request.GET:
-# 		term = request.GET['term']
-# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
-# 		return JsonResponse([{'id': tag, 'text': tag} for tag in tags], safe=False)
+class TagsListView(ListView):
+	model = Tag
+	template_name = 'shortener/tags_list.html'
+	context_object_name = 'tagslist'
+	ordering = ['name']
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(tags__name__icontains=query)
+		return qs
+
 
 class ShortenerListByTagView(OwnerListView):
 	model = ShortURL
@@ -41,6 +49,13 @@ class ShortenerListByTagView(OwnerListView):
 
 	def get_queryset(self):
 		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+
+
+# def tags_autocomplete(request):
+# 	if 'term' in request.GET:
+# 		term = request.GET['term']
+# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
+# 		return JsonResponse([{'id': tag, 'text': tag} for tag in tags], safe=False)
 
 
 def tags_autocomplete(request):

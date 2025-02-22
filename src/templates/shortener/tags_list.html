@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- Begin page content -->
+<main class="flex-shrink-0">
+  <div class="container" align="center">
+    <h1 class="mt-5">&nbsp;</h1>
+
+    {% if user.is_authenticated and user.is_staff %}
+    
+    <div class="row">
+      <div class="col-sm-3">&nbsp;</div>
+        <div class="col-md-6">
+          <form method="get" action="">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="input-group mb-3">
+              <input id="search" type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Search Tags" aria-label="Search Tags" aria-describedby="button-addon2">
+              <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
+            </div>
+          </form>
+        </div>
+      <div class="col-sm-3">&nbsp;</div>
+    </div><br />
+    
+    <div class="row">
+      <div class="col-md-3">&nbsp;</div>
+      <div class="col-md-6">
+
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-md">
+            
+            <thead>
+              <tr align="center" class="table-primary">
+                <th>Tag</th>
+              </tr>
+            </thead>
+            
+
+            <tbody>
+              {% for tag in tagslist %}
+
+              <tr align="center">
+                <td>{{ tag.name }}</td>
+              </tr>
+              
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-3">&nbsp;</div>
+
+    <!-- row end -->
+    </div>
+
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+    {% endif %}
+
+  <!-- container end -->
+  </div>
+
+</main>
+
+{% endblock %}
