@@ -363,5 +363,5 @@ CACHES = {
 #     # Add more cron jobs as needed
 # ]
 CRONJOBS = [
-    ('0 6 * * *', '/home/django/scripts/backup_db.sh', '>> /home/django/backups/cron.log 2>&1'),
+    ('0 6 * * *', '/home/django/scripts/backupdb.sh', '>> /home/django/backups/cron.log 2>&1'),
 ]
