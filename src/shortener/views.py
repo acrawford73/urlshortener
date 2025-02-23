@@ -9,7 +9,7 @@ import random
 import string
 
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
@@ -25,6 +25,24 @@ from taggit.models import Tag
 
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
+
+
+@login_required
+def download_tags(request):
+    tags = Tag.objects.order_by('name').values_list('name', flat=True)
+    content = "\n".join(tags)
+    response = HttpResponse(content, content_type="text/plain")
+    response["Content-Disposition"] = 'attachment; filename="tags.txt"'
+    return response
+
+
+# class TagsDownloadView(LoginRequiredMixin, View):
+# 	def get(self, request, *args, **kwargs):
+# 		tags = Tag.objects.values_list('name', flat=True)
+# 		content = "\n".join(tags)
+# 		response = HttpResponse(content, content_type="text/plain")
+# 		response["Content-Disposition"] = 'attachment; filename="tags.txt"'
+# 		return response
 
 
 # from django.contrib.auth.mixins import UserPassesTestMixin
@@ -65,7 +83,7 @@ class ShortenerListByTagView(OwnerListView):
 # 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
 # 		return JsonResponse([{'id': tag, 'text': tag} for tag in tags], safe=False)
 
-
+@login_required
 def tags_autocomplete(request):
     """Return JSON list of tags matching the search term."""
     if 'term' in request.GET:
