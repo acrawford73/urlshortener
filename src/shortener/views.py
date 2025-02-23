@@ -36,15 +36,6 @@ def download_tags(request):
     return response
 
 
-# class TagsDownloadView(LoginRequiredMixin, View):
-# 	def get(self, request, *args, **kwargs):
-# 		tags = Tag.objects.values_list('name', flat=True)
-# 		content = "\n".join(tags)
-# 		response = HttpResponse(content, content_type="text/plain")
-# 		response["Content-Disposition"] = 'attachment; filename="tags.txt"'
-# 		return response
-
-
 # from django.contrib.auth.mixins import UserPassesTestMixin
 # class StaffOrOwnerMixin(UserPassesTestMixin):
 # 	def test_func(self):
