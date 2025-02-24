@@ -1,17 +1,8 @@
 #!/bin/bash
-
-# Set backup directory
+DB_NAME="psinergydb"
+DB_USER="django"
 BACKUP_DIR="/home/django/backups"
-
-# Generate timestamp
 TIMESTAMP=$(date +"%Y%m%d%H%M")
 
-# Run Django dumpdata
-python /home/django/psinergy.link/src/manage.py dumpdata > "$BACKUP_DIR/$TIMESTAMP.json"
-
-# Remove JSON files older than 30 days
-find "$BACKUP_DIR" -type f -name "*.json" -mtime +30 -exec rm {} \;
-
-# Optional: Log cleanup actions
-echo "$(date +"%Y-%m-%d %H:%M:%S") - Backup created: $TIMESTAMP.json" >> "$BACKUP_DIR/backupdb.log"
-echo "$(date +"%Y-%m-%d %H:%M:%S") - Old backups deleted" >> "$BACKUP_DIR/backupdb.log"
+# Dump the database with pg_dump and compress the output
+pg_dump -U $DB_USER $DB_NAME | gzip > "$BACKUP_DIR/${DB_NAME}_${TIMESTAMP}.sql.gz"
