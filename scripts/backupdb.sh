@@ -7,7 +7,7 @@ BACKUP_DIR="/home/django/backups"
 TIMESTAMP=$(date +"%Y%m%d%H%M")
 
 # Run Django dumpdata
-python /path/to/your/project/manage.py dumpdata > "$BACKUP_DIR/$TIMESTAMP.json"
+python /home/django/psinergy.link/src/manage.py dumpdata > "$BACKUP_DIR/$TIMESTAMP.json"
 
 # Remove JSON files older than 30 days
 find "$BACKUP_DIR" -type f -name "*.json" -mtime +30 -exec rm {} \;

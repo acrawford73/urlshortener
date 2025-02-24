@@ -28,7 +28,7 @@ from django.views.decorators.cache import cache_page
 
 
 @login_required
-def download_tags(request):
+def tags_download(request):
     tags = Tag.objects.order_by('name').values_list('name', flat=True)
     content = "\n".join(tags)
     response = HttpResponse(content, content_type="text/plain")
@@ -68,18 +68,12 @@ class ShortenerListByTagView(OwnerListView):
 		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
 
 
-# def tags_autocomplete(request):
-# 	if 'term' in request.GET:
-# 		term = request.GET['term']
-# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)
-# 		return JsonResponse([{'id': tag, 'text': tag} for tag in tags], safe=False)
-
 @login_required
 def tags_autocomplete(request):
     """Return JSON list of tags matching the search term."""
     if 'term' in request.GET:
         term = request.GET['term']
-        tags = Tag.objects.filter(name__icontains=term)  # Get matching tags
+        tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)  # Get matching tags
         tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
         return JsonResponse(tag_list, safe=False)
     return JsonResponse([], safe=False)
