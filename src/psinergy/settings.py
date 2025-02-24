@@ -108,7 +108,6 @@ INSTALLED_APPS = [
     'django_registration',
     #'django.contrib.admindocs',
     'django.contrib.sites',
-    'django_crontab',
     'admin_honeypot',
     'crispy_forms',
     'crispy_bootstrap5',
