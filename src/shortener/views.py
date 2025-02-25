@@ -57,17 +57,6 @@ class TagsListView(LoginRequiredMixin, ListView):
 		return qs
 
 
-class ShortenerListByTagView(OwnerListView):
-	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
-	context_object_name = 'links'
-	ordering = ['-created_at']
-	paginate_by = 50
-
-	def get_queryset(self):
-		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
-
-
 @login_required
 def tags_autocomplete(request):
     """Return JSON list of tags matching the search term."""
@@ -90,6 +79,17 @@ def tags_autocomplete(request):
 # 			tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
 # 			return JsonResponse(tag_list, safe=False)
 # 		return JsonResponse([], safe=False)
+
+
+class ShortenerListByTagView(OwnerListView):
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 50
+
+	def get_queryset(self):
+		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
 
 
 class ShortenerCreateView(OwnerCreateView):
@@ -140,11 +140,20 @@ class ShortenerListView(OwnerListView):
 		qs = super().get_queryset()
 		# Get the search query from the GET parameters (e.g., ?q=search_term)
 		query = self.request.GET.get('q')
-		if query:
-			# Filter by title using case-insensitive containment lookup
-			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
+
+		# if query:
+		# 	# Filter by title using case-insensitive containment lookup
+		# 	qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
+		# else:
+		# 	qs = qs.filter(owner=self.request.user)
+		# return qs
+
+		if self.request.user.is_staff:
+			qs = ShortURL.objects.all() #.order_by('-created_at')  # Staff users see all short URLs
 		else:
-			qs = qs.filter(owner=self.request.user)
+			qs = qs.filter(owner=self.request.user)  # Regular users see only their own	
+		if query:
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
 
 
@@ -158,10 +167,20 @@ class ShortenerTopListView(OwnerListView):
 	def get_queryset(self):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
-		if query:
-			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
+
+		# if query:
+		# 	qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
+		# else:
+		# 	qs = qs.filter(clicks__gt=0, owner=self.request.user)
+		# return qs
+
+		if self.request.user.is_staff:
+			qs = ShortURL.objects.filter(clicks__gt=0).order_by('-clicks')
 		else:
-			qs = qs.filter(clicks__gt=0, owner=self.request.user)
+			qs = qs.filter(clicks__gt=0, owner=self.request.user)  # Regular users see only their own	
+		
+		if query:
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
 
 
@@ -170,18 +189,31 @@ class ShortenerDetailView(OwnerDetailView):
 	template_name = 'shortener/shortener_detail.html'
 	context_object_name = 'link'
 
+	def get_queryset(self):
+		# If the user is staff, allow access to any short URL
+		if self.request.user.is_staff:
+			return ShortURL.objects.all()
+		# Otherwise, restrict to links owned by the current user
+		return ShortURL.objects.filter(owner=self.request.user)
+
 
 class ShortenerUpdateView(OwnerUpdateView):
 	model = ShortURL
 	form_class = ShortURLUpdateForm
 	template_name = 'shortener/shortener_update.html'
 	context_object_name = 'link'
-	#success_url = reverse_lazy('shortener-list')
+	#success_url = reverse_lazy('shortener-detail')
+
+	def get_queryset(self):
+		# Allow staff to update any short URL, others only their own
+		if self.request.user.is_staff:
+			return ShortURL.objects.all()
+		return ShortURL.objects.filter(owner=self.request.user)
 
 	def get_success_url(self):
 		# Capture the page number from the GET request, default to 1
 		page = self.request.GET.get('page', 1)
-		return f"{reverse('shortener-list')}?page={page}"
+		return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -194,6 +226,12 @@ class ShortenerDeleteView(OwnerDeleteView):
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
 	#success_url = reverse_lazy('shortener-list')
+
+	def get_queryset(self):
+		# Allow staff to delete any short URL, others only their own
+		if self.request.user.is_staff:
+			return ShortURL.objects.all()
+		return ShortURL.objects.filter(owner=self.request.user)
 
 	def get_success_url(self):
 		page = self.request.GET.get('page', 1)

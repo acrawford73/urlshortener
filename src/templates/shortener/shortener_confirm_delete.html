@@ -13,7 +13,6 @@
 
     {% if user.is_authenticated %}
     
-    {% if link.owner == user %}
     <h3 class="mt-5"><strong>Delete Alias:</strong> {{ link.short_alias }}</h3>
     <p>&nbsp;</p>
     <div class="row">
@@ -57,7 +56,6 @@
 
     <!-- row end -->
     </div>
-    {% endif %}
 
     {% else %}
     <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>

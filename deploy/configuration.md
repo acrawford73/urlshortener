@@ -7,6 +7,7 @@
 3. Configure Nginx
 4. Create LetsEncrypt Certificates
 5. Final Test
+6. Backup Cron
 
 ## Update DNS records
 
@@ -282,3 +283,31 @@ Using your browser, navigate to your custom domain [https://domain.com](https://
 
 The website should appear successfully. Login with the admin user that was created during the installation guide.
 
+## Backup Cron
+
+1. Update the backup script `scripts/backupdb.sh` for your setup.
+
+```
+#!/bin/bash
+DB_NAME="database_name"
+DB_USER="database_user"
+BACKUP_DIR="/home/user/backups"
+TIMESTAMP=$(date +"%Y%m%d%H%M")
+
+# Dump the database with pg_dump and compress the output
+/usr/lib/postgresql/14/bin/pg_dump -U $DB_USER $DB_NAME | gzip > "$BACKUP_DIR/${DB_NAME}_${TIMESTAMP}.sql.gz"
+```
+
+2. Set the script permissions.
+
+```
+chmod 750 backupdb.sh
+```
+
+3. Add configuration to crontab. Adjust the cron timing as required.
+
+```
+crontab -e
+
+0 6 * * * /home/user/project_folder/scripts/backupdb.sh >> /home/user/backups/backup.log 2>&1
+```
