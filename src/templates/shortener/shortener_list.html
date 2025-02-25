@@ -91,6 +91,7 @@
 
               {% if is_paginated %}
               <nav>
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span><br />
                 <ul class="pagination justify-content-center">
                   {% if page_obj.has_previous %}
                     <li class="page-item">
