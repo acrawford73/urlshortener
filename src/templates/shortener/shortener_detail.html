@@ -55,6 +55,12 @@
                 <th class="table-primary">Views</th>
                 <td>{{ link.clicks }}</td>
               </tr>
+              {% if user.is_staff %}
+              <tr>
+                <th class="table-primary">User</th>
+                <td>{{ link.user.email }}<br />{{ link.created_at|date:"M d Y, g:i A" }}</td>
+              </tr>
+              {% endif %}
             </tbody>
           </table>
 
