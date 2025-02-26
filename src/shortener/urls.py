@@ -11,7 +11,9 @@ urlpatterns = [
 	path('update/<uuid:pk>/', 	views.ShortenerUpdateView.as_view(), 	name='shortener-update'),
 	path('delete/<uuid:pk>/',	views.ShortenerDeleteView.as_view(), 	name='shortener-delete'),
 	path('detail/<uuid:pk>/', 	views.ShortenerDetailView.as_view(), 	name='shortener-detail'),
-		
+	path('recent/<str:email>/',	views.ShortenerListByOwnerView.as_view(), 	name='shortener-list-owner'),
+
+
 	path('tags/download/', 		views.tags_download, 					name='tags-download'),
 	path('tags/autocomplete/', 	views.tags_autocomplete, 				name='tags-autocomplete'),
 	path('tags/<slug:tag_slug>/', views.ShortenerListByTagView.as_view(), name='shortener-list-by-tag'),

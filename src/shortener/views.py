@@ -13,6 +13,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, DetailView
@@ -90,6 +91,21 @@ class ShortenerListByTagView(OwnerListView):
 
 	def get_queryset(self):
 		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+
+
+class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 50
+
+	def get_queryset(self):
+	#	return ShortURL.objects.filter(owner=self.kwargs.get('owner.email'))
+		email = self.kwargs.get("email")
+		User = get_user_model()
+		user = get_object_or_404(User, email=email)
+		return ShortURL.objects.filter(owner=user).order_by("-created_at")
 
 
 class ShortenerCreateView(OwnerCreateView):
