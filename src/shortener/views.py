@@ -213,7 +213,8 @@ class ShortenerUpdateView(OwnerUpdateView):
 	def get_success_url(self):
 		# Capture the page number from the GET request, default to 1
 		page = self.request.GET.get('page', 1)
-		return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
+		return f"{reverse('shortener-list')}?page={page}"
+		#return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
