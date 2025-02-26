@@ -267,25 +267,36 @@ def get_page_title(url):
 	title = None
 
 	## Specific Cases (Level 1)
-	# Google Search
-	# Cannot reliably get the title tag so just grab it from the search parameter
-	google_url = url
-	# First check for Google search format (*google.*/search?)
-	if re.search(r'google\.[^/]+/search\?', google_url):
+	# Cannot reliably get the title tag from search results page
+	# Grab from the search parameter
+
+	search_url = url
+	
+	# Google Search, format (*google.*/search?)
+	if re.search(r'google\.[^/]+/search\?', search_url):
 		# Get text between "q=" and w/wo "&"
-		match = re.search(r"q=([^&]+)(?:&|$)", google_url)
+		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
 		if match:
 			result = match.group(1)
 			title = result.replace("+"," ")
 			return str(title) + " - Google Search"
 
 	# Google Patents Search
-	if re.search(r'patents\.google\.[^/]+/\?', google_url):
-		match = re.search(r"q=\(([^)]+)\)(?:&|$)", google_url)
+	if re.search(r'patents\.google\.[^/]+/\?', search_url):
+		match = re.search(r"q=\(([^)]+)\)(?:&|$)", search_url)
 		if match:
 			result = match.group(1)
 			title = result.replace("+"," ")
 			return str(title) + " - Google Patents Search"
+
+	# Brave Search
+	if re.search(r'search\.brave\.[^/]+/search\?', search_url):
+		# Get text between "q=" and w/wo "&"
+		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+		if match:
+			result = match.group(1)
+			title = result.replace("+"," ")
+			return str(title) + " - Brave Search"
 
 	## Requests & BeautifulSoup (Level 2)
 	host_url = url
