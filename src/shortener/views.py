@@ -30,18 +30,12 @@ from django.views.decorators.cache import cache_page
 
 @login_required
 def tags_download(request):
+	""" Download entire list of tags in system """
 	tags = Tag.objects.order_by('name').values_list('name', flat=True)
 	content = "\n".join(tags)
 	response = HttpResponse(content, content_type="text/plain")
 	response["Content-Disposition"] = 'attachment; filename="tags.txt"'
 	return response
-
-
-# from django.contrib.auth.mixins import UserPassesTestMixin
-# class StaffOrOwnerMixin(UserPassesTestMixin):
-# 	def test_func(self):
-# 		obj = self.get_object()
-# 		return self.request.user.is_staff or obj.owner == self.request.user
 
 
 class TagsListView(LoginRequiredMixin, ListView):
@@ -89,6 +83,9 @@ def tags_autocomplete(request):
 
 
 class ShortenerListByTagView(OwnerListView):
+	""" 
+	Shows owner's links by tag name. All links shown for admins.
+	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -106,6 +103,7 @@ class ShortenerListByTagView(OwnerListView):
 
 
 class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
+	""" Show shortened links by specific owner. """
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -122,6 +120,7 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 
 
 class ShortenerCreateView(OwnerCreateView):
+	""" Create a new shortened link. """
 	model = ShortURL
 	form_class = ShortURLForm
 	template_name = 'shortener/shortener_form.html'
@@ -163,6 +162,7 @@ class ShortenerCreateView(OwnerCreateView):
 
 
 class ShortenerListView(OwnerListView):
+	""" List all shortened links owned by user. """
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -197,6 +197,7 @@ class ShortenerListView(OwnerListView):
 
 
 class ShortenerTopListView(OwnerListView):
+	""" List all shortened links that have been clicked, descending order. """
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -223,6 +224,7 @@ class ShortenerTopListView(OwnerListView):
 
 
 class ShortenerDetailView(OwnerDetailView):
+	""" ShortURL detail view. """
 	model = ShortURL
 	template_name = 'shortener/shortener_detail.html'
 	context_object_name = 'link'
@@ -243,6 +245,7 @@ class ShortenerDetailView(OwnerDetailView):
 
 
 class ShortenerUpdateView(OwnerUpdateView):
+	""" ShortURL update view. """
 	model = ShortURL
 	form_class = ShortURLUpdateForm
 	template_name = 'shortener/shortener_update.html'
@@ -270,6 +273,7 @@ class ShortenerUpdateView(OwnerUpdateView):
 
 
 class ShortenerDeleteView(OwnerDeleteView):
+	""" ShortURL delete view. """
 	model = ShortURL
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
@@ -298,6 +302,7 @@ class ShortenerDeleteView(OwnerDeleteView):
 
 # Capture the title of the long url that is being shortened
 def get_page_title(url):
+	""" Process that captures the title of a website page. """
 	title = None
 
 	## Specific Cases (Level 1)
@@ -388,6 +393,7 @@ def get_page_title(url):
 
 # https://playwright.dev/docs/api/class-page
 async def async_get_title_playwright(url):
+	""" Browser simulator to acquire website page title. """
 	title = None
 	try:
 		async with async_playwright() as p:
@@ -409,8 +415,8 @@ async def async_get_title_playwright(url):
 	return title
 
 
-# Generate the unique alias code
 def generate_unique_alias(url):
+	""" Generates the unique alias code"""
 	alias = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
 	## alias_code + domain
 	#alias_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
@@ -422,9 +428,9 @@ def generate_unique_alias(url):
 		return alias
 
 
-# Redirect the shortened link to the original URL
 @cache_page(60 * 60)  # Cache for 1 hour
 def redirect_url(request, alias):
+	""" Redirect all ShortURL clicks to the original URL. """
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	url.clicks += 1
 	url.save()
