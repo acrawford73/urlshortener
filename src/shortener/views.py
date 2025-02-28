@@ -95,11 +95,12 @@ class ShortenerListByTagView(OwnerListView):
 	paginate_by = 50
 
 	def get_queryset(self):
+		self.tag = get_object_or_404(Tag, slug=self.kwargs["tag_slug"])
 		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Recent by Tag: Psinergy.Link - URL Shortener'
+		context['page_title'] = f"Recent by Tag='{self.tag.name}': Psinergy.Link - URL Shortener"
 		return context
 
 
@@ -262,7 +263,7 @@ class ShortenerUpdateView(OwnerUpdateView):
 		context = super().get_context_data(**kwargs)
 		context['page'] = self.request.GET.get('page', 1)
 		short_alias = self.object.short_alias
-		context["page_title"] = f"Update {short_alias}: Psinergy.Link - URL Shortener"
+		context['page_title'] = f"Update {short_alias}: Psinergy.Link - URL Shortener"
 		return context
 
 
