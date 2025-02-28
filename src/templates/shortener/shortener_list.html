@@ -72,7 +72,6 @@
                   {% else %}
                   <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}"><strong>{{ link.title|truncatechars:50 }}</strong></a><br />
                   {% endif %}
-                  {{ link.long_url|truncatechars:60 }}<br />
                   {% if link.tags.count > 0 %}
                     {% for tag in link.tags.all %}
                       <a href="{% url 'shortener-list-by-tag' tag.slug %}?page={{ page_obj.number }}"><span class="badge bg-primary">{{ tag.name }}</span></a>
