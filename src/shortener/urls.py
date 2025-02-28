@@ -11,7 +11,8 @@ urlpatterns = [
 	path('update/<uuid:pk>/', 	views.ShortenerUpdateView.as_view(), 	name='shortener-update'),
 	path('delete/<uuid:pk>/',	views.ShortenerDeleteView.as_view(), 	name='shortener-delete'),
 	path('detail/<uuid:pk>/', 	views.ShortenerDetailView.as_view(), 	name='shortener-detail'),
-	path('recent/<str:email>/',	views.ShortenerListByOwnerView.as_view(), 	name='shortener-list-owner'),
+	#path('recent/user/<str:email>/',	views.ShortenerListByOwnerView.as_view(), 	name='shortener-list-owner'),
+	path('recent/user/<int:pk>/',	views.ShortenerListByOwnerView.as_view(), 	name='shortener-list-owner'),
 
 
 	path('tags/download/', 		views.tags_download, 					name='tags-download'),

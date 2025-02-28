@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load shortener_filters %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -82,7 +84,7 @@
                 <td>{{ link.clicks }}</td>
                 {% if user.is_staff %}
                 <!-- <td>{{ link.owner.email }}</td> -->
-                <td><a href="{% url 'shortener-list-owner' link.owner.email %}">{{ link.owner.email }}</a><br />{{ link.created_at|date:"M j Y, g:i A" }}</td>
+                <td><a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a><br />{{ link.created_at|date:"M j Y, g:i A" }}</td>
                 {% endif %}
               </tr>
 

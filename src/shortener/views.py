@@ -101,11 +101,7 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 	paginate_by = 50
 
 	def get_queryset(self):
-	#	return ShortURL.objects.filter(owner=self.kwargs.get('owner.email'))
-		email = self.kwargs.get("email")
-		User = get_user_model()
-		user = get_object_or_404(User, email=email)
-		return ShortURL.objects.filter(owner=user).order_by("-created_at")
+		return ShortURL.objects.filter(owner=self.kwargs.get('pk'))
 
 
 class ShortenerCreateView(OwnerCreateView):
