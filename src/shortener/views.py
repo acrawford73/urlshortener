@@ -57,6 +57,11 @@ class TagsListView(LoginRequiredMixin, ListView):
 			qs = qs.filter(name__icontains=query)
 		return qs
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Tags: Psinergy.Link - URL Shortener'
+		return context
+
 
 @login_required
 def tags_autocomplete(request):
@@ -92,6 +97,11 @@ class ShortenerListByTagView(OwnerListView):
 	def get_queryset(self):
 		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Recent by Tag: Psinergy.Link - URL Shortener'
+		return context
+
 
 class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 	model = ShortURL
@@ -102,6 +112,11 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		return ShortURL.objects.filter(owner=self.kwargs.get('pk'))
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Recent: Psinergy.Link - URL Shortener'
+		return context
 
 
 class ShortenerCreateView(OwnerCreateView):
@@ -139,6 +154,11 @@ class ShortenerCreateView(OwnerCreateView):
 		form.save_m2m()
 		return super().form_valid(form)
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Create: Psinergy.Link - URL Shortener'
+		return context
+
 
 class ShortenerListView(OwnerListView):
 	model = ShortURL
@@ -168,6 +188,11 @@ class ShortenerListView(OwnerListView):
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Recent: Psinergy.Link - URL Shortener'
+		return context
+
 
 class ShortenerTopListView(OwnerListView):
 	model = ShortURL
@@ -180,12 +205,6 @@ class ShortenerTopListView(OwnerListView):
 		qs = super().get_queryset()
 		query = self.request.GET.get('q')
 
-		# if query:
-		# 	qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
-		# else:
-		# 	qs = qs.filter(clicks__gt=0, owner=self.request.user)
-		# return qs
-
 		if self.request.user.is_staff:
 			qs = ShortURL.objects.filter(clicks__gt=0).order_by('-clicks')
 		else:
@@ -194,6 +213,11 @@ class ShortenerTopListView(OwnerListView):
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Top: Psinergy.Link - URL Shortener'
+		return context
 
 
 class ShortenerDetailView(OwnerDetailView):
@@ -202,11 +226,17 @@ class ShortenerDetailView(OwnerDetailView):
 	context_object_name = 'link'
 
 	def get_queryset(self):
-		# If the user is staff, allow access to any short URL
+		# If the user is staff, allow access to ANY short URL
 		if self.request.user.is_staff:
 			return ShortURL.objects.all()
-		# Otherwise, restrict to links owned by the current user
+		# Otherwise, restrict to links owned by the current user only
 		return ShortURL.objects.filter(owner=self.request.user)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"Detail {short_alias}: Psinergy.Link - URL Shortener"
+		return context
 
 
 class ShortenerUpdateView(OwnerUpdateView):
@@ -231,6 +261,8 @@ class ShortenerUpdateView(OwnerUpdateView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context["page_title"] = f"Update {short_alias}: Psinergy.Link - URL Shortener"
 		return context
 
 
@@ -253,7 +285,10 @@ class ShortenerDeleteView(OwnerDeleteView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"Delete {short_alias}: Psinergy.Link - URL Shortener"
 		return context
+
 
 # - - - - -
 

@@ -19,15 +19,15 @@ from .forms import CustomAuthenticationForm
 
 @login_required
 def profile(request):
-	return render(request, 'custom_auth/profile.html')
+	return render(request, 'custom_auth/profile.html', {"page_title": "Profile: Psinergy.Link - URL Shortener"})
 
 @login_required
 def password_change(request):
-	return render(request, 'custom_auth/password_change_form.html')
+	return render(request, 'custom_auth/password_change_form.html', {"page_title": "Password Change: Psinergy.Link - URL Shortener"})
 
 @login_required
 def password_change_done(request):
-	return render(request, 'custom_auth/password_change_done.html')
+	return render(request, 'custom_auth/password_change_done.html', {"page_title": "Password Change Complete: Psinergy.Link - URL Shortener"})
 
 
 User = get_user_model()
@@ -49,11 +49,21 @@ class CustomPasswordResetView(FormView):
 				)
 			return render(request, 'registration/password_reset_link.html', {'reset_link': reset_link})
 		return render(request, 'registration/password_reset_complete.html')  # If email not found, let them think it worked
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Password Reset: Psinergy.Link - URL Shortener'
+		return context
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirm.html'
-    success_url = reverse_lazy('password_reset_complete')
+	template_name = 'registration/password_reset_confirm.html'
+	success_url = reverse_lazy('password_reset_complete')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Password Reset Confirm: Psinergy.Link - URL Shortener'
+		return context
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
@@ -63,6 +73,11 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 	def get(self, request, *args, **kwargs):
 		return render(request, 'registration/password_reset_link.html')
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Password Reset Link: Psinergy.Link - URL Shortener'
+		return context
+
 
 class CustomRegistrationView(RegistrationView):
 	def register(self, form):
@@ -70,7 +85,16 @@ class CustomRegistrationView(RegistrationView):
 		# Prevent auto-login
 		return user
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Register: Psinergy.Link - URL Shortener'
+		return context
+
 
 class CustomLoginView(LoginView):
-    authentication_form = CustomAuthenticationForm
+	authentication_form = CustomAuthenticationForm
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Login: Psinergy.Link - URL Shortener'
+		return context
