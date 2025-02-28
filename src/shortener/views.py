@@ -30,11 +30,11 @@ from django.views.decorators.cache import cache_page
 
 @login_required
 def tags_download(request):
-    tags = Tag.objects.order_by('name').values_list('name', flat=True)
-    content = "\n".join(tags)
-    response = HttpResponse(content, content_type="text/plain")
-    response["Content-Disposition"] = 'attachment; filename="tags.txt"'
-    return response
+	tags = Tag.objects.order_by('name').values_list('name', flat=True)
+	content = "\n".join(tags)
+	response = HttpResponse(content, content_type="text/plain")
+	response["Content-Disposition"] = 'attachment; filename="tags.txt"'
+	return response
 
 
 # from django.contrib.auth.mixins import UserPassesTestMixin
@@ -45,6 +45,7 @@ def tags_download(request):
 
 
 class TagsListView(LoginRequiredMixin, ListView):
+	""" Show Tags List """
 	model = Tag
 	template_name = 'shortener/tags_list.html'
 	context_object_name = 'tagslist'
@@ -65,13 +66,13 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 @login_required
 def tags_autocomplete(request):
-    """Return JSON list of tags matching the search term."""
-    if 'term' in request.GET:
-        term = request.GET['term']
-        tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)  # Get matching tags
-        tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
-        return JsonResponse(tag_list, safe=False)
-    return JsonResponse([], safe=False)
+	"""Return JSON list of tags matching the search term."""
+	if 'term' in request.GET:
+		term = request.GET['term']
+		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)  # Get matching tags
+		tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
+		return JsonResponse(tag_list, safe=False)
+	return JsonResponse([], safe=False)
 
 
 # class TagAutocompleteView(OwnerListView):
@@ -235,6 +236,7 @@ class ShortenerDetailView(OwnerDetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
 		short_alias = self.object.short_alias
 		context['page_title'] = f"{short_alias}"
 		return context
@@ -256,13 +258,8 @@ class ShortenerUpdateView(OwnerUpdateView):
 	def get_success_url(self):
 		# Capture the page number from the GET request, default to 1
 		page = self.request.GET.get('page', 1)
-		#return f"{reverse('shortener-list')}?page={page}"
+		return f"{reverse('shortener-list')}?page={page}"
 		#return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
-
-		"""Redirect back to the Recent page while preserving search criteria."""
-		base_url = f"{reverse('shortener-list')}?page={page}"
-		search_query = self.request.GET.urlencode()
-		return f"{base_url}&{search_query}" if search_query else base_url
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -308,7 +305,7 @@ def get_page_title(url):
 	# Grab from the search parameter
 
 	search_url = url
-	
+
 	# Google Search, format (*google.*/search?)
 	if re.search(r'google\.[^/]+/search\?', search_url):
 		# Get text between "q=" and w/wo "&"

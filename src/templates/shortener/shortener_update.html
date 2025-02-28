@@ -15,7 +15,7 @@
 		<p>&nbsp;</p>
 		{% if user.is_authenticated %}
 		
-		<h3 class="mt-3">Update Alias: {{ link.short_alias }}</h3>
+		<h3 class="mt-3">Update: {{ link.short_alias }}</h3>
 		<br />
 
 		<form id="shorten-form" method="POST">
@@ -24,8 +24,8 @@
 		
 			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" />
 			<div id="tag-suggestions" class="list-group" style="position:absolute; z-index:1000;"></div>
-			<div id="selected-tags"></div>
--->
+			<div id="selected-tags"></div> -->
+
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
 		</form>
 
