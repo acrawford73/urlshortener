@@ -59,7 +59,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Tags: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Tags'
 		return context
 
 
@@ -100,7 +100,7 @@ class ShortenerListByTagView(OwnerListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Recent by Tag='{self.tag.name}': Psinergy.Link - URL Shortener"
+		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
 		return context
 
 
@@ -116,7 +116,7 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Recent: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Recent'
 		return context
 
 
@@ -157,7 +157,7 @@ class ShortenerCreateView(OwnerCreateView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Create: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Create'
 		return context
 
 
@@ -191,7 +191,7 @@ class ShortenerListView(OwnerListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Recent: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Recent'
 		return context
 
 
@@ -217,7 +217,7 @@ class ShortenerTopListView(OwnerListView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Top: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Top'
 		return context
 
 
@@ -236,7 +236,7 @@ class ShortenerDetailView(OwnerDetailView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		short_alias = self.object.short_alias
-		context['page_title'] = f"Detail {short_alias}: Psinergy.Link - URL Shortener"
+		context['page_title'] = f"{short_alias}"
 		return context
 
 
@@ -256,14 +256,19 @@ class ShortenerUpdateView(OwnerUpdateView):
 	def get_success_url(self):
 		# Capture the page number from the GET request, default to 1
 		page = self.request.GET.get('page', 1)
-		return f"{reverse('shortener-list')}?page={page}"
+		#return f"{reverse('shortener-list')}?page={page}"
 		#return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
+
+		"""Redirect back to the Recent page while preserving search criteria."""
+		base_url = f"{reverse('shortener-list')}?page={page}"
+		search_query = self.request.GET.urlencode()
+		return f"{base_url}&{search_query}" if search_query else base_url
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page'] = self.request.GET.get('page', 1)
 		short_alias = self.object.short_alias
-		context['page_title'] = f"Update {short_alias}: Psinergy.Link - URL Shortener"
+		context['page_title'] = f"Update {short_alias}"
 		return context
 
 
@@ -287,7 +292,7 @@ class ShortenerDeleteView(OwnerDeleteView):
 		context = super().get_context_data(**kwargs)
 		context['page'] = self.request.GET.get('page', 1)
 		short_alias = self.object.short_alias
-		context['page_title'] = f"Delete {short_alias}: Psinergy.Link - URL Shortener"
+		context['page_title'] = f"Delete {short_alias}"
 		return context
 
 

@@ -19,15 +19,15 @@ from .forms import CustomAuthenticationForm
 
 @login_required
 def profile(request):
-	return render(request, 'custom_auth/profile.html', {"page_title": "Profile: Psinergy.Link - URL Shortener"})
+	return render(request, 'custom_auth/profile.html', {'page_title': 'Profile'})
 
 @login_required
 def password_change(request):
-	return render(request, 'custom_auth/password_change_form.html', {"page_title": "Password Change: Psinergy.Link - URL Shortener"})
+	return render(request, 'custom_auth/password_change_form.html', {'page_title': 'Password Change'})
 
 @login_required
 def password_change_done(request):
-	return render(request, 'custom_auth/password_change_done.html', {"page_title": "Password Change Complete: Psinergy.Link - URL Shortener"})
+	return render(request, 'custom_auth/password_change_done.html', {'page_title': 'Password Change Complete'})
 
 
 User = get_user_model()
@@ -52,7 +52,7 @@ class CustomPasswordResetView(FormView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Password Reset: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Password Reset'
 		return context
 
 
@@ -62,7 +62,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Password Reset Confirm: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Password Reset Confirm'
 		return context
 
 
@@ -75,7 +75,7 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Password Reset Link: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Password Reset Link'
 		return context
 
 
@@ -87,7 +87,7 @@ class CustomRegistrationView(RegistrationView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Register: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Register'
 		return context
 
 
@@ -96,5 +96,5 @@ class CustomLoginView(LoginView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Login: Psinergy.Link - URL Shortener'
+		context['page_title'] = 'Login'
 		return context
