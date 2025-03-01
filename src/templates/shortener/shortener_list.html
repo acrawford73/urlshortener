@@ -27,6 +27,7 @@
               <input id="search" type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Search by Title or Tag" aria-label="Search by Title or Tag" aria-describedby="button-addon2">
               <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
             </div>
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
           </form>
         </div>
       <div class="col-sm-3">&nbsp;</div>
@@ -42,7 +43,7 @@
               <tr align="center" class="table-primary">
                 <th>Actions</th>
                 <th align="left">Short URLs</th>
-                <th>Clicks</th>
+                <th>Views</th>
                 {% if user.is_staff %}
                 <th>User / Created</th>
                 {% endif %}

@@ -36,11 +36,11 @@
 				</tr>
 				<tr>
 					<th class="table-primary">Last Login</th>
-					<td>{{ request.user.last_login|date:"F d, Y - g:i:s A" }}</td>
+					<td>{{ request.user.last_login|date:"F j, Y - g:i A" }}</td>
 				</tr>
 				<tr>
 					<th class="table-primary">Date Joined</th>
-					<td>{{ request.user.date_joined|date:"F d, Y - g:i:s A" }}</td>
+					<td>{{ request.user.date_joined|date:"F j, Y - g:i A" }}</td>
 				</tr>
 			</tbody>
 		</table>

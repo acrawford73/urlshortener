@@ -20,6 +20,7 @@
 			{% csrf_token %}
 			{{ form|crispy }}
 			<button id="randomTextButton" type="submit" class="btn btn-primary rounded-pill px-3">Shrink this link!</button>
+			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 		</form>
 		
 		<p>&nbsp;</p>

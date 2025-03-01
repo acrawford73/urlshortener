@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, DetailView
+from django.views import View
 from django.db.models import Q
 
 from .owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
@@ -51,6 +52,28 @@ class TagsListView(LoginRequiredMixin, ListView):
 		if query:
 			qs = qs.filter(name__icontains=query)
 		return qs
+
+	def post(self, request, *args, **kwargs):
+		query = request.POST.get('q', '')
+		tags = Tag.objects.filter(name__icontains=query) if query else Tag.objects.all()
+		return render(request, 'shortener/tags_list.html')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Tags'
+		return context
+
+
+class TagsSearchView(LoginRequiredMixin, ListView):
+	model = Tag
+	template_name = 'shortener/tags_list.html'
+	context_object_name = 'tagslist'
+	ordering = ['name']
+
+	def post(self, request, *args, **kwargs):
+		query = request.POST.get('q', '')
+		tags = Tag.objects.filter(name__icontains=query) if query else Tag.objects.all()
+		return render(request, 'shortener/tags_list.html')
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)

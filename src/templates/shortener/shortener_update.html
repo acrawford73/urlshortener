@@ -25,8 +25,8 @@
 			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" />
 			<div id="tag-suggestions" class="list-group" style="position:absolute; z-index:1000;"></div>
 			<div id="selected-tags"></div> -->
-
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
+			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 		</form>
 
 		<p>&nbsp;</p>
