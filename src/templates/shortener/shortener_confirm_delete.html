@@ -16,7 +16,7 @@
     <h3 class="mt-5"><strong>Delete Alias:</strong> {{ link.short_alias }}</h3>
     <p>&nbsp;</p>
     <div class="row">
-      <form method="post">
+      <form method="POST" action="{% url 'shortener-delete' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
         {% csrf_token %}
         <p><strong>Are you sure you want to delete this?</strong></p><br />
 
@@ -51,7 +51,7 @@
 
         {{ form }}
         <p>&nbsp;</p>
-        <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
+        <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}?page={{ page }}&q={{ request.GET.q }}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
     </form>
 
     <!-- row end -->

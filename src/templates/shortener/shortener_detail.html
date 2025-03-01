@@ -25,7 +25,7 @@
           <p>This link has been shortened already.</p>
           {% endif %} -->
 
-          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy Title &amp; Short Link</button>&nbsp;&nbsp;<a href="{% url 'shortener-update' link.id %}?page={{ page }}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit This</button></a></p>
+          <p><button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy Title &amp; Short Link</button>&nbsp;&nbsp;<a href="{% url 'shortener-update' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit This</button></a></p>
 
           <div id="copyMessage"></div><br />
 
