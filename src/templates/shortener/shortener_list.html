@@ -80,7 +80,7 @@
 
                   {% if link.tags.count > 0 %}
                     {% for tag in link.tags.all %}
-                      <a href="{% url 'shortener-list-by-tag' tag.slug %}?page={{ page_obj.number }}"><span class="badge bg-primary">{{ tag.name }}</span></a>
+                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge bg-primary">{{ tag.name }}</span></a>
                     {% endfor %}
                     <br />
                   {% endif %}

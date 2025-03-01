@@ -25,9 +25,11 @@
 		<form method="post" action="{% url 'login' %}">
 			{% csrf_token %}
 			{{ form|crispy }}
+			<div class="cf-turnstile" data-sitekey="0x4AAAAAAA_Ki5nkc8KawcNn" data-callback="javascriptCallback"></div>
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Login</button>
 			<input type="hidden" name="next" value="{{ next }}">
 		</form>
+			
 		<p>&nbsp;</p>
 		<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 		{% endcol %}

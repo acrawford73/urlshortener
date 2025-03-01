@@ -61,7 +61,6 @@ class TagsListView(LoginRequiredMixin, ListView):
 	def post(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset()
 		context = self.get_context_data()
-		#return self.render_to_response(context)
 		return render(request, 'shortener/tags_list.html', context)
 
 
