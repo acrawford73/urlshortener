@@ -2,8 +2,6 @@
 
 {% load sgc_extras %}
 
-{% block title %}Account Profile{% endblock %}
-
 {% block content %}
 
 <main class="flex-shrink-0">
@@ -32,6 +30,10 @@
 					<td>{% if request.user.is_staff == True %}Yes{% else %}No{% endif %}</td>
 				</tr>
 				{% endif %}
+				<tr>
+					<th class="table-primary">URL Count</th>
+					<td>{{ shorturl_count }}</td>
+				</tr>
 				<tr>
 					<th class="table-primary">Last Login</th>
 					<td>{{ request.user.last_login|date:"F d, Y - g:i:s A" }}</td>

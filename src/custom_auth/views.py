@@ -15,19 +15,7 @@ from django_registration.backends.one_step.views import RegistrationView
 from django.contrib.auth import login
 
 from .forms import CustomAuthenticationForm
-
-
-@login_required
-def profile(request):
-	return render(request, 'custom_auth/profile.html', {'page_title': 'Profile'})
-
-@login_required
-def password_change(request):
-	return render(request, 'custom_auth/password_change_form.html', {'page_title': 'Password Change'})
-
-@login_required
-def password_change_done(request):
-	return render(request, 'custom_auth/password_change_done.html', {'page_title': 'Password Change Complete'})
+from shortener.models import ShortURL
 
 
 User = get_user_model()
@@ -98,3 +86,19 @@ class CustomLoginView(LoginView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Login'
 		return context
+
+
+@login_required
+def profile(request):
+	shorturl_count = ShortURL.objects.filter(owner=request.user).count()
+	return render(request, 'custom_auth/profile.html', {'page_title': 'Profile', 'shorturl_count': shorturl_count})
+
+
+@login_required
+def password_change(request):
+	return render(request, 'custom_auth/password_change_form.html', {'page_title': 'Password Change'})
+
+
+@login_required
+def password_change_done(request):
+	return render(request, 'custom_auth/password_change_done.html', {'page_title': 'Password Change Complete'})
