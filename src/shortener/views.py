@@ -48,37 +48,21 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		query = self.request.GET.get('q')
+		query = self.request.POST.get('q')
 		if query:
 			qs = qs.filter(name__icontains=query)
 		return qs
 
-	def post(self, request, *args, **kwargs):
-		query = request.POST.get('q', '')
-		tags = Tag.objects.filter(name__icontains=query) if query else Tag.objects.all()
-		return render(request, 'shortener/tags_list.html')
-
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Tags'
 		return context
-
-
-class TagsSearchView(LoginRequiredMixin, ListView):
-	model = Tag
-	template_name = 'shortener/tags_list.html'
-	context_object_name = 'tagslist'
-	ordering = ['name']
-
+	
 	def post(self, request, *args, **kwargs):
-		query = request.POST.get('q', '')
-		tags = Tag.objects.filter(name__icontains=query) if query else Tag.objects.all()
-		return render(request, 'shortener/tags_list.html')
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Tags'
-		return context
+		self.object_list = self.get_queryset()
+		context = self.get_context_data()
+		#return self.render_to_response(context)
+		return render(request, 'shortener/tags_list.html', context)
 
 
 @login_required
@@ -196,14 +180,7 @@ class ShortenerListView(OwnerListView):
 		# Get the base queryset from the parent view
 		qs = super().get_queryset()
 		# Get the search query from the GET parameters (e.g., ?q=search_term)
-		query = self.request.GET.get('q')
-
-		# if query:
-		# 	# Filter by title using case-insensitive containment lookup
-		# 	qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner=self.request.user).distinct()
-		# else:
-		# 	qs = qs.filter(owner=self.request.user)
-		# return qs
+		query = self.request.POST.get('q')
 
 		if self.request.user.is_staff:
 			qs = ShortURL.objects.all() #.order_by('-created_at')  # Staff users see all short URLs
@@ -217,6 +194,11 @@ class ShortenerListView(OwnerListView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Recent'
 		return context
+	
+	def post(self, request, *args, **kwargs):
+		self.object_list = self.get_queryset()
+		context = self.get_context_data()
+		return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerTopListView(OwnerListView):
@@ -229,7 +211,7 @@ class ShortenerTopListView(OwnerListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		query = self.request.GET.get('q')
+		query = self.request.POST.get('q')
 
 		if self.request.user.is_staff:
 			qs = ShortURL.objects.filter(clicks__gt=0).order_by('-clicks')
@@ -244,6 +226,11 @@ class ShortenerTopListView(OwnerListView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Top'
 		return context
+
+	def post(self, request, *args, **kwargs):
+		self.object_list = self.get_queryset()
+		context = self.get_context_data()
+		return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerDetailView(OwnerDetailView):

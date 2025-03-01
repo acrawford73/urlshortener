@@ -11,6 +11,11 @@ class ShortURLForm(forms.ModelForm):
 		fields = ['long_url']
 		hidden_fields = ['title']
 
+	# def __init__(self, *args, **kwargs):
+	# 	super().__init__(*args, **kwargs)
+	# 	self.helper = FormHelper()
+	# 	self.helper.disable_csrf = True
+
 
 class ShortURLUpdateForm(forms.ModelForm):
 	class Meta:

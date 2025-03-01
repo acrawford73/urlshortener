@@ -16,7 +16,6 @@ urlpatterns = [
 	
 	path('tags/download/', 		views.tags_download, 					name='tags-download'),
 	path('tags/autocomplete/', 	views.tags_autocomplete, 				name='tags-autocomplete'),
-	path('tags/search/', 		views.TagsSearchView.as_view(), 		name='tags-search'),
 	path('tags/<slug:tag_slug>/', views.ShortenerListByTagView.as_view(), name='shortener-list-by-tag'),
 	path('tags/',				views.TagsListView.as_view(),			name='tags-list'),
 	
