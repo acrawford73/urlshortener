@@ -11,8 +11,6 @@
 
     <h2 class="mt-5"><strong>Guidelines</strong></h2><br />
 
-    {% if user.is_authenticated %}
-
     <h5>A. Promote truth and intellectual accountability.</h5>
     <h5>B. Promote awareness of Biodigital Convergence related technologies.</h5><br />
 
@@ -22,22 +20,18 @@
 
     <p>
       <ol class="list-group list-group-numbered">
-        <li>Psinergist researchers only. Please <u>do not</u> share your login.</li>
-        <li>Please focus on shortening links that are topics related to <strong>Biodigital Convergence</strong>.</li>
-        <li>Please limit the shortened links to fact-based content only.</li>
-        <li>Any valid URL can be shortened. However, this service is intended for very long URLs, such as those ugly Google search links.</li>
-        <li>If you have the knowledge to do so, please remove tracking tags in the URLs before you shorten them.</li>
-        <li>Please try to refrain from shortening direct links to PDF files. Some browsers try to load the PDF file right in the browser instead of downloading it, which can be a problem for older devices.</li>
-        <li>Secure URLs beginning with &quot;HTTPS&quot; are preferred.</li>
-        <li>It goes without saying, Please <u>do not</u> shorten offensive or malicious links. Yes, Biodigital Convergence is wildly offensive, but you know what I mean.</li>
-        <li><u>Do not</u> shorten affiliate links or promote crypto-currency. If caught, the account will be disabled.</li>
-        <li>Please govern yourself accordingly.</li>
+        <li class="list-group-item">Psinergist researchers only. Please <u>do not</u> share your login.</li>
+        <li class="list-group-item">Please focus on shortening links that are topics related to <strong>Biodigital Convergence</strong>.</li>
+        <li class="list-group-item">Please limit the shortened links to fact-based content only.</li>
+        <li class="list-group-item">Any valid URL can be shortened. However, this service is intended for very long URLs, such as those ugly Google search links.</li>
+        <li class="list-group-item">If you have the knowledge to do so, please remove tracking tags in the URLs before you shorten them.</li>
+        <li class="list-group-item">Please try to refrain from shortening direct links to PDF files. Some browsers try to load the PDF file right in the browser instead of downloading it, which can be an issue for older devices.</li>
+        <li class="list-group-item">Secure URLs beginning with &quot;HTTPS&quot; are preferred.</li>
+        <li class="list-group-item">Please <u>do not</u> shorten offensive or malicious links.</li>
+        <li class="list-group-item"><u>Do not</u> shorten affiliate links and <u>do not</u> promote crypto-currency. If caught, the account will be disabled and shortened links will be removed.</li>
+        <li class="list-group-item">Please govern yourself accordingly.</li>
       </ol>
     </p>
-
-    {% else %}
-    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
-    {% endif %}
 
      <!-- container end -->
   </div>

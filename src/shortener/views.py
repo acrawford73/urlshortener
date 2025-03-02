@@ -147,11 +147,6 @@ class ShortenerListView(OwnerListView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Recent'
 		return context
-	
-	# def post(self, request, *args, **kwargs):
-	# 	self.object_list = self.get_queryset()
-	# 	context = self.get_context_data()
-	# 	return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerTopListView(OwnerListView):
@@ -179,11 +174,6 @@ class ShortenerTopListView(OwnerListView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Top'
 		return context
-
-	# def post(self, request, *args, **kwargs):
-	# 	self.object_list = self.get_queryset()
-	# 	context = self.get_context_data()
-	# 	return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerCreateView(OwnerCreateView):
