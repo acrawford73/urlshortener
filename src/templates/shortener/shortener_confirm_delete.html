@@ -61,7 +61,7 @@
 
         {{ form }}
         <p>&nbsp;</p>
-        <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}?page={{ page }}&q={{ request.GET.q }}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
+        <p><input type="submit" value="Yes, Delete" class="btn btn-primary rounded-pill px-3">&nbsp;&nbsp;<a href="{% url 'shortener-list' %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-secondary rounded-pill px-3">Cancel</a></p>
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     </form>
 

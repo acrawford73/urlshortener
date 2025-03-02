@@ -49,7 +49,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		query = self.request.POST.get('q')
+		query = self.request.GET.get('q')
 		if query:
 			qs = qs.filter(name__icontains=query)
 		return qs
@@ -58,11 +58,6 @@ class TagsListView(LoginRequiredMixin, ListView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Tags'
 		return context
-	
-	def post(self, request, *args, **kwargs):
-		self.object_list = self.get_queryset()
-		context = self.get_context_data()
-		return render(request, 'shortener/tags_list.html', context)
 
 
 @login_required
@@ -138,7 +133,7 @@ class ShortenerListView(OwnerListView):
 		# Get the base queryset from the parent view
 		qs = super().get_queryset()
 		# Get the search query from the GET parameters (e.g., ?q=search_term)
-		query = self.request.POST.get('q')
+		query = self.request.GET.get('q')
 
 		if self.request.user.is_staff:
 			qs = ShortURL.objects.all() #.order_by('-created_at')  # Staff users see all short URLs
@@ -153,10 +148,10 @@ class ShortenerListView(OwnerListView):
 		context['page_title'] = 'Recent'
 		return context
 	
-	def post(self, request, *args, **kwargs):
-		self.object_list = self.get_queryset()
-		context = self.get_context_data()
-		return render(request, 'shortener/shortener_list.html', context)
+	# def post(self, request, *args, **kwargs):
+	# 	self.object_list = self.get_queryset()
+	# 	context = self.get_context_data()
+	# 	return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerTopListView(OwnerListView):
@@ -169,7 +164,7 @@ class ShortenerTopListView(OwnerListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		query = self.request.POST.get('q')
+		query = self.request.GET.get('q')
 
 		if self.request.user.is_staff:
 			qs = ShortURL.objects.filter(clicks__gt=0).order_by('-clicks')
@@ -185,10 +180,10 @@ class ShortenerTopListView(OwnerListView):
 		context['page_title'] = 'Top'
 		return context
 
-	def post(self, request, *args, **kwargs):
-		self.object_list = self.get_queryset()
-		context = self.get_context_data()
-		return render(request, 'shortener/shortener_list.html', context)
+	# def post(self, request, *args, **kwargs):
+	# 	self.object_list = self.get_queryset()
+	# 	context = self.get_context_data()
+	# 	return render(request, 'shortener/shortener_list.html', context)
 
 
 class ShortenerCreateView(OwnerCreateView):
