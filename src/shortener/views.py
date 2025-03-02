@@ -350,12 +350,19 @@ def get_page_title(url):
 
 	# Brave Search
 	if re.search(r'search\.brave\.[^/]+/search\?', search_url):
-		# Get text between "q=" and w/wo "&"
 		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
 		if match:
 			result = match.group(1)
 			title = result.replace("+"," ")
 			return str(title) + " - Brave Search"
+
+	# DuckDuckGo Search
+	if re.search(r'duckduckgo\.[^/]+/\?', search_url):
+		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+		if match:
+			result = match.group(1)
+			title = result.replace("+"," ")
+			return str(title) + " - DuckDuckGo Search"
 
 	## Requests & BeautifulSoup (Level 2)
 	host_url = url
