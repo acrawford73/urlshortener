@@ -13,6 +13,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -125,48 +126,6 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 		return context
 
 
-class ShortenerCreateView(OwnerCreateView):
-	""" Create a new shortened link. """
-	model = ShortURL
-	form_class = ShortURLForm
-	template_name = 'shortener/shortener_form.html'
-
-	def get_success_url(self):
-		return reverse('shortener-detail', kwargs={'pk': self.object.pk})
-
-	def form_valid(self, form):
-		url = form.cleaned_data['long_url']
-
-		# Check if owner shortened this link already
-		existing = ShortURL.objects.filter(long_url=url, owner=self.request.user).first()
-		if existing:
-			return redirect('shortener-detail', pk=existing.pk)
-
-		# Check if anyone shortened this link already
-		existing = ShortURL.objects.filter(long_url=url).first()
-		if existing:	
-			return redirect('shortener-detail', pk=existing.pk)
-
-		title = get_page_title(url)
-
-		short_alias = generate_unique_alias(url)
-		while ShortURL.objects.filter(short_alias=short_alias).exists():
-			short_alias = generate_unique_alias(url)
-
-		shorturl = form.save(commit=False)
-		shorturl.owner = self.request.user
-		shorturl.title = title
-		shorturl.short_alias = short_alias
-		shorturl.save()
-		form.save_m2m()
-		return super().form_valid(form)
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Create'
-		return context
-
-
 class ShortenerListView(OwnerListView):
 	""" List all shortened links owned by user. """
 	model = ShortURL
@@ -232,6 +191,50 @@ class ShortenerTopListView(OwnerListView):
 		return render(request, 'shortener/shortener_list.html', context)
 
 
+class ShortenerCreateView(OwnerCreateView):
+	""" Create a new shortened link. """
+	model = ShortURL
+	form_class = ShortURLForm
+	template_name = 'shortener/shortener_form.html'
+
+	def get_success_url(self):
+		return reverse('shortener-detail', kwargs={'pk': self.object.pk})
+
+	def form_valid(self, form):
+		url = form.cleaned_data['long_url']
+
+		# Check if owner shortened this link already
+		existing = ShortURL.objects.filter(long_url=url, owner=self.request.user).first()
+		if existing:
+			messages.warning(self.request, "This URL was already shortened.")
+			return redirect('shortener-detail', pk=existing.pk)
+
+		# Check if anyone else shortened this link already
+		existing = ShortURL.objects.filter(long_url=url).first()
+		if existing:
+			messages.warning(self.request, "This URL was already shortened.")
+			return redirect('shortener-detail-exists', pk=existing.pk)
+
+		title = get_page_title(url)
+
+		short_alias = generate_unique_alias(url)
+		while ShortURL.objects.filter(short_alias=short_alias).exists():
+			short_alias = generate_unique_alias(url)
+
+		shorturl = form.save(commit=False)
+		shorturl.owner = self.request.user
+		shorturl.title = title
+		shorturl.short_alias = short_alias
+		shorturl.save()
+		form.save_m2m()
+		return super().form_valid(form)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Create'
+		return context
+
+
 class ShortenerDetailView(OwnerDetailView):
 	""" ShortURL detail view. """
 	model = ShortURL
@@ -244,6 +247,23 @@ class ShortenerDetailView(OwnerDetailView):
 			return ShortURL.objects.all()
 		# Otherwise, restrict to links owned by the current user only
 		return ShortURL.objects.filter(owner=self.request.user)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"{short_alias}"
+		return context
+
+
+class ShortenerDetailExistsView(LoginRequiredMixin, DetailView):
+	""" 
+	ShortURL detail view for link that already exists.
+	Presented when the ShortURL is from another user.
+	"""
+	model = ShortURL
+	template_name = 'shortener/shortener_detail.html'
+	context_object_name = 'link'
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
