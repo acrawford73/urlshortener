@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 import re
 import asyncio
@@ -320,6 +320,18 @@ class ShortenerDeleteView(OwnerDeleteView):
 # - - - - -
 
 
+# Check for specific search engines based on common regex
+def search_check(search_domain, search_url):
+	title = None
+	if re.search(search_domain, search_url):
+		# Get text between "q=" and w/wo "&"
+		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+		if match:
+			result = unquote(match.group(1))
+			title = result.replace("+"," ")
+	return title
+
+
 # Capture the title of the long url that is being shortened
 def get_page_title(url):
 	""" Process that captures the title of a website page. """
@@ -331,38 +343,54 @@ def get_page_title(url):
 
 	search_url = url
 
-	# Google Search, format (*google.*/search?)
-	if re.search(r'google\.[^/]+/search\?', search_url):
-		# Get text between "q=" and w/wo "&"
-		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
-		if match:
-			result = match.group(1)
-			title = result.replace("+"," ")
-			return str(title) + " - Google Search"
-
 	# Google Patents Search
 	if re.search(r'patents\.google\.[^/]+/\?', search_url):
 		match = re.search(r"q=\(([^)]+)\)(?:&|$)", search_url)
 		if match:
-			result = match.group(1)
+			result = unquote(match.group(1))
 			title = result.replace("+"," ")
 			return str(title) + " - Google Patents Search"
 
+	# Google Search
+	title = search_check(r'google\.[^/]+/search\?', search_url)
+	if title:
+		return str(title) + " - Google Search"
+
 	# Brave Search
-	if re.search(r'search\.brave\.[^/]+/search\?', search_url):
-		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
-		if match:
-			result = match.group(1)
-			title = result.replace("+"," ")
-			return str(title) + " - Brave Search"
+	title = search_check(r'search\.brave\.[^/]+/search\?', search_url)
+	if title:
+		return str(title) + " - Brave Search"
 
 	# DuckDuckGo Search
-	if re.search(r'duckduckgo\.[^/]+/\?', search_url):
-		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
-		if match:
-			result = match.group(1)
-			title = result.replace("+"," ")
-			return str(title) + " - DuckDuckGo Search"
+	title = search_check(r'duckduckgo\.[^/]+/\?', search_url)
+	if title:
+		return str(title) + " - DuckDuckGo Search"
+
+	# # Google Search, format (*google.*/search?)
+	# if re.search(r'google\.[^/]+/search\?', search_url):
+	# 	# Get text between "q=" and w/wo "&"
+	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+	# 	if match:
+	# 		result = unquote(match.group(1))
+	# 		title = result.replace("+"," ")
+	# 		return str(title) + " - Google Search"
+
+	# # Brave Search
+	# if re.search(r'search\.brave\.[^/]+/search\?', search_url):
+	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+	# 	if match:
+	# 		result = unquote(match.group(1))
+	# 		title = result.replace("+"," ")
+	# 		return str(title) + " - Brave Search"
+
+	# # DuckDuckGo Search
+	# if re.search(r'duckduckgo\.[^/]+/\?', search_url):
+	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+	# 	if match:
+	# 		result = unquote(match.group(1))
+	# 		title = result.replace("+"," ")
+	# 		return str(title) + " - DuckDuckGo Search"
+
 
 	## Requests & BeautifulSoup (Level 2)
 	host_url = url
