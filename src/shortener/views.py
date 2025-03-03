@@ -343,7 +343,7 @@ def get_page_title(url):
 
 	search_url = url
 
-	# Google Patents Search
+	# Google Patents
 	if re.search(r'patents\.google\.[^/]+/\?', search_url):
 		match = re.search(r"q=\(([^)]+)\)(?:&|$)", search_url)
 		if match:
@@ -351,17 +351,17 @@ def get_page_title(url):
 			title = result.replace("+"," ")
 			return str(title) + " - Google Patents Search"
 
-	# Google Search
+	# Google
 	title = search_check(r'google\.[^/]+/search\?', search_url)
 	if title:
 		return str(title) + " - Google Search"
 
-	# Brave Search
+	# Brave
 	title = search_check(r'search\.brave\.[^/]+/search\?', search_url)
 	if title:
 		return str(title) + " - Brave Search"
 
-	# DuckDuckGo Search
+	# DuckDuckGo
 	title = search_check(r'duckduckgo\.[^/]+/\?', search_url)
 	if title:
 		return str(title) + " - DuckDuckGo Search"
