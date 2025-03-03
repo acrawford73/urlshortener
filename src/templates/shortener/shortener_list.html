@@ -119,14 +119,13 @@
                   {% if link.title == "" or link.title == None %}
                     <strong>Title not available</strong>
                   {% else %}
-                    <strong>{{ link.title|truncatechars:50 }}</strong>
+                    <strong>{{ link.title|truncatechars:60 }}</strong>
                   {% endif %}</a><br />
 
                   {% if link.tags.count > 0 %}
                     {% for tag in link.tags.all %}
-                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge bg-primary">{{ tag.name }}</span></a>
+                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge text-bg-primary">{{ tag.name }}</span></a>
                     {% endfor %}
-                    <br />
                   {% endif %}
                 </td>
 
