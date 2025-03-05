@@ -23,8 +23,8 @@
 			{{ form|crispy }}
 		
 			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" />
-			<div id="tag-suggestions" class="list-group" style="position:absolute; z-index:1000;"></div>
-			<div id="selected-tags"></div> -->
+			<div id="selected-tags" class="mt-2"></div><br />
+ -->
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
 			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 		</form>
@@ -38,10 +38,51 @@
 	<!-- container end -->
 	</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="{% static 'js/tags.js' %}"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+	<script>
+		$(document).ready(function() {
+		    var existingTags = JSON.parse('{{ form.tags.value|escapejs }}'); // Load existing tags from Django
+		    console.log("Existing tags:", existingTags);
+
+		    $("#tag-input").select2({
+		        tags: true,  // Allow users to create new tags
+		        tokenSeparators: [','],  // Split tags by comma
+		        minimumInputLength: 1,  // Show suggestions after typing 1 character
+		        ajax: {
+		            url: "{% url 'tags-suggestions' %}",
+		            dataType: 'json',
+		            delay: 250,
+		            data: function(params) {
+		                console.log("Fetching suggestions for:", params.term);
+		                return { term: params.term };
+		            },
+		            processResults: function(data) {
+		                console.log("Received suggestions:", data);
+		                return { results: data };
+		            }
+		        },
+		        // Ensure Select2 sends tags as plain strings
+		        createTag: function(params) {
+		            return {id: String(params.term), text: String(params.term)};
+		        }
+		    });
+
+		    // Preload existing tags when editing
+		    if (existingTags) {
+		        var tagList = existingTags.map(tag => ({ id: tag, text: tag }));
+		        $("#tag-input").select2("data", tagList);
+		    }
+
+		    $('#tag-input').on('select2:select', function(e) {
+		        var data = e.params.data;
+		        console.log("Selected tag:", data);
+		        $('#selected-tags').append('<span class="badge bg-primary me-1">' + data.text + '</span>');
+		    });
+		});
+	</script>
 
 </main>
 

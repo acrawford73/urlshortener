@@ -124,7 +124,7 @@
 
                   {% if link.tags.count > 0 %}
                     {% for tag in link.tags.all %}
-                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge text-bg-primary">{{ tag.name }}</span></a>
+                      <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge text-bg-success">{{ tag.name }}</span></a>
                     {% endfor %}
                   {% endif %}
                 </td>

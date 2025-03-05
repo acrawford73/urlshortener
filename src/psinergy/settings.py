@@ -65,11 +65,7 @@ else:
     ALLOWED_HOSTS = config('DEBUG_ALLOWED_HOSTS', cast=Csv())
 
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
-
-
-### E-Mail
+### EMAIL
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'email-host.com'
@@ -90,12 +86,12 @@ LOGOUT_REDIRECT_URL = '/'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 
-### Admin Honeypot
+### ADMIN HONEYPOT
 # pip install django-admin-honeypot-updated-2021
 ADMIN_HONEYPOT_EMAIL_ADMINS = False
 
 
-### Application definition
+### APPLICATIONS
 
 INSTALLED_APPS = [
     'custom_auth',
@@ -118,6 +114,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware', # First
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,9 +123,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'django.middleware.cache.FetchFromCacheMiddleware', # Last
 ]
 
 ROOT_URLCONF = 'psinergy.urls'
+
+
+### TEMPLATES
 
 TEMPLATES = [
     {
@@ -149,7 +152,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'psinergy.wsgi.application'
 
 
-# DATABASE
+### DATABASE
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
@@ -165,7 +168,7 @@ DATABASES = {
 }
 
 
-# Password Validation
+### Password Validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
@@ -210,9 +213,9 @@ STATICFILES_DIRS = [
    os.path.join(BASE_DIR, 'static_files')
 ]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+### Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -220,11 +223,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
+
 ### TAGGIT
 TAGGIT_CASE_INSENSITIVE = True
 
 
-## Logging
+### LOGGING
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -273,37 +277,45 @@ LOGGING = {
 }
 
 
+### SESSIONS
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db" # Hybrid: DB + Cache
+SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
+
+
+### CACHING
+# Memcached
+# CACHES = {
+#    'default': {
+#        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#        #'LOCATION': 'django-local-cache',
+#        # /etc/memcached.conf - customize settings like memory allocation, maximum connections, and logging.
+#        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+#        'LOCATION': ['127.0.0.1:11211'],
+#    },
+# }
+
+### REDIS Cluster
+REDIS_LOCATION = config('REDIS_LOCATION', cast=Csv())
+
 ### CACHING
 CACHES = {
     'default': {
-        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        #'LOCATION': 'django-local-cache',
-        # /etc/memcached.conf - customize settings like memory allocation, maximum connections, and logging.
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': ['127.0.0.1:11211'],
+        # 'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_LOCATION,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
     },
-#    "redis": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": REDIS_LOCATION,
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         },
-#     }
+    # 'celery': {
+    #     'BACKEND': 'django_redis.cache.RedisCache',
+    #     'LOCATION': REDIS_LOCATION,
+    #     'OPTIONS': {
+    #         'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+    #     },
+    # }
 }
-
-## REDIS STORE
-
-# REDIS_LOCATION = "redis://127.0.0.1:6379/1"
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": REDIS_LOCATION,
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         },
-#     }
-# }
 
 
 ### CELERY

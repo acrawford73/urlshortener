@@ -60,28 +60,26 @@ class TagsListView(LoginRequiredMixin, ListView):
 		return context
 
 
+# @login_required
+# def tags_autocomplete(request):
+# 	"""Return JSON list of tags matching the search term."""
+# 	if 'term' in request.GET:
+# 		term = request.GET['term']
+# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)  # Get matching tags
+# 		tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
+# 		return JsonResponse(tag_list, safe=False)
+# 	return JsonResponse([], safe=False)
+
+
 @login_required
-def tags_autocomplete(request):
-	"""Return JSON list of tags matching the search term."""
+def tags_suggestions(request):
+	"""Return JSON list of tags matching the context-sensitive term."""
 	if 'term' in request.GET:
-		term = request.GET['term']
-		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)  # Get matching tags
-		tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
-		return JsonResponse(tag_list, safe=False)
+		term = request.GET.get('term', '')
+		tags = Tag.objects.filter(name__icontains=term)[:10]
+		suggestions = [{'id': tag.name, 'text': tag.name} for tag in tags]
+		return JsonResponse(suggestions, safe=False)
 	return JsonResponse([], safe=False)
-
-
-# class TagAutocompleteView(OwnerListView):
-# 	def get(self, request):
-# 		# query = request.GET.get('term', '')
-# 		# tags = Tag.objects.filter(name__icontains=query)[:10]
-# 		# return JsonResponse([{'id': tag.id, 'text': tag.name} for tag in tags], safe=False)
-# 		if 'term' in request.GET:
-# 			term = request.GET['term']
-# 			tags = Tag.objects.filter(name__icontains=term)  # Get matching tags
-# 			tag_list = [{'id': tag.name, 'text': tag.name} for tag in tags]  # Use tag name instead of ID
-# 			return JsonResponse(tag_list, safe=False)
-# 		return JsonResponse([], safe=False)
 
 
 class ShortenerListByTagView(OwnerListView):
