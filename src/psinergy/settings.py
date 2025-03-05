@@ -114,8 +114,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.cache.UpdateCacheMiddleware', # First
-    
+    #'django.middleware.cache.UpdateCacheMiddleware', # First
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -124,7 +124,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'django.middleware.cache.FetchFromCacheMiddleware', # Last
+    #'django.middleware.cache.FetchFromCacheMiddleware', # Last
 ]
 
 ROOT_URLCONF = 'psinergy.urls'
