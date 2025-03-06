@@ -323,10 +323,10 @@ def search_check(search_domain, search_url):
 	title = None
 	if re.search(search_domain, search_url):
 		# Get text between "q=" and w/wo "&"
-		match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+		match = re.search(r'q=([^&]+)(?:&|$)', search_url)
 		if match:
 			result = unquote(match.group(1))
-			title = result.replace("+"," ")
+			title = result.replace('+',' ')
 	return title
 
 
@@ -343,26 +343,26 @@ def get_page_title(url):
 
 	# Google Patents
 	if re.search(r'patents\.google\.[^/]+/\?', search_url):
-		match = re.search(r"q=\(([^)]+)\)(?:&|$)", search_url)
+		match = re.search(r'q=\(([^)]+)\)(?:&|$)', search_url)
 		if match:
 			result = unquote(match.group(1))
-			title = result.replace("+"," ")
-			return str(title) + " - Google Patents Search"
+			title = result.replace('+',' ')
+			return f"{title} - Google Patents Search"
 
 	# Google
 	title = search_check(r'google\.[^/]+/search\?', search_url)
 	if title:
-		return str(title) + " - Google Search"
+		return f"{title} - Google Search"
 
 	# Brave
 	title = search_check(r'search\.brave\.[^/]+/search\?', search_url)
 	if title:
-		return str(title) + " - Brave Search"
+		return f"{title} - Brave Search"
 
 	# DuckDuckGo
 	title = search_check(r'duckduckgo\.[^/]+/\?', search_url)
 	if title:
-		return str(title) + " - DuckDuckGo Search"
+		return f"{title} - DuckDuckGo Search"
 
 	# # Google Search, format (*google.*/search?)
 	# if re.search(r'google\.[^/]+/search\?', search_url):

@@ -14,14 +14,14 @@ urlpatterns = [
 	path('detail/exists/<uuid:pk>/', views.ShortenerDetailExistsView.as_view(), name='shortener-detail-exists'),
 	path('recent/user/<int:pk>/',	 views.ShortenerListByOwnerView.as_view(), 	name='shortener-list-owner'),
 
-	path('tags/download/', 		views.tags_download, 					name='tags-download'),
-	path('tags/suggestions/', 	views.tags_suggestions, 				name='tags-suggestions'),
-	path('tags/<slug:tag_slug>/', views.ShortenerListByTagView.as_view(), name='shortener-list-by-tag'),
-	path('tags/',				views.TagsListView.as_view(),			name='tags-list'),
+	path('tags/download/', 			views.tags_download, 					name='tags-download'),
+	path('tags/suggestions/', 		views.tags_suggestions, 				name='tags-suggestions'),
+	path('tags/<slug:tag_slug>/', 	views.ShortenerListByTagView.as_view(), name='shortener-list-by-tag'),
+	path('tags/',					views.TagsListView.as_view(),			name='tags-list'),
 
 	#path('tags/autocomplete/', 	views.TagAutocompleteView.as_view(), name='tags_autocomplete'),
 
 	# keep this last
-	path('<str:alias>/', 		views.redirect_url, 					name='redirect-url'),
+	path('<str:alias>/', 			views.redirect_url, 					name='redirect-url'),
 
 ]

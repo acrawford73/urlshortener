@@ -40,14 +40,14 @@ if config('PRODUCTION', default=False, cast=bool) == True:
     SECURE_CROSS_ORIGIN_OPENER_POLICY = config('SECURE_CROSS_ORIGIN_OPENER_POLICY')
     SECURE_CONTENT_TYPE_NOSNIFF = config('SECURE_CONTENT_TYPE_NOSNIFF', default=True, cast=bool)
     X_FRAME_OPTIONS = config('X_FRAME_OPTIONS')
-    
+
     ## Cookies
     CSRF_USE_SESSIONS = config('CSRF_USE_SESSIONS', default=False, cast=bool)
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
     CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv())
     CSRF_COOKIE_DOMAIN = config('CSRF_COOKIE_DOMAIN')
     CSRF_COOKIE_PATH = '/'
-    
+
     ## Session
     SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
     SESSION_COOKIE_AGE = int(config('SESSION_COOKIE_AGE'))
@@ -301,12 +301,13 @@ REDIS_LOCATION = config('REDIS_LOCATION', cast=Csv())
 ### CACHING
 CACHES = {
     'default': {
-        # 'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'BACKEND': 'django_redis.cache.RedisCache',
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_LOCATION,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
+    },
+    'session': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_LOCATION,
+        'KEY_PREFIX': 'session'
     },
     # 'celery': {
     #     'BACKEND': 'django_redis.cache.RedisCache',
@@ -356,4 +357,3 @@ CACHES = {
 # CELERY_TASK_ALWAYS_EAGER = False
 # if os.environ.get("TESTING"):
 #     CELERY_TASK_ALWAYS_EAGER = True
-   
