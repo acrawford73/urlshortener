@@ -164,6 +164,7 @@ DATABASES = {
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
         'CONN_MAX_AGE': 600,
+        'TIME_ZONE': 'UTC',
     }
 }
 
@@ -279,7 +280,7 @@ LOGGING = {
 
 ### SESSIONS
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db" # Hybrid: DB + Cache
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db' # Hybrid: DB + Cache
 SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
 
 
@@ -301,22 +302,46 @@ REDIS_LOCATION = config('REDIS_LOCATION', cast=Csv())
 ### CACHING
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': REDIS_LOCATION,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            }
+        }
     },
     'session': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': REDIS_LOCATION,
-        'KEY_PREFIX': 'session'
+        'KEY_PREFIX': 'session',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            }
+        }
     },
-    # 'celery': {
-    #     'BACKEND': 'django_redis.cache.RedisCache',
-    #     'LOCATION': REDIS_LOCATION,
-    #     'OPTIONS': {
-    #         'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-    #     },
-    # }
 }
+
+    # 'default': {
+    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+    #     'LOCATION': REDIS_LOCATION,
+    # },
+    # 'session': {
+    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+    #     'LOCATION': REDIS_LOCATION,
+    #     'KEY_PREFIX': 'session'
+    # },
+    
+    # 'celery': {
+    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+    #     'LOCATION': REDIS_LOCATION,
+    #     'KEY_PREFIX': 'celery'
+    # },
+# }
 
 
 ### CELERY
