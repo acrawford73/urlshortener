@@ -19,6 +19,7 @@ from django.urls import include, path
 from django.conf import settings
 
 
+
 urlpatterns = [
 
     # Admin
@@ -27,13 +28,24 @@ urlpatterns = [
     path('himitsu/', admin.site.urls),
 
     #Apps
-    path('', include('custom_auth.urls')),
     path('', include('home.urls')),
-    path('', include('core.urls')),
-    path('', include('shortener.urls')),
+    path('auth/', include('custom_auth.urls')),
+    path('core/', include('core.urls')),
+    path('shortener/', include('shortener.urls')),
 
 ]
 
 if settings.DEBUG:
+    import debug_toolbar
     from django.conf.urls.static import static
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+    
+    # import debug_toolbar
+    # urlpatterns += [
+    #     path('__debug__/', include(debug_toolbar.urls)),
+    # ] + urlpatterns
+    # from django.conf.urls.static import static
+    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    
+

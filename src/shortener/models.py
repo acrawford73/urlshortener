@@ -21,7 +21,8 @@ class ShortURL(models.Model):
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	tags = TaggableManager(through='UUIDTaggedItem', blank=True)
-	#notes = models.TextField(default="", max_length=2000, blank=True)
+	notes = models.TextField(default="", max_length=500, blank=True, \
+		help_text="Additional info up to 500 characters.")
 
 	def get_absolute_url(self):
 		return reverse('shortener-list')

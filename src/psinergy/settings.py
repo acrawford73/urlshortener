@@ -56,13 +56,19 @@ if config('PRODUCTION', default=False, cast=bool) == True:
     SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE')
 
     ## Proxy Use Only
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # USE_X_FORWARDED_HOST = False
+
+    # Stripe Payments
+    STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 else:
     DEBUG = True
     SECRET_KEY = config('DEBUG_SECRET_KEY')
     ALLOWED_HOSTS = config('DEBUG_ALLOWED_HOSTS', cast=Csv())
+    INTERNAL_IPS = ['127.0.0.1','192.168.0.17','192.168.11.90']
+    import mimetypes
+    mimetypes.add_type('application/javascript', '.js', True)
 
 
 ### EMAIL
@@ -94,6 +100,7 @@ ADMIN_HONEYPOT_EMAIL_ADMINS = False
 ### APPLICATIONS
 
 INSTALLED_APPS = [
+    'debug_toolbar',
     'custom_auth',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -111,11 +118,15 @@ INSTALLED_APPS = [
     'shortener',
     'core',
     'home',
+    #'subscriptions',
+
 ]
+
 
 MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware', # First
-
+    
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -296,7 +307,7 @@ SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
 #    },
 # }
 
-### REDIS Cluster
+### REDIS Server(s)
 REDIS_LOCATION = config('REDIS_LOCATION', cast=Csv())
 
 ### CACHING
