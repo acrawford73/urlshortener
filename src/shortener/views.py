@@ -34,9 +34,9 @@ from django.views.decorators.cache import cache_page
 def tags_download(request):
 	""" Download entire list of tags in system """
 	tags = Tag.objects.order_by('name').values_list('name', flat=True)
-	content = "\n".join(tags)
-	response = HttpResponse(content, content_type="text/plain")
-	response["Content-Disposition"] = 'attachment; filename="tags.txt"'
+	content = '\n'.join(tags)
+	response = HttpResponse(content, content_type='text/plain')
+	response['Content-Disposition'] = 'attachment; filename="tags.txt"'
 	return response
 
 
@@ -167,7 +167,7 @@ class ShortenerTopListView(OwnerListView):
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
-	
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Top'

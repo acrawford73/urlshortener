@@ -114,7 +114,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    #'django.middleware.cache.UpdateCacheMiddleware', # First
+    # 'django.middleware.cache.UpdateCacheMiddleware', # First
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -124,7 +124,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    #'django.middleware.cache.FetchFromCacheMiddleware', # Last
+    # 'django.middleware.cache.FetchFromCacheMiddleware', # Last
 ]
 
 ROOT_URLCONF = 'psinergy.urls'
@@ -326,6 +326,7 @@ CACHES = {
     },
 }
 
+# CACHES = {
     # 'default': {
     #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
     #     'LOCATION': REDIS_LOCATION,
@@ -352,8 +353,8 @@ CACHES = {
 #     "queue": "short_tasks",
 # }
 
-# BROKER_URL = REDIS_LOCATION
-# CELERY_RESULT_BACKEND = BROKER_URL
+# CELERY_BROKER_URL = REDIS_LOCATION
+# CELERY_RESULT_BACKEND = REDIS_LOCATION
 # CELERY_ACCEPT_CONTENT = ["application/json"]
 # CELERY_TASK_SERIALIZER = "json"
 # CELERY_RESULT_SERIALIZER = "json"
