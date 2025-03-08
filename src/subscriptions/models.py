@@ -7,7 +7,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -22,16 +21,6 @@ class SubscriptionPlan(models.Model):
 		return f"{self.name} - {self.billing_cycle}"
 
 
-class Coupon(models.Model):
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	code = models.CharField(max_length=50, unique=True)
-	discount_percent = models.IntegerField(help_text="Percentage discount")
-	is_active = models.BooleanField(default=True)
-
-	def __str__(self):
-		return f"{self.code} - {self.discount_percent}%"
-
-
 class Subscription(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -42,6 +31,16 @@ class Subscription(models.Model):
 
 	def is_active(self):
 		return self.status == 'active' and self.current_period_end > now()
+
+
+class Coupon(models.Model):
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	code = models.CharField(max_length=50, unique=True)
+	discount_percent = models.IntegerField(help_text="Percentage discount")
+	is_active = models.BooleanField(default=True)
+
+	def __str__(self):
+		return f"{self.code} - {self.discount_percent}%"
 
 
 class CustomDomain(models.Model):

@@ -61,14 +61,12 @@ if config('PRODUCTION', default=False, cast=bool) == True:
 
     # Stripe Payments
     STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+    STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
 
 else:
     DEBUG = True
     SECRET_KEY = config('DEBUG_SECRET_KEY')
     ALLOWED_HOSTS = config('DEBUG_ALLOWED_HOSTS', cast=Csv())
-    INTERNAL_IPS = ['127.0.0.1','192.168.0.17','192.168.11.90']
-    import mimetypes
-    mimetypes.add_type('application/javascript', '.js', True)
 
 
 ### EMAIL
@@ -100,21 +98,28 @@ ADMIN_HONEYPOT_EMAIL_ADMINS = False
 ### APPLICATIONS
 
 INSTALLED_APPS = [
-    'debug_toolbar',
+    
+    # Custom User Model
     'custom_auth',
+
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_registration',
     #'django.contrib.admindocs',
     'django.contrib.sites',
+
+    # Third-party
+    'django_registration',
     'admin_honeypot',
     'crispy_forms',
     'crispy_bootstrap5',
     'taggit',
+    
+    # Project
     'shortener',
     'core',
     'home',
@@ -126,7 +131,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware', # First
     
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -394,3 +398,41 @@ CACHES = {
 # CELERY_TASK_ALWAYS_EAGER = False
 # if os.environ.get("TESTING"):
 #     CELERY_TASK_ALWAYS_EAGER = True
+
+
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type('application/javascript', '.js', True)
+
+    INTERNAL_IPS = ALLOWED_HOSTS
+
+    INSTALLED_APPS += (
+        'debug_toolbar',
+    )
+
+    MIDDLEWARE += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+    
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }
+
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG,  # Show toolbar only if DEBUG is True
+        "RESULTS_CACHE_SIZE": 100,  # Cache size for query panel
+    }
+
+    DEBUG_TOOLBAR_PANELS = [
+        "debug_toolbar.panels.timer.TimerPanel",
+        "debug_toolbar.panels.settings.SettingsPanel",
+        "debug_toolbar.panels.headers.HeadersPanel",
+        "debug_toolbar.panels.request.RequestPanel",
+        "debug_toolbar.panels.sql.SQLPanel",
+        "debug_toolbar.panels.staticfiles.StaticFilesPanel",
+        "debug_toolbar.panels.templates.TemplatesPanel",
+        "debug_toolbar.panels.cache.CachePanel",
+        "debug_toolbar.panels.signals.SignalsPanel",
+        "debug_toolbar.panels.logging.LoggingPanel",
+        "debug_toolbar.panels.redirects.RedirectsPanel",
+    ]

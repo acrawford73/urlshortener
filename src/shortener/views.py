@@ -417,13 +417,13 @@ def get_page_title(url):
 		if match:
 			title = match.group(1)
 			rs.close()
-			return title.strip()[:255]
+			return title.strip()[:500]
 
 		# BS4 then
 		soup = BeautifulSoup(response.text, 'html.parser')
 		soup_title = soup.select_one("title")
 		if soup_title:
-			title = soup_title.text.strip()[:255]
+			title = soup_title.text.strip()[:500]
 			rs.close()
 			return title
 	except requests.exceptions.HTTPError as err:
@@ -455,10 +455,10 @@ async def async_get_title_playwright(url):
 			page = await context.new_page()
 			page.set_default_navigation_timeout(30000.0) # no await needed
 			# Filter out media content, not necessary for HTML parsing
-			await page.route(re.compile(r"\.(qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+			await page.route(re.compile(r"\.(asx|m3u|m3u8|ts|qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
 			title = await page.title()
-			title = title.strip()[:255]
+			title = title.strip()[:500]
 	except Error as err:
 		print(f"Error occurred: {err}")
 	except Exception as e:
