@@ -90,7 +90,7 @@ class ShortenerListByTagView(OwnerListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 50
+	paginate_by = 40
 
 	def get_queryset(self):
 		self.tag = get_object_or_404(Tag, slug=self.kwargs["tag_slug"])
@@ -108,7 +108,7 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 50
+	paginate_by = 40
 
 	def get_queryset(self):
 		return ShortURL.objects.filter(owner=self.kwargs.get('pk'))
@@ -125,7 +125,7 @@ class ShortenerListView(OwnerListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 50
+	paginate_by = 40
 
 	def get_queryset(self):
 		# Get the base queryset from the parent view
@@ -134,7 +134,7 @@ class ShortenerListView(OwnerListView):
 		query = self.request.GET.get('q')
 
 		if self.request.user.is_staff:
-			qs = ShortURL.objects.all() #.order_by('-created_at')  # Staff users see all short URLs
+			qs = ShortURL.objects.all()  # Staff users see all short URLs
 		else:
 			qs = qs.filter(owner=self.request.user)  # Regular users see only their own	
 		if query:
@@ -153,7 +153,7 @@ class ShortenerTopListView(OwnerListView):
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
 	ordering = ['-clicks']
-	paginate_by = 50
+	paginate_by = 40
 
 	def get_queryset(self):
 		qs = super().get_queryset()

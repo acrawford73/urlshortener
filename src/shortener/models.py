@@ -39,4 +39,4 @@ class ShortURL(models.Model):
 
 # Custom Through Model for Taggit
 class UUIDTaggedItem(TaggedItemBase):
-	content_object = models.ForeignKey(ShortURL, on_delete=models.CASCADE, related_name="tagged_items")
+	content_object = models.ForeignKey(ShortURL, on_delete=models.CASCADE, related_name='tagged_items')
