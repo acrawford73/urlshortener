@@ -93,8 +93,9 @@ class ShortenerListByTagView(OwnerListView):
 	paginate_by = 40
 
 	def get_queryset(self):
-		self.tag = get_object_or_404(Tag, slug=self.kwargs["tag_slug"])
-		return ShortURL.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+		qs = super().get_queryset()
+		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+		return qs.select_related('owner').prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -111,7 +112,8 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 	paginate_by = 40
 
 	def get_queryset(self):
-		return ShortURL.objects.filter(owner=self.kwargs.get('pk'))
+		qs = super().get_queryset()
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk'))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -134,11 +136,13 @@ class ShortenerListView(OwnerListView):
 		query = self.request.GET.get('q')
 
 		if self.request.user.is_staff:
-			qs = ShortURL.objects.all()  # Staff users see all short URLs
+			qs = qs.select_related('owner').prefetch_related('tags') # Staff users see all short URLs 
 		else:
-			qs = qs.filter(owner=self.request.user)  # Regular users see only their own	
+			qs = qs.select_related('owner').prefetch_related('tags').filter(owner=self.request.user)
+		
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+		
 		return qs
 
 	def get_context_data(self, **kwargs):
@@ -160,10 +164,10 @@ class ShortenerTopListView(OwnerListView):
 		query = self.request.GET.get('q')
 
 		if self.request.user.is_staff:
-			qs = ShortURL.objects.filter(clicks__gt=0).order_by('-clicks')
+			qs = qs.select_related('owner').prefetch_related('tags').filter(clicks__gt=0)
 		else:
-			qs = qs.filter(clicks__gt=0, owner=self.request.user)  # Regular users see only their own	
-		
+			qs = qs.select_related('owner').prefetch_related('tags').filter(clicks__gt=0, owner=self.request.user)  # Regular users see only their own	
+
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
 		return qs
@@ -225,11 +229,12 @@ class ShortenerDetailView(OwnerDetailView):
 	context_object_name = 'link'
 
 	def get_queryset(self):
+		qs = super().get_queryset()
 		# If the user is staff, allow access to ANY short URL
 		if self.request.user.is_staff:
-			return ShortURL.objects.all()
+			return qs.select_related('owner').prefetch_related('tags')
 		# Otherwise, restrict to links owned by the current user only
-		return ShortURL.objects.filter(owner=self.request.user)
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.request.user)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -265,10 +270,11 @@ class ShortenerUpdateView(OwnerUpdateView):
 	#success_url = reverse_lazy('shortener-detail')
 
 	def get_queryset(self):
+		qs = super().get_queryset()
 		# Allow staff to update any short URL, others only their own
 		if self.request.user.is_staff:
-			return ShortURL.objects.all()
-		return ShortURL.objects.filter(owner=self.request.user)
+			return qs.select_related('owner').prefetch_related('tags')
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.request.user)
 
 	def get_success_url(self):
 		# Capture the page number from the GET request, default to 1
@@ -295,10 +301,11 @@ class ShortenerDeleteView(OwnerDeleteView):
 	#success_url = reverse_lazy('shortener-list')
 
 	def get_queryset(self):
+		qs = super().get_queryset()
 		# Allow staff to delete any short URL, others only their own
 		if self.request.user.is_staff:
-			return ShortURL.objects.all()
-		return ShortURL.objects.filter(owner=self.request.user)
+			return qs.select_related('owner').prefetch_related('tags')
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.request.user)
 
 	def get_success_url(self):
 		page = self.request.GET.get('page', 1)
