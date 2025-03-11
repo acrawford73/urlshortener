@@ -267,7 +267,7 @@ class ShortenerUpdateView(OwnerUpdateView):
 
 
 class ShortenerDeleteView(OwnerDeleteView):
-	""" ShortURL delete view. """
+	"""ShortURL delete view."""
 	model = ShortURL
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
@@ -310,7 +310,7 @@ def search_check(search_domain, search_url):
 
 # Capture the title of the long url that is being shortened
 def get_page_title(url):
-	""" Process that captures the title of a website page. """
+	"""Process that captures the title of a website page."""
 	title = None
 
 	## Specific Cases (Level 1)
@@ -424,7 +424,7 @@ def get_page_title(url):
 
 # https://playwright.dev/docs/api/class-page
 async def async_get_title_playwright(url):
-	""" Browser simulator to acquire website page title. """
+	"""Browser simulator to acquire website page title."""
 	title = None
 	try:
 		async with async_playwright() as p:
@@ -447,23 +447,16 @@ async def async_get_title_playwright(url):
 
 
 def generate_unique_alias(url):
-	""" Generates the unique alias code"""
+	"""Generates the unique alias code."""
 	alias = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-	## alias_code + domain
-	#alias_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-	#domain = urlparse(url).netloc  # www.domain.com
-	#host = '.'.join(domain.split('.')[-2:])  # domain.com
-	#aname = host.split('.')[0]  # domain
-	#alias = alias_code + "-" + aname
 	if not ShortURL.objects.filter(short_alias=alias).exists():
 		return alias
 
 
 @cache_page(60 * 60, key_prefix='redirect_url')  # Cache for 1 hour
 def redirect_url(request, alias):
-	""" Redirect all ShortURL clicks to the original URL. """
+	"""Redirect all ShortURL clicks to the original URL."""
 	url = get_object_or_404(ShortURL, short_alias=alias)
 	url.clicks += 1
 	url.save()
 	return HttpResponseRedirect(url.long_url)
-

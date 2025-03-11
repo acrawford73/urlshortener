@@ -30,7 +30,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('', include('custom_auth.urls')),
     path('', include('core.urls')),
-    path('', include('shortener.urls')),
+    path('', include('shortener.urls')), # don't add path otherwise redirect_url() will break
 
 ]
 
