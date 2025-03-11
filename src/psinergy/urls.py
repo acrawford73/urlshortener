@@ -28,9 +28,9 @@ urlpatterns = [
 
     #Apps
     path('', include('home.urls')),
-    path('auth/', include('custom_auth.urls')),
-    path('core/', include('core.urls')),
-    path('shortener/', include('shortener.urls')),
+    path('', include('custom_auth.urls')),
+    path('', include('core.urls')),
+    path('', include('shortener.urls')),
 
 ]
 
