@@ -459,7 +459,7 @@ def generate_unique_alias(url):
 		return alias
 
 
-@cache_page(60 * 60)  # Cache for 1 hour
+@cache_page(60 * 60, key_prefix='redirect_url')  # Cache for 1 hour
 def redirect_url(request, alias):
 	""" Redirect all ShortURL clicks to the original URL. """
 	url = get_object_or_404(ShortURL, short_alias=alias)
