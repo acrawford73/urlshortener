@@ -46,8 +46,8 @@ Before=nginx.service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/django/psinergy.link/src
-ExecStart=/usr/bin/gunicorn3 --name=psinergy --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py psinergy.wsgi:application
+WorkingDirectory=/home/django/shortener.link/src
+ExecStart=/usr/bin/gunicorn3 --name=shortener --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py shortener.wsgi:application
 Restart=always
 SyslogIdentifier=gunicorn
 User=django
@@ -151,15 +151,15 @@ http {
 }
 ```
 
-2. Copy default server config to psinergy.link, then create symlink.
+2. Copy default server config to shortener.link, then create symlink.
 
 ```
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/psinergy.link
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/shortener.link
 
-ln -s /etc/nginx/sites-available/psinergy.link /etc/nginx/sites-enabled/psinergy.link
+ln -s /etc/nginx/sites-available/shortener.link /etc/nginx/sites-enabled/shortener.link
 ```
 
-3. Configure /etc/nginx/sites-available/psinergy.link
+3. Configure /etc/nginx/sites-available/shortener.link
 
 The SSL configurations will be missing from the configuration file. SSL configurations are added by the Certbot installer).
 
@@ -171,7 +171,7 @@ upstream app_server {
 server {
     listen 80;
     #listen [::]:80;
-    server_name psinergy.link;
+    server_name shortener.link;
     return 302 https://$server_name$request_uri;
 }
 
@@ -188,24 +188,24 @@ server {
 
     client_max_body_size 4G;
 
-    server_name psinergy.link;
+    server_name shortener.link;
 
     keepalive_timeout 5;
 
     # Your Django project's media files - amend as required
     location /media  {
-        alias /home/django/psinergy.link/media;
+        alias /home/django/shortener.link/media;
     }
 
     # your Django project's static files - amend as required
     location /static {
-        alias /home/django/psinergy.link/static_cdn/static;
+        alias /home/django/shortener.link/static_cdn/static;
     }
 
     # Proxy the static assests for the Django Admin panel
     location /static/admin {
        #alias /usr/lib/python3/dist-packages/django/contrib/admin/static/admin/;
-       alias /home/django/psinergy.link/static_cdn/static/admin;
+       alias /home/django/shortener.link/static_cdn/static/admin;
     }
 
     location / {
@@ -247,16 +247,16 @@ The **--nginx** parameter installs certificate, key, and configures Nginx config
 1. Register and create certificates for the domain.
 
 ```
-sudo certbot --nginx -d psinergy.link
+sudo certbot --nginx -d shortener.link
 ```
 
-2. Certbot adds a few lines to the Nginx configuration. Review the sites-enabled/psinergy.link file. 
+2. Certbot adds a few lines to the Nginx configuration. Review the sites-enabled/shortener.link file. 
 
 ```
 listen 443 ssl;
 ...
-ssl_certificate /etc/letsencrypt/live/psinergy.link/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/psinergy.link/privkey.pem;
+ssl_certificate /etc/letsencrypt/live/shortener.link/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/shortener.link/privkey.pem;
 include /etc/letsencrypt/options-ssl-nginx.conf;
 ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 

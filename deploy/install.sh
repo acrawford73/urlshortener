@@ -95,14 +95,14 @@ echo "from users.models import User; User.objects.create_superuser('admin', 'adm
 echo "from django.contrib.sites.models import Site; Site.objects.update(name='$FRONTEND_HOST', domain='$FRONTEND_HOST')" | python manage.py shell
 
 # Deploy project files
-chown -R www-data. /home/django/urlshortener/
+chown -R www-data. /home/django/shortener.link/
 #cp deploy/local_install/celery_long.service /etc/systemd/system/celery_long.service && systemctl enable celery_long && systemctl start celery_long
 #cp deploy/local_install/celery_short.service /etc/systemd/system/celery_short.service && systemctl enable celery_short && systemctl start celery_short
 #cp deploy/local_install/celery_beat.service /etc/systemd/system/celery_beat.service && systemctl enable celery_beat &&systemctl start celery_beat
 #cp deploy/local_install/mediacms.service /etc/systemd/system/mediacms.service && systemctl enable mediacms.service && systemctl start mediacms.service
 cp deploy/local_install/gunicorn.service /etc/systemd/system/gunicorn.service && systemctl enable gunicorn.service && systemctl start gunicorn.service
 
-mkdir -p /etc/letsencrypt/live/urlshortener/
+mkdir -p /etc/letsencrypt/live/shortener.link/
 mkdir -p /etc/letsencrypt/live/$FRONTEND_HOST
 mkdir -p /etc/nginx/sites-enabled
 mkdir -p /etc/nginx/sites-available
@@ -142,6 +142,6 @@ else
 fi
 
 # last, set default owner
-chown -R www-data. /home/mediacms.io/
+chown -R www-data. /home/django/shortener.link/
 
-echo 'ShortURL installation completed, open browser on http://'"$FRONTEND_HOST"' and login with user admin and password '"$ADMIN_PASS"''
+echo 'Shortener installation completed, open browser on http://'"$FRONTEND_HOST"' and login with user admin and password '"$ADMIN_PASS"''

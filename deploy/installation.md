@@ -4,7 +4,7 @@ The following project installation guide is based on Digital Ocean's Marketplace
 
 This image uses Django v5.0, but this project uses the latest v4.2.x version. It also includes Nginx, PostgreSQL, Certbot, and Gunicorn.
 
-For demonstration purposes, the guide will use "psinergy.link" as the web domain.
+For demonstration purposes, the guide will use "shortener.link" as the web domain.
 
 ## Summary
 
@@ -29,7 +29,7 @@ sudo apt-get upgrade
 ## Change server hostname to the domain
 
 ```
-sudo hostnamectl psinergy.link
+sudo hostnamectl shortener.link
 ```
 
 ## Configure SSH
@@ -97,32 +97,32 @@ passwd postgres
 sudo dpkg-reconfigure unattended-upgrades
 ```
 
-2. Install Memcached caching service. 
+2. Install Redis caching service. 
 
 ```
-sudo apt-get install memcached
+sudo apt-get install redis-server
 ```
 
-3. Memcache configuration in Django settings.py (done later):
+3. Redis configuration in Django settings.py (done later):
 
-- For Memcached local:
+- For Redis local:
 
 ```
 CACHES = {
-    'default': {
+    'session': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
         'LOCATION': ['127.0.0.1:11211'],
     },
 }
 ```
 
-- For Memcached cluster (replace IPs):
+- For Redis cluster (replace IPs):
 
 ```
 CACHES = {
-    'default': {
+    'session': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': ['1.2.3.4:11211','1.2.3.5:11211','1.2.3.6:11211'],
+        'LOCATION': ['127.0.0.1:11211','127.0.0.2:11211','127.0.0.3:11211'],
     },
 }
 ```
@@ -156,9 +156,9 @@ su - postgres
 2. Create database and assign user 'django' to it. Use database name that represents your project.
 
 ```
-createdb psinergydb
+createdb shortenerdb
 psql
-GRANT ALL PRIVILEGES ON DATABASE psinergydb TO django;
+GRANT ALL PRIVILEGES ON DATABASE shortenerdb TO django;
 ALTER ROLE django SET client_encoding TO 'UTF8';
 ALTER ROLE django SET default_transaction_isolation TO 'read committed';
 ALTER ROLE django SET timezone TO 'UTC';
@@ -206,7 +206,7 @@ sudo timedatectl set-timezone America/New_York
 
 ```
 cd /home/django
-git clone git@github.com:acrawford73/psinergy.link.git
+git clone git@github.com:acrawford73/shortener.link.git
 ```
 
 ### Configure Environment File
@@ -214,8 +214,8 @@ git clone git@github.com:acrawford73/psinergy.link.git
 1. Copy the sample environment file.
 
 ```
-cp /home/django/psinergy.link/deploy/env_example /home/django/psinergy.link/.env
-chmod 644 /home/django/psinergy.link/.env
+cp /home/django/shortener.link/deploy/env_example /home/django/shortener.link/.env
+chmod 644 /home/django/shortener.link/.env
 ```
 
 2. Adjust `.env` parameters.
@@ -230,8 +230,8 @@ chmod 644 /home/django/psinergy.link/.env
 PRODUCTION=True
 PROD_SECRET_KEY=
 PROD_SECRET_KEY_FALLBACK=
-PROD_ALLOWED_HOSTS='www.psinergy.link,psinergy.link,163.35.184.78'
-SECURE_SSL_HOST='psinergy.link'
+PROD_ALLOWED_HOSTS='www.shortener.link,shortener.link,163.35.184.78'
+SECURE_SSL_HOST='shortener.link'
 SECURE_SSL_REDIRECT=False
 SECURE_REFERRER_POLICY='same-origin'
 SECURE_HSTS_SECONDS=3600
@@ -242,18 +242,19 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin'
 X_FRAME_OPTIONS='DENY'
 CSRF_USE_SESSIONS=True
 CSRF_COOKIE_SECURE=True
-CSRF_COOKIE_DOMAIN='.psinergy.link'
-CSRF_TRUSTED_ORIGINS='https://psinergy.link'
+CSRF_COOKIE_DOMAIN='.shortener.link'
+CSRF_TRUSTED_ORIGINS='https://shortener.link'
 SESSION_COOKIE_SECURE=True
 SESSION_COOKIE_AGE=1209600
 SESSION_COOKIE_NAME='sessionid'
-SESSION_COOKIE_DOMAIN='.psinergy.link'
+SESSION_COOKIE_DOMAIN='.shortener.link'
 SESSION_COOKIE_SAMESITE='Lax'
-SESSION_CACHE_ALIAS='default'
+SESSION_CACHE_ALIAS='session'
+REDIS_LOCATION='redis://127.0.0.1:6379/1'
 DEBUG_SECRET_KEY=
 DEBUG_ALLOWED_HOSTS='localhost,127.0.0.1'
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=psinergydb
+DB_NAME=
 DB_USER=django
 DB_PASSWORD=
 DB_HOST=127.0.0.1
@@ -276,7 +277,7 @@ sudo ln -s /usr/bin/local/python3 /usr/bin/local/python
 2. Install project Pip packages.
 
 ```
-cd /home/django/psinergy.link/
+cd /home/django/shortener.link/
 
 pip install -r requirements.txt
 ```
@@ -294,7 +295,7 @@ playwright install
 1. Migrate database.
 
 ```
-cd /home/django/psinergy.link/src
+cd /home/django/shortener.link/src
 
 python manage.py makemigrations
 python manage.py migrate
@@ -312,7 +313,7 @@ python manage.py collectstatic
 python manage.py createsuperuser
 ```
 
-4. Create cache tables for Memcached.
+4. Create cache tables for Redis.
 
 ```
 python manage.py createcachetable
