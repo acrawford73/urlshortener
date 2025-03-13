@@ -19,7 +19,7 @@ def clear_cache_shorturl_delete(sender, instance, **kwargs):
 	cache.delete('shorturl_list')
 
 
-@receiver(post_save, post_delete, sender=UUIDTaggedItem)
+@receiver([post_save, post_delete], sender=UUIDTaggedItem)
 def clear_cache_uuidtaggeditem(sender, instance, **kwargs):
 	cache_key = f"uuidtaggeditem_{instance.id}"
 	cache.delete(cache_key)
@@ -27,7 +27,7 @@ def clear_cache_uuidtaggeditem(sender, instance, **kwargs):
 	cache.delete(f'uuidtaggeditem_{instance.id}')
 
 
-@receiver(post_save, post_delete, sender=Tag)
+@receiver([post_save, post_delete], sender=Tag)
 def clear_cache_tag(sender, instance, **kwargs):
 	cache_key = f"tag_{instance.id}"
 	cache.delete(cache_key)

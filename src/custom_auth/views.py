@@ -20,6 +20,7 @@ from shortener.models import ShortURL
 
 User = get_user_model()
 
+
 class CustomPasswordResetView(FormView):
 	template_name = 'registration/password_reset_form.html'
 	form_class = PasswordResetForm
