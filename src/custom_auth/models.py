@@ -1,3 +1,4 @@
+# import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
@@ -31,6 +32,7 @@ class CustomUserManager(UserManager):
 
 # All users are stored here
 class User(AbstractUser):
+	# id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	username = None
 	email = models.EmailField(_("email address"), unique=True,)
 	objects = CustomUserManager()
@@ -41,6 +43,7 @@ class User(AbstractUser):
 
 
 class UserProfile(models.Model):
+	# id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
 	bio = models.TextField()
 	def __str__(self):

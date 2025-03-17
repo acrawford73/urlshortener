@@ -322,7 +322,7 @@ CACHES = {
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {
-                'max_connections': 100,
+                'max_connections': 200,
                 'retry_on_timeout': True,
             }
         }
@@ -334,7 +334,7 @@ CACHES = {
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {
-                'max_connections': 100,
+                'max_connections': 200,
                 'retry_on_timeout': True,
             }
         }
@@ -420,7 +420,7 @@ if DEBUG:
 
     DEBUG_TOOLBAR_CONFIG = {
         "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG,  # Show toolbar only if DEBUG is True
-        "RESULTS_CACHE_SIZE": 100,  # Cache size for query panel
+        "RESULTS_CACHE_SIZE": 100,
     }
 
     DEBUG_TOOLBAR_PANELS = [

@@ -21,6 +21,7 @@ class ShortURL(models.Model):
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	tags = TaggableManager(through='UUIDTaggedItem', blank=True, related_name='shorturls')
+	public = models.BooleanField(default=False)
 	notes = models.TextField(default="", max_length=500, blank=True, \
 		help_text="Additional info up to 500 characters.")
 

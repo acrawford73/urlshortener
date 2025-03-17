@@ -50,22 +50,14 @@ class SubscriptionCancelView(LoginRequiredMixin, View):
 
 
 class CancelSubscriptionView(LoginRequiredMixin, View):
-    """Cancels the subscription."""
+    """Cancels the subscription with Stripe."""
     model = Subscription
     def post(self, request, *args, **kwargs):
         subscription = Subscription.objects.get(user=request.user)
-        stripe.Subscription.modify(
-            subscription.stripe_subscription_id,
-            cancel_at_period_end=True
-        )
+        stripe.Subscription.modify(subscription.stripe_subscription_id, cancel_at_period_end=True)
         subscription.status = 'canceled'
         subscription.save()
         return redirect('subscription-detail')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Subscription Cancel'
-        return context
 
 
 class CreateCheckoutSessionView(LoginRequiredMixin, View):
