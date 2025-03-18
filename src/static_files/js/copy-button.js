@@ -37,8 +37,8 @@ copyBtn.addEventListener('click', () => {
 	const text1 = textToCopy1.textContent.trim();
 	const text2 = textToCopy2.textContent.trim();
 	const text3 = textToCopy3.textContent.trim();
-	const text = text1.concat("\n", text2).concat("\n", text3);
-	console.log("Copied: "+text1+", "+text2+", "+text3);
+	const text = `${text1}\n${text2}\n${text3}`;
+	//const text = text1.concat("\n", text2).concat("\n", text3);
 
 	// Check if the Clipboard API is available
 	if (navigator.clipboard && window.isSecureContext) {
