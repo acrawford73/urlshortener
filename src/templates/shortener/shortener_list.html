@@ -111,9 +111,9 @@
                 </td>
                 
                 <td>
-                  <a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><button class="btn btn-sm btn-outline-primary rounded-pill px-2">{{ link.short_alias }}</button></a>&nbsp;
+                  <a class="btn btn-sm btn-outline-primary rounded-pill px-2" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a>
                 </td>
-                
+
                 <td align="left">
                   <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
                   {% if link.title == "" or link.title == None %}
@@ -131,7 +131,7 @@
 
                 {% if user.is_staff %}
                 <td>
-                  <a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a><br />{{ link.created_at|date:"M j Y, g:iA" }}
+                  <a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a><br />{{ link.created_at|date:"M j, Y g:iA" }}
                 </td>
                 {% endif %}
 
