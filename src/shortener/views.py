@@ -309,6 +309,7 @@ def search_check(search_domain, search_url):
 		if match:
 			result = unquote(match.group(1))
 			title = result.replace('+',' ')
+			title = title.strip()
 	return title
 
 
@@ -329,6 +330,7 @@ def get_page_title(url):
 		if match:
 			result = unquote(match.group(1))
 			title = result.replace('+',' ')
+			title = title.strip()
 			return f"{title} - Google Patents Search"
 
 	# Google
@@ -397,7 +399,7 @@ def get_page_title(url):
 		# Check raw title tags first
 		match = re.search(r'<title>(.*?)</title>', response.text, re.IGNORECASE)
 		if match:
-			title = match.group(1)
+			title = unquote(match.group(1))
 			rs.close()
 			return title.strip()[:500]
 
@@ -405,7 +407,8 @@ def get_page_title(url):
 		soup = BeautifulSoup(response.text, 'html.parser')
 		soup_title = soup.select_one("title")
 		if soup_title:
-			title = soup_title.text.strip()[:500]
+			title = title.text.strip()[:500]
+			title = unquote(title)
 			rs.close()
 			return title
 	except requests.exceptions.HTTPError as err:
@@ -440,6 +443,7 @@ async def async_get_title_playwright(url):
 			await page.route(re.compile(r"\.(asx|m3u|m3u8|ts|qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
 			await page.goto(url)
 			title = await page.title()
+			title = unquote(title)
 			title = title.strip()[:500]
 	except Error as err:
 		print(f"Error occurred: {err}")

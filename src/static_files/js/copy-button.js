@@ -34,9 +34,9 @@ function fallbackCopyText(text) {
 // Add click event listener to the button
 copyBtn.addEventListener('click', () => {
 	// Extract the text from the element
-	const text1 = textToCopy1.innerText;
-	const text2 = textToCopy2.innerText;
-	const text3 = textToCopy3.innerText;
+	const text1 = textToCopy1.textContent.trim();
+	const text2 = textToCopy2.textContent.trim();
+	const text3 = textToCopy3.textContent.trim();
 	const text = text1.concat("\n", text2).concat("\n", text3);
 	console.log("Copied: "+text1+", "+text2+", "+text3);
 
