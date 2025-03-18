@@ -4,6 +4,7 @@
 const copyBtn = document.getElementById('copyBtn');
 const textToCopy1 = document.getElementById('shortTitle');
 const textToCopy2 = document.getElementById('shortAlias');
+const textToCopy3 = document.getElementById('shortTags');
 const copyMessage = document.getElementById('copyMessage');
 
 // Function to display a temporary message on the page
@@ -35,7 +36,8 @@ copyBtn.addEventListener('click', () => {
 	// Extract the text from the element
 	const text1 = textToCopy1.innerText;
 	const text2 = textToCopy2.innerText;
-	const text = text1.concat("\n", text2)
+	const text3 = textToCopy3.innerText;
+	const text = text1.concat('\n', text2).concat('\n', text3);
 
 	// Check if the Clipboard API is available
 	if (navigator.clipboard && window.isSecureContext) {
