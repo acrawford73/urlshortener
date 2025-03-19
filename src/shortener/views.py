@@ -330,7 +330,7 @@ def get_page_title(url):
 		if match:
 			result = unquote(match.group(1))
 			title = result.replace('+',' ')
-			title = title.strip()
+			title = title.strip()[:479]
 			return f"{title} - Google Patents Search"
 
 	# Google
