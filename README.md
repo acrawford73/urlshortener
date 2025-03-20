@@ -1,14 +1,18 @@
 ## URL Shortener
 
-Purpose: To condense long web URLs to shareable URLs using an alias code.
+Purpose: To condense long URLs to so that they're shareable.
 
-Example: https://yourdomain.com/a1b2c3
+Example: `https://yourdomain.com/a1b2c3`
 
 Operating System: Ubuntu 22.04 LTS with Python 3.10+
 
+## Domain
+
+Register one domain name for this project.
+
 ## Dev Environment
 
-- Ubuntu 22 VM with 1 Core & 2 GB memory
+- Ubuntu 22.04 LTS VM with 1 Core, 2 GB memory
 - Virtualbox
 
 ### System packages
@@ -41,9 +45,10 @@ Beta:
 Production:
 
 - Load Balancer
-- Memcached host, internal network
+- Redis host, internal network
 - PostgreSQL Database host, internal network
 - Minimum two hosts with Django marketplace droplets with minimum 2 Core & 4 GB memory.
+- Staging host
 
 ## Setup
 

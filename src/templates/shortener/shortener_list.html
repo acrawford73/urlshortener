@@ -121,7 +121,7 @@
                   {% if link.title == "" or link.title == None %}
                     <strong>Title not available</strong>
                   {% else %}
-                    <strong>{{ link.title|truncatechars:60 }}</strong>
+                    <strong>{{ link.title|truncatechars:80 }}</strong>
                   {% endif %}</a><br />
 
                   {% for tag in link.tags.all %}

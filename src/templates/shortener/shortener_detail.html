@@ -69,7 +69,7 @@
               {% if user.is_staff %}
               <tr>
                 <th class="table-primary">User</th>
-                <td>{{ link.owner.email }}</td>
+                <td><a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email }}</a></td>
               </tr>
               {% endif %}
               <tr>
