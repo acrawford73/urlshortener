@@ -355,86 +355,77 @@ class ShortenerDeleteView(OwnerDeleteView):
 # - - - - -
 
 
+# Precompile regex patterns for better performance
+SEARCH_PATTERNS = {
+	"google": re.compile(r"google\.[^/]+/search\?"),
+	"brave": re.compile(r"search\.brave\.[^/]+/search\?"),
+	"duckduckgo": re.compile(r"duckduckgo\.[^/]+/\?")
+	# more search engines...
+}
+
+QUERY_PATTERN = re.compile(r"q=([^&]+)(?:&|$)")
+#PATENTS_QUERY_PATTERN = re.compile(r"q=\(([^)]+)\)(?:&|$)")
+
+
+def extract_query_param(url, pattern):
+	match = pattern.search(url)
+	return unquote(match.group(1)).replace('+', ' ').strip()[:475] if match else None
+
+
 # Check for specific search engines based on common regex
 def search_check(search_domain, search_url):
-	title = None
-	if re.search(search_domain, search_url):
-		# Get text between "q=" and w/wo "&"
-		match = re.search(r'q=([^&]+)(?:&|$)', search_url)
-		if match:
-			result = unquote(match.group(1))
-			title = result.replace('+',' ')
-			title = title.strip()[:475]
-	return title
+	"""Extracts the search query from a given search URL."""
+	if search_domain.search(search_url):
+		return extract_query_param(search_url, QUERY_PATTERN)
+	return None
 
+# def search_check(search_domain, search_url):
+# 	title = None
+# 	if re.search(search_domain, search_url):
+# 		# Get text between "q=" and w/wo "&"
+# 		match = re.search(r'q=([^&]+)(?:&|$)', search_url)
+# 		if match:
+# 			result = unquote(match.group(1))
+# 			title = result.replace('+',' ')
+# 			title = title.strip()[:475]
+# 	return title
 
-# Capture the title of the long url that is being shortened
 def get_page_title(url):
-	"""Process that captures the title of a website page."""
-	title = None
+	"""Fetches the title of a given webpage."""
+	# Check search engines
+	for name, pattern in SEARCH_PATTERNS.items():
+		if title := search_check(pattern, url):
+			return f"{title} - {name.capitalize()} Search"
 
-	## Specific Cases (Level 1)
-	# Cannot reliably get the title tag from search results page
-	# Grab from the search parameter
-
-	search_url = url
-
-	# Google Patents
-	if re.search(r'patents\.google\.[^/]+/\?', search_url) or re.search(r'patents\.google\.[^/]+/patent/', search_url):
-		match = re.search(r'q=\(([^)]+)\)(?:&|$)', search_url)
+	# Google Patents specific case
+	if re.search(r'patents\.google\.[^/]+/\?', url):
+		match = re.search(r'q=\(([^)]+)\)(?:&|$)', url)
 		if match:
-			result = unquote(match.group(1))
-			title = result.replace('+',' ')
-			title = title.strip()[:475]
+			title = unquote(match.group(1)).replace('+',' ').strip()[:475]
 			return f"{title} - Google Patents Search"
 
-	# Google
-	title = search_check(r'google\.[^/]+/search\?', search_url)
-	if title:
-		return f"{title} - Google Search"
-
-	# Brave
-	title = search_check(r'search\.brave\.[^/]+/search\?', search_url)
-	if title:
-		return f"{title} - Brave Search"
-
-	# DuckDuckGo
-	title = search_check(r'duckduckgo\.[^/]+/\?', search_url)
-	if title:
-		return f"{title} - DuckDuckGo Search"
-
-	# # Google Search, format (*google.*/search?)
-	# if re.search(r'google\.[^/]+/search\?', search_url):
-	# 	# Get text between "q=" and w/wo "&"
-	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
+	# Google Patents patent page
+	# if re.search(r'patents\.google\.[^/]+/patent/', url):
+	# 	match = re.search(r'q=\(([^)]+)\)(?:&|$)', url)
 	# 	if match:
-	# 		result = unquote(match.group(1))
-	# 		title = result.replace("+"," ")
-	# 		return str(title) + " - Google Search"
+	# 		title = unquote(match.group(1)).replace('+',' ').strip()[:470]
+	# 		patent = re.search(r'patents\.google\.[^/]+/patent/([^/?]+)', url)
+	# 		patent_number = unquote(patent.group(1)).strip()
+	# 		return f"{patent_number} - {title} - Google Patent"
 
-	# # Brave Search
-	# if re.search(r'search\.brave\.[^/]+/search\?', search_url):
-	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
-	# 	if match:
-	# 		result = unquote(match.group(1))
-	# 		title = result.replace("+"," ")
-	# 		return str(title) + " - Brave Search"
+	# if SEARCH_PATTERNS["google_patents"].search(url):
+	# 	if title := extract_query_param(url, PATENTS_QUERY_PATTERN):
+	# 		return f"{title} - Google Patents Search"
 
-	# # DuckDuckGo Search
-	# if re.search(r'duckduckgo\.[^/]+/\?', search_url):
-	# 	match = re.search(r"q=([^&]+)(?:&|$)", search_url)
-	# 	if match:
-	# 		result = unquote(match.group(1))
-	# 		title = result.replace("+"," ")
-	# 		return str(title) + " - DuckDuckGo Search"
+	# Fallback: Try to fetch the page title
+	return fetch_title_from_html(url) or asyncio.run(async_get_title_playwright(url))
 
 
-	## Requests & BeautifulSoup (Level 2)
+def fetch_title_from_html(url):
 	host_url = url
-	domain = urlparse(host_url).netloc
-	#server_host = '.'.join(domain.split('.')[-2:])
-	server_host = domain
-
+	server_host = urlparse(host_url).netloc
+	
+	"""Attempts to retrieve the title using requests and BeautifulSoup."""
 	headers = {
 		'Host': server_host,
 		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -447,66 +438,153 @@ def get_page_title(url):
 	}
 
 	try:
-		rs = requests.Session()
-		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
-		response.raise_for_status()
-
-		# Check raw title tags first
-		match = re.search(r'<title>(.*?)</title>', response.text, re.IGNORECASE)
-		if match:
-			title = unquote(match.group(1))
-			rs.close()
-			return title.strip()[:500]
-
-		# BS4 then
-		soup = BeautifulSoup(response.text, 'html.parser')
-		soup_title = soup.select_one("title")
-		if soup_title != None:
-			title = soup_title.text.strip()[:500]
-			title = unquote(title)
-			rs.close()
-			return title
-	except requests.exceptions.HTTPError as err:
-		print(f'HTTP Error: {err}')
-	except requests.exceptions.ConnectionError as errc:
-		print(f'Error Connecting: {errc}')
-	except requests.exceptions.Timeout as errt:
-		print(f'Timeout Error: {errt}')
-	except requests.exceptions.TooManyRedirects as errtm:
-		print(f'Too Many Redirects: {errtm}')
-	except requests.exceptions.RequestException as errre:
-		print(f'Oops: Something Else: {errre}')				
+		with requests.Session() as session:
+			response = session.get(url, timeout=10, allow_redirects=True, headers=headers)
+			response.raise_for_status()
+			soup = BeautifulSoup(response.text, 'html.parser')
+			if title_tag := soup.select_one("title"):
+				session.close()
+				return unquote(title_tag.text.strip())[:500]
+	except requests.exceptions.RequestException as err:
+		print(f"Request error: {err}")
 	finally:
-		rs.close()
-
-	## Browser Simulator - final attempt (Level 4)
-	title = asyncio.run(async_get_title_playwright(url))
-	return title
+		session.close()
+	return None
 
 
-# https://playwright.dev/docs/api/class-page
 async def async_get_title_playwright(url):
-	"""Browser simulator to acquire website page title."""
-	title = None
+	"""Fetches the title using Playwright for JavaScript-rendered pages."""
 	try:
 		async with async_playwright() as p:
-			browser = await p.chromium.launch(headless=True)  # Set headless=False if you want to see the browser
+			browser = await p.chromium.launch(headless=True)
 			context = await browser.new_context()
 			page = await context.new_page()
-			page.set_default_navigation_timeout(30000.0) # no await needed
-			# Filter out media content, not necessary for HTML parsing
-			await page.route(re.compile(r"\.(asx|m3u|m3u8|ts|qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+			page.set_default_navigation_timeout(30000)
+			await page.route(re.compile(r"\.(mp4|mp3|jpg|png|gif|svg|woff|ttf|eot)$"), lambda route: route.abort())
 			await page.goto(url)
 			title = await page.title()
-			title = unquote(title)
-			title = title.strip()[:500]
-	except Error as err:
-		print(f"Error occurred: {err}")
+			await browser.close()
+			return unquote(title.strip())[:500]
 	except Exception as e:
-		print(f"Exception occurred: {e}")
-	finally:
-		await browser.close()
-	return title
+		print(f"Playwright error: {e}")
+	return None
+
+
+
+
+# # Capture the title of the long url that is being shortened
+# def get_page_title(url):
+# 	"""Process that captures the title of a website page."""
+# 	title = None
+
+# 	## Specific Cases (Level 1)
+# 	# Cannot reliably get the title tag from search results page
+# 	# Grab from the search parameter
+
+# 	search_url = url
+
+# 	# Google Patents
+# 	if re.search(r'patents\.google\.[^/]+/\?', search_url) or re.search(r'patents\.google\.[^/]+/patent/', search_url):
+# 		match = re.search(r'q=\(([^)]+)\)(?:&|$)', search_url)
+# 		if match:
+# 			result = unquote(match.group(1))
+# 			title = result.replace('+',' ')
+# 			title = title.strip()[:475]
+# 			return f"{title} - Google Patents Search"
+
+# 	# Google
+# 	title = search_check(r'google\.[^/]+/search\?', search_url)
+# 	if title:
+# 		return f"{title} - Google Search"
+
+# 	# Brave
+# 	title = search_check(r'search\.brave\.[^/]+/search\?', search_url)
+# 	if title:
+# 		return f"{title} - Brave Search"
+
+# 	# DuckDuckGo
+# 	title = search_check(r'duckduckgo\.[^/]+/\?', search_url)
+# 	if title:
+# 		return f"{title} - DuckDuckGo Search"
+
+# 	## Requests & BeautifulSoup (Level 2)
+# 	host_url = url
+# 	domain = urlparse(host_url).netloc
+# 	#server_host = '.'.join(domain.split('.')[-2:])
+# 	server_host = domain
+
+# 	headers = {
+# 		'Host': server_host,
+# 		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+# 		'Accept-Language': 'en-US;q=0.7,en;q=0.3',
+# 		'Accept-Encoding': 'gzip, deflate, br, zstd',
+# 		'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0',
+# 		'Connection':'keep-alive',
+# 		'Cache-Control': 'max-age=0',
+# 		'Upgrade-Insecure-Requests': '1',
+# 	}
+
+# 	try:
+# 		rs = requests.Session()
+# 		response = rs.get(url, timeout=10, allow_redirects=True, headers=headers)
+# 		response.raise_for_status()
+
+# 		# Check raw title tags first
+# 		match = re.search(r'<title>(.*?)</title>', response.text, re.IGNORECASE)
+# 		if match:
+# 			title = unquote(match.group(1))
+# 			rs.close()
+# 			return title.strip()[:500]
+
+# 		# BS4 then
+# 		soup = BeautifulSoup(response.text, 'html.parser')
+# 		soup_title = soup.select_one("title")
+# 		if soup_title != None:
+# 			title = soup_title.text.strip()[:500]
+# 			title = unquote(title)
+# 			rs.close()
+# 			return title
+# 	except requests.exceptions.HTTPError as err:
+# 		print(f'HTTP Error: {err}')
+# 	except requests.exceptions.ConnectionError as errc:
+# 		print(f'Error Connecting: {errc}')
+# 	except requests.exceptions.Timeout as errt:
+# 		print(f'Timeout Error: {errt}')
+# 	except requests.exceptions.TooManyRedirects as errtm:
+# 		print(f'Too Many Redirects: {errtm}')
+# 	except requests.exceptions.RequestException as errre:
+# 		print(f'Oops: Something Else: {errre}')				
+# 	finally:
+# 		rs.close()
+
+# 	## Browser Simulator - final attempt (Level 4)
+# 	title = asyncio.run(async_get_title_playwright(url))
+# 	return title
+
+
+# # https://playwright.dev/docs/api/class-page
+# async def async_get_title_playwright(url):
+# 	"""Browser simulator to acquire website page title."""
+# 	title = None
+# 	try:
+# 		async with async_playwright() as p:
+# 			browser = await p.chromium.launch(headless=True)  # Set headless=False if you want to see the browser
+# 			context = await browser.new_context()
+# 			page = await context.new_page()
+# 			page.set_default_navigation_timeout(30000.0) # no await needed
+# 			# Filter out media content, not necessary for HTML parsing
+# 			await page.route(re.compile(r"\.(asx|m3u|m3u8|ts|qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort()) 
+# 			await page.goto(url)
+# 			title = await page.title()
+# 			title = unquote(title)
+# 			title = title.strip()[:500]
+# 	except Error as err:
+# 		print(f"Error occurred: {err}")
+# 	except Exception as e:
+# 		print(f"Exception occurred: {e}")
+# 	finally:
+# 		await browser.close()
+# 	return title
 
 
 def generate_unique_alias(url):
