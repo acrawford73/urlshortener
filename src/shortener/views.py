@@ -309,7 +309,7 @@ def search_check(search_domain, search_url):
 		if match:
 			result = unquote(match.group(1))
 			title = result.replace('+',' ')
-			title = title.strip()[:470]
+			title = title.strip()[:475]
 	return title
 
 
@@ -327,7 +327,6 @@ def get_page_title(url):
 	# Google Patents
 	if re.search(r'patents\.google\.[^/]+/\?', search_url) or re.search(r'patents\.google\.[^/]+/patent/', search_url):
 		match = re.search(r'q=\(([^)]+)\)(?:&|$)', search_url)
-		print("google patent found")
 		if match:
 			result = unquote(match.group(1))
 			title = result.replace('+',' ')
