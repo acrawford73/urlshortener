@@ -22,9 +22,13 @@
 			{% csrf_token %}
 			{{ form|crispy }}
 		
-			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" />
-			<div id="selected-tags" class="mt-2"></div><br />
- -->
+			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" data-role="tagsinput"/> -->
+			
+<!-- 			<select id="tag-input" class="form-control" placeholder="Enter tags" multiple="multiple"></select>
+
+			<div id="selected-tags" class="mt-2"></div>
+			<div id="suggested-tags" class="mt-2"></div> -->
+
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
 			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 		</form>
@@ -38,47 +42,81 @@
 	<!-- container end -->
 	</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <!-- Load Select2 CSS and JS -->
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/select2.min.js' %}"></script>
+	
 	<script>
 		$(document).ready(function() {
-		    var existingTags = JSON.parse('{{ form.tags.value|escapejs }}'); // Load existing tags from Django
-		    console.log("Existing tags:", existingTags);
+			//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
-		    $("#tag-input").select2({
-		        tags: true,  // Allow users to create new tags
-		        tokenSeparators: [','],  // Split tags by comma
-		        minimumInputLength: 1,  // Show suggestions after typing 1 character
-		        ajax: {
-		            url: "{% url 'tags-suggestions' %}",
-		            dataType: 'json',
-		            delay: 250,
-		            data: function(params) {
-		                console.log("Fetching suggestions for:", params.term);
-		                return { term: params.term };
-		            },
-		            processResults: function(data) {
-		                console.log("Received suggestions:", data);
-		                return { results: data };
-		            }
-		        },
-		        // Ensure Select2 sends tags as plain strings
-		        createTag: function(params) {
-		            return {id: String(params.term), text: String(params.term)};
-		        }
-		    });
+			var selectedTags = [];
+			$("#tag-input").select2({
+				tags: true,
+				tokenSeparators: [','],
+				minimumInputLength: 1,
+				ajax: {
+					url: "{% url 'tags-suggestions' %}",
+					dataType: 'json',
+					delay: 250,
+					data: function(params) {
+						return { term: params.term, context: "{{ link.short_alias }}" }; // Pass context
+					},
+					processResults: function(data) {
+						return { results: data.map(tag => ({ id: tag, text: tag })) };
+					},
+					error: function(xhr, status, error) {
+						console.error("Error fetching tags:", error);
+					}
+				},
+				createTag: function(params) {
+					return { id: String(params.term), text: String(params.term) };
+				}
+			});
 
-		    // Preload existing tags when editing
-		    if (existingTags) {
-		        var tagList = existingTags.map(tag => ({ id: tag, text: tag }));
-		        $("#tag-input").select2("data", tagList);
-		    }
+			// Preload existing tags when editing
+			var existingTags = JSON.parse('{{ form.tags.value|escapejs }}');
+			if (existingTags) {
+				selectedTags = existingTags;
+				updateSelectedTags();
+			}
 
-		    $('#tag-input').on('select2:select', function(e) {
-		        var data = e.params.data;
-		        console.log("Selected tag:", data);
-		        $('#selected-tags').append('<span class="badge bg-primary me-1">' + data.text + '</span>');
-		    });
+			// Handle tag selection
+			$('#tag-input').on('select2:select', function(e) {
+				var tagText = e.params.data.text;
+				if (!selectedTags.includes(tagText)) {
+					selectedTags.push(tagText);
+					updateSelectedTags();
+				}
+			});
+
+			// Handle tag removal
+			$('#tag-input').on('select2:unselect', function(e) {
+				var tagText = e.params.data.text;
+				selectedTags = selectedTags.filter(tag => tag !== tagText);
+				updateSelectedTags();
+			});
+
+			// Function to update the UI with selected tags
+			function updateSelectedTags() {
+				$("#selected-tags").html(''); // Clear previous tags
+				selectedTags.forEach(tag => {
+					$("#selected-tags").append(
+						`<span class="badge bg-success me-1">
+							${tag} 
+							<span class="tag-remove" data-tag="${tag}" style="cursor:pointer;"> &times;</span>
+						</span>`
+					);
+				});
+
+				// Bind click event to remove tag
+				$(".tag-remove").click(function() {
+					var tagToRemove = $(this).data("tag");
+					selectedTags = selectedTags.filter(tag => tag !== tagToRemove);
+					updateSelectedTags();
+					$("#tag-input").val(selectedTags).trigger('change'); // Update Select2
+				});
+			}
 		});
 	</script>
 

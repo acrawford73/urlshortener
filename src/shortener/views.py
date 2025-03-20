@@ -61,13 +61,21 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 
 @login_required
+# def tags_suggestions(request):
+# 	"""Return JSON list of tags matching the context-sensitive term."""
+# 	if 'term' in request.GET:
+# 		term = request.GET.get('term', '')
+# 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)[:10]
+# 		suggestions = [{'id': tag.name, 'text': tag.name} for tag in tags]
+# 		return JsonResponse(suggestions, safe=False)
+# 	return JsonResponse([], safe=False)
+
 def tags_suggestions(request):
-	"""Return JSON list of tags matching the context-sensitive term."""
-	if 'term' in request.GET:
-		term = request.GET.get('term', '')
+	term = request.GET.get('term', '').strip()
+	if term:
 		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)[:10]
-		suggestions = [{'id': tag.name, 'text': tag.name} for tag in tags]
-		return JsonResponse(suggestions, safe=False)
+		tag_list = list(tags)
+		return JsonResponse([{"id": tag, "text": tag} for tag in tag_list], safe=False)
 	return JsonResponse([], safe=False)
 
 
