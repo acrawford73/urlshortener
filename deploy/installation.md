@@ -34,7 +34,7 @@ sudo hostnamectl shortener.link
 
 ## Configure SSH
 
-1. Create SSH keys for the django user.
+1. Create SSH keys for the `django` user.
 
 ```
 su - django
@@ -42,26 +42,26 @@ ssh-keygen -t rsa -b 4096
 exit
 ```
 
-2. As the 'root' user, copy root's authorized keys to the 'django' user.
+2. As the `root` user, copy root's authorized keys to the `django` user.
 
 ```
 cp .ssh/authorized_keys /home/django/.ssh/
 chown django:django /home/django/.ssh/authorized_keys
 ```
 
-3. Configure the SSHD service to only accept logins from the 'django' user.
+3. Configure the SSHD service to only accept logins from the `django` user.
 
 ```
 vi /etc/ssh/sshd_config
 ```
 
-4. Allow logins for the 'django' user.
+4. Allow logins for the `django` user.
 
 ```
 AllowUsers django
 ```
 
-5. Disable logins for the 'root' user.
+5. Disable logins for the `root` user.
 
 ```
 PermitRootLogin no
@@ -81,7 +81,7 @@ systemctl restart sshd
 passwd
 ```
 
-2. As root, set the password for the 'postgres' user.
+2. As `root`, set the password for the `postgres` user.
 
 ```
 passwd postgres
@@ -89,7 +89,7 @@ passwd postgres
 
 ## Install system packages for project
 
-**NOTE:** The remainder of the installation will be performed as the 'django' user.
+**NOTE:** The remainder of the installation will be performed as the `django` user.
 
 1. Disable unattended upgrades.
 
@@ -103,7 +103,7 @@ sudo dpkg-reconfigure unattended-upgrades
 sudo apt-get install redis-server
 ```
 
-3. Redis configuration in Django settings.py (done later):
+3. Redis configuration in Django `settings.py` (done later):
 
 - For Redis local:
 
@@ -133,7 +133,7 @@ CACHES = {
 
 - There is an idle connection issue with PostgreSQL and Django 4.x. The database setting CONN_MAX_AGE is not honored.
 
-1. Edit /etc/postgresql/14/main/postgresql.conf
+1. Edit `/etc/postgresql/14/main/postgresql.conf`
 
 ```
 idle_session_timeout = 60000
@@ -153,7 +153,7 @@ sudo systemctl restart postgresql
 su - postgres
 ```
 
-2. Create database and assign user 'django' to it. Use database name that represents your project.
+2. Create database and assign user `django` to it. Use database name that represents your project.
 
 ```
 createdb shortenerdb
@@ -170,7 +170,7 @@ exit
 
 NOTE: Verify server timezone configurations first before setting timezone in database. For this install, the timezone will be kept as UTC.
 
-1. In Django, settings.py:
+1. In Django, `settings.py`:
 
 ```
 TIME_ZONE = 'UTC'

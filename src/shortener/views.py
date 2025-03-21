@@ -27,6 +27,7 @@ from .models import ShortURL
 from taggit.models import Tag
 
 from django.core.cache import cache
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
 
@@ -392,6 +393,8 @@ def search_check(search_domain, search_url):
 
 def get_page_title(url):
 	"""Fetches the title of a given webpage."""
+
+	## Level 1
 	# Check search engines
 	for name, pattern in SEARCH_PATTERNS.items():
 		if title := search_check(pattern, url):
@@ -404,27 +407,16 @@ def get_page_title(url):
 			title = unquote(match.group(1)).replace('+',' ').strip()[:475]
 			return f"{title} - Google Patents Search"
 
-	# Google Patents patent page
-	# if re.search(r'patents\.google\.[^/]+/patent/', url):
-	# 	match = re.search(r'q=\(([^)]+)\)(?:&|$)', url)
-	# 	if match:
-	# 		title = unquote(match.group(1)).replace('+',' ').strip()[:470]
-	# 		patent = re.search(r'patents\.google\.[^/]+/patent/([^/?]+)', url)
-	# 		patent_number = unquote(patent.group(1)).strip()
-	# 		return f"{patent_number} - {title} - Google Patent"
-
-	# if SEARCH_PATTERNS["google_patents"].search(url):
-	# 	if title := extract_query_param(url, PATENTS_QUERY_PATTERN):
-	# 		return f"{title} - Google Patents Search"
-
+	## Level 2 or 3
 	# Fallback: Try to fetch the page title
 	return fetch_title_from_html(url) or asyncio.run(async_get_title_playwright(url))
 
 
+## Level 2 - Requests & BS4
 def fetch_title_from_html(url):
 	host_url = url
 	server_host = urlparse(host_url).netloc
-	
+
 	"""Attempts to retrieve the title using requests and BeautifulSoup."""
 	headers = {
 		'Host': server_host,
@@ -452,6 +444,7 @@ def fetch_title_from_html(url):
 	return None
 
 
+## Level 3 - Browser Simulator
 async def async_get_title_playwright(url):
 	"""Fetches the title using Playwright for JavaScript-rendered pages."""
 	try:
