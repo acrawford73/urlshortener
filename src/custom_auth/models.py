@@ -1,3 +1,6 @@
+
+# https://testdriven.io/blog/django-custom-user-model/
+
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
@@ -48,3 +51,4 @@ class UserProfile(models.Model):
 	bio = models.TextField()
 	def __str__(self):
 		return f"{self.__class__.__name__} object for {self.user}"
+
