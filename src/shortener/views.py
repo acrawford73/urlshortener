@@ -453,7 +453,7 @@ async def async_get_title_playwright(url):
 			context = await browser.new_context()
 			page = await context.new_page()
 			page.set_default_navigation_timeout(30000)
-			await page.route(re.compile(r"\.(mp4|mp3|jpg|png|gif|svg|woff|ttf|eot)$"), lambda route: route.abort())
+			await page.route(re.compile(r"\.(asx|m3u|m3u8|ts|qt|mov|mp4|mpg|m4v|m4a|mp3|ogg|jpeg|jpg|png|gif|svg|webp|wott|woff|otf|eot)$"), lambda route: route.abort())
 			await page.goto(url)
 			title = await page.title()
 			await browser.close()

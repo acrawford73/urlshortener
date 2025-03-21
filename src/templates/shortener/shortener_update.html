@@ -22,12 +22,8 @@
 			{% csrf_token %}
 			{{ form|crispy }}
 		
-			<!-- <input type="text" id="tag-input" class="form-control" placeholder="Enter tags" data-role="tagsinput"/> -->
-			
-<!--			<select id="tag-input" class="form-control" placeholder="Enter tags" multiple="multiple"></select>
-
 			<div id="selected-tags" class="mt-2"></div>
-			<div id="suggested-tags" class="mt-2"></div> -->
+			<div id="suggested-tags" class="mt-2"></div>
 
 			<button type="submit" class="btn btn-primary rounded-pill px-3">Update</button>
 			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
