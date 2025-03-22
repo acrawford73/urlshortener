@@ -46,7 +46,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 	model = Tag
 	template_name = 'shortener/tags_list.html'
 	context_object_name = 'tagslist'
-	ordering = ['name']
+	ordering = ['slug']
 
 	def get_queryset(self):
 		qs = super().get_queryset()
