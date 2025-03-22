@@ -8,4 +8,4 @@ TIMESTAMP=$(date +"%Y%m%d%H%M")
 pg_dump -U $DB_USER $DB_NAME | gzip > "$BACKUP_DIR/${DB_NAME}_${TIMESTAMP}.sql.gz"
 
 # Delete backup files older than 15 days
-find $BACKUP_DIR -type f -name "${DB_NAME}_*.sql.gz" -mtime +15 -exec rm {} \;
+#find $BACKUP_DIR -type f -name "${DB_NAME}_*.sql.gz" -mtime +15 -exec rm {} \;
