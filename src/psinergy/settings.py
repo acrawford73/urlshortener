@@ -86,7 +86,7 @@ AUTH_USER_MODEL = 'custom_auth.User'
 ACCOUNT_ACTIVATION_DAYS = None
 REGISTRATION_OPEN = config('REGISTRATION_OPEN', default=False, cast=bool)
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/recent/'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 
@@ -122,7 +122,7 @@ INSTALLED_APPS = [
     # Project
     'shortener',
     'core',
-    'home',
+    #'home',
     #'subscriptions',
 
 ]
@@ -300,6 +300,11 @@ SESSION_CACHE_ALIAS = config('SESSION_CACHE_ALIAS')
 
 
 ### CACHING
+# CACHE_MIDDLEWARE_ALIAS  = 'redis_cache'
+# CACHE_MIDDLEWARE_SECONDS = 600
+# CACHE_MIDDLEWARE_KEY_PREFIX = 'shortener'  # name of site if multiple sites are used
+
+
 # Memcached
 # CACHES = {
 #    'default': {
@@ -319,6 +324,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': REDIS_LOCATION,
+        'KEY_PREFIX': 'default',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {

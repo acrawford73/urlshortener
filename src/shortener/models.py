@@ -22,6 +22,7 @@ class ShortURL(models.Model):
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	tags = TaggableManager(through='UUIDTaggedItem', blank=True, related_name='shorturls')
 	public = models.BooleanField(default=False)
+	#source_website = models.CharField(default="", max_length=200, null=False, blank=True)
 	notes = models.TextField(default="", max_length=500, blank=True, \
 		help_text="Additional info up to 500 characters.")
 
@@ -41,4 +42,3 @@ class ShortURL(models.Model):
 # Custom Through Model for Taggit
 class UUIDTaggedItem(TaggedItemBase):
 	content_object = models.ForeignKey(ShortURL, on_delete=models.CASCADE, related_name='uuidtaggeditems')
-

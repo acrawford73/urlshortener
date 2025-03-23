@@ -3,7 +3,7 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home' %}"><strong>Psinergy.Link</strong></a>
+      <a class="navbar-brand" href="{% url 'shortener-list-open' %}"><strong>Psinergy.Link</strong></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -41,9 +41,9 @@
         {% else %}
           
           <li class="nav-item">
-             <li class="nav-item">
+<!--              <li class="nav-item">
               <a class="nav-link {% if '/accounts/register' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'django_registration_register' %}">Register</a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a class="nav-link {% if '/login' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'login' %}">Login</a>
             </li>

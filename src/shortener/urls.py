@@ -5,8 +5,8 @@ from . import views
 
 urlpatterns = [
 
-	# path('recents/',				views.ShortenerListViewFree.as_view(), 	name='shortener-list-free'),
-	# path('tags/<slug:tag_slug>/', 	views.ShortenerListByTagViewFree.as_view(), name='shortener-list-by-tag-free'),
+	path('',						views.ShortenerListViewOpen.as_view(), 	name='shortener-list-open'),
+	path('tag/<slug:tag_slug>/', 	views.ShortenerListByTagViewOpen.as_view(), name='shortener-list-by-tag-open'),
 
 	path('recent/',					views.ShortenerListView.as_view(), 		name='shortener-list'),
 	path('top/', 					views.ShortenerTopListView.as_view(), 	name='shortener-list-top'),

@@ -80,51 +80,49 @@ def tags_suggestions(request):
 	return JsonResponse([], safe=False)
 
 
-# class ShortenerListViewFree(ListView):
-# 	""" List all shortened links, login free. """
-# 	model = ShortURL
-# 	template_name = 'shortener/shortener_list_free.html'
-# 	context_object_name = 'links'
-# 	ordering = ['-created_at']
-# 	paginate_by = 100
+class ShortenerListViewOpen(ListView):
+	""" List all shortened links, login free. """
+	model = ShortURL
+	template_name = 'shortener/shortener_list_open.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 100
 
-# 	def get_queryset(self):
-# 		# Get the base queryset from the parent view
-# 		qs = super().get_queryset()
-# 		qs = qs.select_related('owner').prefetch_related('tags')
-# 		# Get the search query from the GET parameters (e.g., ?q=search_term)
-# 		query = self.request.GET.get('q')
-# 		if query:
-# 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
-# 		return qs
+	def get_queryset(self):
+		qs = super().get_queryset()
+		qs = qs.select_related('owner').prefetch_related('tags')
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+		return qs
 
-# 	def get_context_data(self, **kwargs):
-# 		context = super().get_context_data(**kwargs)
-# 		context['page_title'] = 'Recent Links'
-# 		context['total_results'] = self.get_queryset().count()
-# 		return context
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		#context['page_title'] = 'Recent Links'
+		context['total_results'] = self.get_queryset().count()
+		return context
 
 
-# class ShortenerListByTagViewFree(ListView):
-# 	""" 
-# 	Shows links by tag name. All links shown for admins.
-# 	"""
-# 	model = ShortURL
-# 	template_name = 'shortener/shortener_list_free.html'
-# 	context_object_name = 'links'
-# 	ordering = ['-created_at']
-# 	paginate_by = 100
+class ShortenerListByTagViewOpen(ListView):
+	""" 
+	Shows links by tag name, login free.
+	"""
+	model = ShortURL
+	template_name = 'shortener/shortener_list_open.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 100
 
-# 	def get_queryset(self):
-# 		qs = super().get_queryset()
-# 		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-# 		return qs.prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
+	def get_queryset(self):
+		qs = super().get_queryset()
+		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+		return qs.prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
 
-# 	def get_context_data(self, **kwargs):
-# 		context = super().get_context_data(**kwargs)
-# 		context['page_title'] = f"Recents by Tag='{self.tag.name}'"
-# 		context['total_results'] = self.get_queryset().count()
-# 		return context
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = f"Links by Tag='{self.tag.name}'"
+		context['total_results'] = self.get_queryset().count()
+		return context
 
 
 class ShortenerListByTagView(OwnerListView):
