@@ -61,7 +61,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 		return context
 
 
-@login_required
+# @login_required
 # def tags_suggestions(request):
 # 	"""Return JSON list of tags matching the context-sensitive term."""
 # 	if 'term' in request.GET:
@@ -71,6 +71,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 # 		return JsonResponse(suggestions, safe=False)
 # 	return JsonResponse([], safe=False)
 
+@login_required
 def tags_suggestions(request):
 	term = request.GET.get('term', '').strip()
 	if term:

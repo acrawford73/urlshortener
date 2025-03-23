@@ -122,7 +122,7 @@ INSTALLED_APPS = [
     # Project
     'shortener',
     'core',
-    #'home',
+    'home',
     #'subscriptions',
 
 ]
