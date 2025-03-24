@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load shortener_filters %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -68,12 +70,16 @@
               {% if user.is_staff %}
               <tr>
                 <th class="table-primary">User</th>
-                <td><a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email }}</a></td>
+                <td><a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a></td>
               </tr>
               {% endif %}
               <tr>
                 <th class="table-primary">Added</th>
                 <td>{{ link.created_at|date:"F j, Y g:iA" }}</td>
+              </tr>
+              <tr>
+                <th class="table-primary">Private</th>
+                <td>{% if link.private == True %}Yes{% else %}No{% endif %}</td>
               </tr>
 <!--               <tr>
                 <th class="table-primary">Notes</th>

@@ -13,7 +13,7 @@ class ShortURLForm(forms.ModelForm):
 
 
 class ShortURLUpdateForm(forms.ModelForm):
-	#tags = forms.CharField(widget=forms.TextInput(attrs={'id': 'tag-input', 'multiple': 'multiple'}), required=False)
+	#tags = forms.CharField(widget=forms.TextInput(attrs={'id': 'tag-input', 'multiple': 'multiple', 'data-role': 'tagsinput'}), required=False)
 	class Meta:
 		model = ShortURL
 		fields = ['title', 'long_url', 'tags'] #, 'notes']

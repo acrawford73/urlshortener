@@ -82,7 +82,10 @@ def tags_suggestions(request):
 
 
 class ShortenerListViewOpen(ListView):
-	""" List all shortened links, login free. """
+	"""
+	List all shortened links, login free.
+	Private links are not displayed.
+	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list_open.html'
 	context_object_name = 'links'
@@ -91,7 +94,7 @@ class ShortenerListViewOpen(ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		qs = qs.select_related('owner').prefetch_related('tags')
+		qs = qs.filter(private=False).select_related('owner').prefetch_related('tags')
 		query = self.request.GET.get('q')
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
@@ -107,6 +110,7 @@ class ShortenerListViewOpen(ListView):
 class ShortenerListByTagViewOpen(ListView):
 	""" 
 	Shows links by tag name, login free.
+	Private links are not displayed.
 	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list_open.html'
@@ -117,7 +121,7 @@ class ShortenerListByTagViewOpen(ListView):
 	def get_queryset(self):
 		qs = super().get_queryset()
 		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-		return qs.prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
+		return qs.filter(private=False).prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)

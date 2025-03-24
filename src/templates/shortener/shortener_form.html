@@ -39,12 +39,12 @@
 
 {% if user.is_authenticated %}
 <script>
-	document.addEventListener("DOMContentLoaded", function() {
-		let firstInput = document.querySelector("#shorten-form input[type='text'], #shorten-form input[type='url']");
-		if (firstInput) {
-			firstInput.focus();
-		}
-	});
+document.addEventListener("DOMContentLoaded", function() {
+	let firstInput = document.querySelector("#shorten-form input[type='text'], #shorten-form input[type='url']");
+	if (firstInput) {
+		firstInput.focus();
+	}
+});
 </script>
 {% endif %}
 
