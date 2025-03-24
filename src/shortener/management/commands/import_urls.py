@@ -3,6 +3,8 @@ import time
 import random
 import string
 import re
+import logging
+
 import asyncio
 from playwright.async_api import async_playwright, Error
 
@@ -16,6 +18,15 @@ from shortener.models import ShortURL
 
 
 ### Usage:  python manage.py import_urls path/to/urls.txt user_id
+
+
+# Logging
+logging.basicConfig(
+    filename='import_errors.log', 
+    level=logging.ERROR,
+    format='%(asctime)s - Count: %(dcount)s | Alias: %(alias)s | URL: %(url)s | Error: %(message)s',
+    style='{'  # Use `{}` formatting style
+)
 
 
 User = get_user_model()
@@ -94,7 +105,7 @@ def fetch_title_from_html(url):
                 session.close()
                 return unquote(title_tag.text.strip())[:500]
     except requests.exceptions.RequestException as err:
-        print(f"Request error: {err}")
+        logging.error(f"Requests error: {err} | URL: {url}")
     finally:
         session.close()
     return None
@@ -115,7 +126,7 @@ async def async_get_title_playwright(url):
             await browser.close()
             return unquote(title.strip())[:500]
     except Exception as e:
-        print(f"Playwright error: {e}")
+        logging.error(f"Playwright error: {e} | URL: {url}")
     return None
 
 
@@ -145,18 +156,26 @@ class Command(BaseCommand):
 
         count = 0
         for url in urls:
-            longurl = url
-            if longurl.lower().endswith('.pdf'):
+            # Ignore directly linked documents
+            longurl = urlparse(url)
+            if longurl.path.lower().endswith((
+                    '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', '.xml', '.ppt', '.pptx', '.csv', '.rtf',
+                    '.ods', '.ots', '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
+                    '.jpg', '.png', '.gif', '.svg')):
                 continue
-            else:
-                short_alias = generate_short_alias()
-                while ShortURL.objects.filter(short_alias=short_alias).exists():
-                    short_alias = generate_short_alias()
 
+            MAX_ATTEMPTS = 20
+            attempts = 0
+            short_alias = generate_short_alias()
+            while ShortURL.objects.filter(short_alias=short_alias).exists():
+                attempts += 1
+                if attempts >= MAX_ATTEMPTS:
+                    logging.error(f"Failed to generate unique alias for URL: {url}")
+                    continue  # Skip this URL instead of getting stuck in an infinite loop
+                short_alias = generate_short_alias()
+
+            try:
                 title = fetch_page_title(url)
-                short_count = count
-                short_count = str(short_count)
-                print(f'{short_count}: {short_alias}, {title}')
 
                 short_url = ShortURL(
                     id=uuid.uuid4(),
@@ -166,7 +185,10 @@ class Command(BaseCommand):
                     owner=owner
                 )
                 short_url.save()
+                print(f'{count}: {short_alias}, {title}')
                 count += 1
                 time.sleep(random.uniform(0.05, 0.2))
+            except Exception as e:
+                logging.error(f"Error saving URL: {e}", extra={'dcount': count, 'alias': short_alias, 'url': url})
 
         self.stdout.write(self.style.SUCCESS(f'Successfully imported {count} URLs with titles.'))
