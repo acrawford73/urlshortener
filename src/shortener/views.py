@@ -245,8 +245,15 @@ class ShortenerCreateView(OwnerCreateView):
 
 		title = get_page_title(url)
 
+		# Limit alias generations, prevent infinte loop
+		MAX_ATTEMPTS = 30
+		attempts = 0
 		short_alias = generate_unique_alias(url)
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
+			attempts += 1
+			if attempts >= MAX_ATTEMPTS:
+				print("Failed unique alias generation after 20 tries!")
+				contnue
 			short_alias = generate_unique_alias(url)
 
 		shorturl = form.save(commit=False)
@@ -437,9 +444,9 @@ def fetch_title_from_html(url):
 			response = session.get(url, timeout=10, allow_redirects=True, headers=headers)
 			response.raise_for_status()
 			soup = BeautifulSoup(response.text, 'html.parser')
-			if title_tag := soup.select_one("title"):
-				session.close()
-				return unquote(title_tag.text.strip())[:500]
+			title_tag = soup.select_one("title")
+			if title_tag:
+				return unquote(title_tag.string.strip())[:500]
 	except requests.exceptions.RequestException as err:
 		print(f"Request error: {err}")
 	finally:

@@ -17,15 +17,15 @@ from django.contrib.auth import get_user_model
 from shortener.models import ShortURL
 
 
-### Usage:  python manage.py import_urls path/to/urls.txt user_id
-
+# Purpose: Import a list of URLs to shorten.
+# The urls text file is prepared by placing one URL per line.
+# Usage:  python manage.py import_urls path/to/urls.txt user_id
 
 # Logging
 logging.basicConfig(
     filename='import_errors.log', 
     level=logging.ERROR,
-    format='%(asctime)s - Count: %(dcount)s | Alias: %(alias)s | URL: %(url)s | Error: %(message)s',
-    style='{'  # Use `{}` formatting style
+    format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 
@@ -79,7 +79,7 @@ def fetch_page_title(url):
     return fetch_title_from_html(url) or asyncio.run(async_get_title_playwright(url))
 
 
-## Level 2 - Requests & BS4
+## Level 2 - BS4
 def fetch_title_from_html(url):
     host_url = url
     server_host = urlparse(host_url).netloc
@@ -101,9 +101,9 @@ def fetch_title_from_html(url):
             response = session.get(url, timeout=10, allow_redirects=True, headers=headers)
             response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
-            if title_tag := soup.select_one("title"):
-                session.close()
-                return unquote(title_tag.text.strip())[:500]
+            title_tag = soup.select_one("title")
+            if title_tag:
+                return unquote(title_tag.string.strip())[:500]
     except requests.exceptions.RequestException as err:
         logging.error(f"Requests error: {err} | URL: {url}")
     finally:
@@ -130,19 +130,20 @@ async def async_get_title_playwright(url):
     return None
 
 
+# python manage.py import_url ~/path/to/file.txt user_id
 class Command(BaseCommand):
     help = 'Import URLs from a text file and insert them into the ShortURL model'
 
     def add_arguments(self, parser):
         parser.add_argument('file_path', type=str, help='Path to the text file containing URLs')
-        parser.add_argument('user_id', type=int, help='ID of the user who owns the URLs')
+        parser.add_argument('user_id', type=uuid.UUID, help='ID of the user who owns the URLs')
 
     def handle(self, *args, **options):
         file_path = options['file_path']
         user_id = options['user_id']
 
         try:
-            owner = User.objects.get(id=user_id)
+            owner = User.objects.get(id=str(user_id))
         except User.DoesNotExist:
             self.stdout.write(self.style.ERROR(f'User with ID {user_id} does not exist.'))
             return
@@ -156,12 +157,13 @@ class Command(BaseCommand):
 
         count = 0
         for url in urls:
-            # Ignore directly linked documents
+            # Ignore directly linked files
             longurl = urlparse(url)
             if longurl.path.lower().endswith((
-                    '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', '.xml', '.ppt', '.pptx', '.csv', '.rtf',
-                    '.ods', '.ots', '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
-                    '.jpg', '.png', '.gif', '.svg')):
+                    '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', 
+                    '.xml', '.ppt', '.pptx', '.csv', '.rtf', '.ods', '.ots', 
+                    '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
+                    '.jpeg', '.jpg', '.png', '.gif', '.svg')):
                 continue
 
             MAX_ATTEMPTS = 20
@@ -170,11 +172,19 @@ class Command(BaseCommand):
             while ShortURL.objects.filter(short_alias=short_alias).exists():
                 attempts += 1
                 if attempts >= MAX_ATTEMPTS:
-                    logging.error(f"Failed to generate unique alias for URL: {url}")
-                    continue  # Skip this URL instead of getting stuck in an infinite loop
+                    logging.error(f"Failed unique alias generation for URL: {url}")
+                    self.stdout.write(self.style.ERROR(f'Failed unique alias generation: {url}'))
+                    continue
                 short_alias = generate_short_alias()
 
             try:
+                # Check if link is shortened already
+                existing = ShortURL.objects.filter(long_url=url).first()
+                if existing:
+                    logging.error(f'URL already shortened: {url}')
+                    self.stdout.write(self.style.ERROR(f'URL already shortened: {url}'))
+                    continue
+
                 title = fetch_page_title(url)
 
                 short_url = ShortURL(
@@ -185,10 +195,13 @@ class Command(BaseCommand):
                     owner=owner
                 )
                 short_url.save()
-                print(f'{count}: {short_alias}, {title}')
+                print(f'{count}: {short_alias}, {title}, {url}')
                 count += 1
-                time.sleep(random.uniform(0.05, 0.2))
+                time.sleep(random.uniform(0.05, 0.15))
             except Exception as e:
                 logging.error(f"Error saving URL: {e}", extra={'dcount': count, 'alias': short_alias, 'url': url})
 
-        self.stdout.write(self.style.SUCCESS(f'Successfully imported {count} URLs with titles.'))
+        if count == 0:
+            self.stdout.write(self.style.SUCCESS(f'No URLs were imported.'))
+        else:
+            self.stdout.write(self.style.SUCCESS(f'Successfully imported {count} URLs with titles.'))
