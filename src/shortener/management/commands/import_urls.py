@@ -103,7 +103,7 @@ def fetch_title_from_html(url):
             soup = BeautifulSoup(response.text, 'html.parser')
             title_tag = soup.select_one("title")
             if title_tag:
-                return unquote(title_tag.string.strip())[:500]
+                return unquote(title_tag.text.strip())[:500]
     except requests.exceptions.RequestException as err:
         logging.error(f"Requests error: {err} | URL: {url}")
     finally:
