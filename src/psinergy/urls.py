@@ -31,6 +31,8 @@ urlpatterns = [
     path('', include('custom_auth.urls')),
     path('', include('core.urls')),
     path('', include('shortener.urls')), # don't add path otherwise redirect_url() will break
+    #path('', include('news.urls')),
+
 
 ]
 

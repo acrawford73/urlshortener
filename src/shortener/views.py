@@ -234,13 +234,13 @@ class ShortenerCreateView(OwnerCreateView):
 		# Check if owner shortened this link already
 		existing = ShortURL.objects.filter(long_url=url, owner=self.request.user).first()
 		if existing:
-			messages.warning(self.request, "This URL was already shortened.")
+			messages.warning(self.request, "Thanks, but this URL is already shortened.")
 			return redirect('shortener-detail', pk=existing.pk)
 
 		# Check if anyone else shortened this link already
 		existing = ShortURL.objects.filter(long_url=url).first()
 		if existing:
-			messages.warning(self.request, "This URL was already shortened.")
+			messages.warning(self.request, "Thanks, but this URL is already shortened.")
 			return redirect('shortener-detail-exists', pk=existing.pk)
 
 		title = get_page_title(url)
@@ -446,7 +446,7 @@ def fetch_title_from_html(url):
 			soup = BeautifulSoup(response.text, 'html.parser')
 			title_tag = soup.select_one("title")
 			if title_tag:
-				return unquote(title_tag.string.strip())[:500]
+				return unquote(title_tag.text.strip())[:500]
 	except requests.exceptions.RequestException as err:
 		print(f"Request error: {err}")
 	finally:
