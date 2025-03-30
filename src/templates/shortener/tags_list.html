@@ -19,7 +19,7 @@
           <form method="GET" action="">
             {{ form|crispy }}
             <div class="input-group mb-3">
-              <input id="search" type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Search Tags" aria-label="Search Tags" aria-describedby="button-addon2">
+              <input id="search" type="text" name="q" class="form-control" value="{{ request.GET.q }}" placeholder="Search Topics" aria-label="Search Topics" aria-describedby="button-addon2">
               <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
             </div>
           </form>
@@ -31,7 +31,7 @@
       <div class="col-sm-3">&nbsp;</div>
       <div class="col-md-6">
 
-        <p>{% if tagslist %}{{ tagslist.count }}{% else %}0{% endif %} tags. <a href="{% url 'tags-download' %}">Download tags list</a></p>
+        <p>{% if tagslist %}{{ tagslist.count }}{% else %}0{% endif %} tags. <a href="{% url 'tags-download' %}">Download tags as text file</a></p>
 
         <div class="table-responsive">
           <table class="table table-striped table-hover table-md">

@@ -8,10 +8,11 @@ class OwnerListView(LoginRequiredMixin, ListView):
     """
     def get_queryset(self):
         qs = super(OwnerListView, self).get_queryset()
-        if self.request.user.is_staff:
-            return qs
-        else:
-            return qs.filter(owner=self.request.user)
+        # if self.request.user.is_staff:
+        #     return qs
+        # else:
+        #     return qs.filter(owner=self.request.user)
+        return qs.filter(owner=self.request.user)
 
 
 class OwnerDetailView(LoginRequiredMixin, DetailView):

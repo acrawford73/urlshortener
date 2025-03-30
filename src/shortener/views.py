@@ -30,6 +30,9 @@ from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
+# from django.contrib.syndication.views import Feed
+# from django.utils.feedgenerator import Atom1Feed
+
 
 @login_required
 def tags_download(request):
@@ -94,7 +97,7 @@ class ShortenerListViewOpen(ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		qs = qs.filter(private=False).select_related('owner').prefetch_related('tags')
+		qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
 		query = self.request.GET.get('q')
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
@@ -121,11 +124,33 @@ class ShortenerListByTagViewOpen(ListView):
 	def get_queryset(self):
 		qs = super().get_queryset()
 		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-		return qs.filter(private=False).prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug'))
+		return qs.prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug')).filter(private=False)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = f"Links by Tag='{self.tag.name}'"
+		context['total_results'] = self.get_queryset().count()
+		return context
+
+
+class ShortenerAllListByTagView(LoginRequiredMixin, ListView):
+	""" 
+	Shows any link by tag name.
+	"""
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 40
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+		return qs.select_related('owner').prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug')).filter(private=False)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -162,7 +187,7 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk'))
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk')).filter(private=False)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -196,8 +221,32 @@ class ShortenerListView(OwnerListView):
 		return context
 
 
+class ShortenerAllListView(LoginRequiredMixin, ListView):
+	""" List all shortened links. Ignore private links. """
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 40
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+		return qs
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'All Recent'
+		context['total_results'] = self.get_queryset().count()
+		return context
+
+
+
 class ShortenerTopListView(OwnerListView):
-	""" List all shortened links that have been clicked, descending order. """
+	""" List all owner's shortened links that have been clicked, descending order. """
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -214,7 +263,30 @@ class ShortenerTopListView(OwnerListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Top'
+		context['page_title'] = 'My Top Views'
+		context['total_results'] = self.get_queryset().count()
+		return context
+
+
+class ShortenerTopAllListView(LoginRequiredMixin, ListView):
+	""" List all shortened links that have been clicked, descending order. """
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-clicks']
+	paginate_by = 40
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		qs = qs.select_related('owner').prefetch_related('tags').filter(clicks__gt=0).filter(private=False)
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+		return qs
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Top Views'
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -279,6 +351,24 @@ class ShortenerDetailView(OwnerDetailView):
 	def get_queryset(self):
 		qs = super().get_queryset()
 		# If the user is staff, allow access to ANY short URL (handled in owner.py)
+		return qs.select_related('owner').prefetch_related('tags')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"{short_alias}"
+		return context
+
+
+class ShortenerAllDetailView(LoginRequiredMixin, DetailView):
+	""" ShortURL detail view for non-owner links. """
+	model = ShortURL
+	template_name = 'shortener/shortener_detail.html'
+	context_object_name = 'link'
+
+	def get_queryset(self):
+		qs = super().get_queryset()
 		return qs.select_related('owner').prefetch_related('tags')
 
 	def get_context_data(self, **kwargs):
@@ -604,3 +694,44 @@ def redirect_url(request, alias):
 	url.clicks += 1
 	url.save()
 	return HttpResponseRedirect(url.long_url)
+
+
+### RSS Feed
+# class ShortURLRSSFeed(Feed):
+# 	title = "ShortURL Feed"
+# 	link = "/recents/rss/"
+# 	description = "Latest Short URLs"
+# 	feed_copyright = "PSINERGY.LINK"
+# 	ttl = 600
+# 	def items(self):
+# 		return ShortURL.objects.filter(private=False).order_by("-created_at")[:50]
+# 	def item_title(self, item):
+# 		return item.title
+# 	def item_description(self, item):
+# 		# if (item.long_description is None) or (item.long_description == ""):
+# 		# 	item.long_description = "Long description not available"
+# 		# return item.long_description
+# 		return ""
+# 	def item_link(self, item):
+# 		return "/rss/%s/" % (item.id)
+# 	def item_author_name(self, item):
+# 		if (item.username is None) or (item.username == ""):
+# 			return "Unknown"
+# 		else:
+# 			return item.username
+# 	def item_guid(self, item):
+# 		guid = item.id
+# 		return guid.upper()
+# 	def item_pubdate(self, item):
+# 		return item.created_at
+# 	### should implement
+# 	#def item_updateddate(self, item):
+# 	#	return item.updated
+# 	def get_feed(self, obj, request):
+# 		feedgen = super().get_feed(obj, request)
+# 		feedgen.content_type = "application/xml; charset=utf-8"
+# 		return feedgen
+
+# class ShortURLAtomFeed(ShortURLRSSFeed):
+# 	feed_type = Atom1Feed
+# 	subtitle = ShortURLRSSFeed.description

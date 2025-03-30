@@ -91,6 +91,7 @@
                 <th>Actions</th>
                 <th>&nbsp;</th>
                 <th align="left">Short URLs</th>
+                <th>Source</th>
                 <th>Views</th>
                 {% if user.is_staff %}
                 <th>User / Added</th>
@@ -118,7 +119,11 @@
                 </td>
 
                 <td align="left">
+                  {% if link.owner == user or user.is_staff %}
                   <a href="{% url 'shortener-detail' link.id %}?page={{ page_obj.number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                  {% else %}
+                  <a href="{% url 'shortener-detail-all' link.id %}?page={{ page_obj.number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                  {% endif %}
                   {% if link.title == "" or link.title == None %}
                     <strong>Title not available</strong>
                   {% else %}
@@ -129,6 +134,8 @@
                     <a href="{% url 'shortener-list-by-tag' tag.slug %}"><span class="badge text-bg-success">{{ tag.name }}</span></a>
                   {% endfor %}
                 </td>
+
+                <td>{{ link.long_url|long_url_website }}</td>
 
                 <td>{{ link.clicks }}</td>
 
