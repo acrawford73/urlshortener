@@ -21,15 +21,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if '/my_views' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top' %}">Views</a>
-          </li>
-
-          <li class="nav-item">
             <a class="nav-link {% if '/all_links' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-all' %}">All Links</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link {% if '/all_views' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top-all' %}">All Views</a>
           </li>
 
           <li class="nav-item">

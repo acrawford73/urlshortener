@@ -13,8 +13,8 @@ urlpatterns = [
 	path('my_links/',				views.ShortenerListView.as_view(), 			name='shortener-list'),
 	path('all_links/',				views.ShortenerAllListView.as_view(), 		name='shortener-list-all'),
 	
-	path('my_views/', 				views.ShortenerTopListView.as_view(), 		name='shortener-list-top'),
-	path('all_views/',		 		views.ShortenerTopAllListView.as_view(), 	name='shortener-list-top-all'),
+	path('my_links/top/', 			views.ShortenerTopListView.as_view(), 		name='shortener-list-top'),
+	path('all_links/top/',		 	views.ShortenerTopAllListView.as_view(), 	name='shortener-list-top-all'),
 	
 	path('create/', 				views.ShortenerCreateView.as_view(), 		name='shortener-create'),
 	path('update/<uuid:pk>/', 		views.ShortenerUpdateView.as_view(), 		name='shortener-update'),

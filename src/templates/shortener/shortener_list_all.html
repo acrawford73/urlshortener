@@ -94,7 +94,7 @@
                 <th>&nbsp;</th>
                 <th align="left">Short URLs</th>
                 <th>Source</th>
-                <th>Views</th>
+                <th><a href="{% url 'shortener-list-top-all' %}">Views</a></th>
                 {% if user.is_staff %}
                 <th>User / Added</th>
                 {% endif %}
