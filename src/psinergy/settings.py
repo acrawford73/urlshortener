@@ -85,7 +85,7 @@ SITE_ID = int(config('SITE_ID'))
 AUTH_USER_MODEL = 'custom_auth.User'
 ACCOUNT_ACTIVATION_DAYS = None
 REGISTRATION_OPEN = config('REGISTRATION_OPEN', default=False, cast=bool)
-LOGIN_REDIRECT_URL = '/recent/'
+LOGIN_REDIRECT_URL = '/my_links/'
 LOGOUT_REDIRECT_URL = '/'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
