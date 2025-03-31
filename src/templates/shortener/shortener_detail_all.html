@@ -40,7 +40,7 @@
             <button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button>&nbsp;&nbsp;
             {% if link.owner == user or user.is_staff %}
             <a href="{% url 'shortener-update-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit Link</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'shortener-delete' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="deleteBtn" class="btn btn-danger rounded-pill px-3">Delete</button></a>
+            <a href="{% url 'shortener-delete-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="deleteBtn" class="btn btn-danger rounded-pill px-3">Delete</button></a>
             {% endif %}
           </p>
 

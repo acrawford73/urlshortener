@@ -462,7 +462,7 @@ class ShortenerAllUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ShortenerDeleteView(OwnerDeleteView):
-	"""ShortURL delete view."""
+	"""ShortURL delete view for owner's links."""
 	model = ShortURL
 	template_name = 'shortener/shortener_confirm_delete.html'
 	context_object_name = 'link'
@@ -479,6 +479,33 @@ class ShortenerDeleteView(OwnerDeleteView):
 		if query:
 			return f"{reverse('shortener-list')}?page={page}&q={query}"
 		return f"{reverse('shortener-list')}?page={page}"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"Delete {short_alias}"
+		return context
+
+
+class ShortenerAllDeleteView(OwnerDeleteView):
+	"""ShortURL delete view."""
+	model = ShortURL
+	template_name = 'shortener/shortener_confirm_delete_all.html'
+	context_object_name = 'link'
+	#success_url = reverse_lazy('shortener-list')
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		# Allow staff to delete any short URL, others only their own
+		return qs.select_related('owner').prefetch_related('tags')
+
+	def get_success_url(self):
+		page = self.request.GET.get('page', 1)
+		query = self.request.GET.get('q', '')
+		if query:
+			return f"{reverse('shortener-list-all')}?page={page}&q={query}"
+		return f"{reverse('shortener-list-all')}?page={page}"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
