@@ -17,23 +17,23 @@
         {% if user.is_authenticated %}
 
           <li class="nav-item">
-            <a class="nav-link {% if '/recent' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list' %}">My Links</a>
+            <a class="nav-link {% if '/my_links' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list' %}">My Links</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if '/top' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top' %}">Viewed</a>
+            <a class="nav-link {% if '/my_views' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top' %}">Views</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if '/all' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-all' %}">All Links</a>
+            <a class="nav-link {% if '/all_links' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-all' %}">All Links</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if '/viewed' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top-all' %}">All Viewed</a>
+            <a class="nav-link {% if '/all_views' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'shortener-list-top-all' %}">All Views</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link {% if '/tags' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Topics</a>
+            <a class="nav-link {% if '/topics' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Topics</a>
           </li>
 
           <li class="nav-item">

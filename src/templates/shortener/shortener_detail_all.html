@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load shortener_filters %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<<!-- Begin page content -->
+<main class="flex-shrink-0">
+  <div class="container" align="center">
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+    {% if user.is_authenticated %}
+
+    <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten us up another link</button></a></p>
+
+    <div class="row">
+      <div class="col-sm-3">&nbsp;</div>
+        <div class="col-sm-6 table-responsive">
+          <p>{% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-info">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}<p>
+        </div>
+      <div class="col-sm-3">&nbsp;</div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-1">&nbsp;</div>
+        <div class="col-sm-10 table-responsive">
+
+          <p>
+            <button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button>&nbsp;&nbsp;
+            {% if link.owner == user or user.is_staff %}
+            <a href="{% url 'shortener-update-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit Link</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'shortener-delete' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="deleteBtn" class="btn btn-danger rounded-pill px-3">Delete</button></a>
+            {% endif %}
+          </p>
+
+          <div id="copyMessage"></div><br />
+
+          <table class="table">
+            <tbody>
+              <tr>
+                <th class="table-primary">Title</th>
+                <td id="shortTitle">{{ link.title }}</td>
+              </tr>
+              <tr>
+                <th class="table-primary">Short</th>
+                <td id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}</strong></a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Tags</th>
+                <td id="shortTags">{% for tag in link.tags.all %}<span class="badge text-bg-success">#{{ tag.slug }}</span> {% endfor %}</td>
+              </tr>
+              <tr>
+                <th class="table-primary">Original</th>
+                <td><a href="{{ link.long_url }}" target="_blank">{{ link.long_url }}</a></td>
+              </tr>
+              <tr>
+                <th class="table-primary">Views</th>
+                <td>{{ link.clicks }}</td>
+              </tr>
+              {% if user.is_staff %}
+              <tr>
+                <th class="table-primary">User</th>
+                <td><a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a></td>
+              </tr>
+              {% endif %}
+              <tr>
+                <th class="table-primary">Added</th>
+                <td>{{ link.created_at|date:"F j, Y g:iA" }}</td>
+              </tr>
+              {% if link.owner == user or user.is_staff %}
+              <tr>
+                <th class="table-primary">Private</th>
+                <td>{% if link.private == True %}Yes{% else %}No{% endif %}</td>
+              </tr>
+              {% endif %}
+<!--               <tr>
+                <th class="table-primary">Notes</th>
+                <td>{{ link.notes }}</td>
+              </tr> -->
+            </tbody>
+          </table>
+
+        </div>
+      <div class="col-sm-1">&nbsp;</div>
+
+    <!-- row end -->
+    </div>
+    <script src="{% static 'js/copy-button.js' %}"></script>
+
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+    {% endif %}
+
+  <!-- container end -->
+  </div>
+
+</main>
+
+{% endblock %}

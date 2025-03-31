@@ -17,7 +17,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from django.views import View
 from django.db.models import Q
 
@@ -86,8 +86,8 @@ def tags_suggestions(request):
 
 class ShortenerListViewOpen(ListView):
 	"""
-	List all shortened links, login free.
-	Private links are not displayed.
+	List all shortened links, no login, public.
+	Private links are skipped.
 	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list_open.html'
@@ -112,8 +112,8 @@ class ShortenerListViewOpen(ListView):
 
 class ShortenerListByTagViewOpen(ListView):
 	""" 
-	Shows links by tag name, login free.
-	Private links are not displayed.
+	Shows links by tag name, no login.
+	Private links are skipped.
 	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list_open.html'
@@ -135,10 +135,11 @@ class ShortenerListByTagViewOpen(ListView):
 
 class ShortenerAllListByTagView(LoginRequiredMixin, ListView):
 	""" 
-	Shows any link by tag name.
+	Shows all links by tag name.
+	Private links are skipped.
 	"""
 	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
+	template_name = 'shortener/shortener_list_all.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
 	paginate_by = 40
@@ -157,7 +158,7 @@ class ShortenerAllListByTagView(LoginRequiredMixin, ListView):
 
 class ShortenerListByTagView(OwnerListView):
 	""" 
-	Shows owner's links by tag name. All links shown for admins.
+	Shows owner's links by tag name.
 	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
@@ -177,10 +178,34 @@ class ShortenerListByTagView(OwnerListView):
 		return context
 
 
-class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
-	""" Show shortened links by specific owner. """
+class ShortenerListAllByTagView(LoginRequiredMixin, ListView):
+	""" 
+	Shows all links by tag name.
+	"""
 	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
+	template_name = 'shortener/shortener_list_all.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 40
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+		return qs.select_related('owner').prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug')).filter(private=False)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
+		context['total_results'] = self.get_queryset().count()
+		return context
+
+
+class ShortenerByOwnerListView(LoginRequiredMixin, ListView):
+	"""
+	Show shortened links by owner/user.
+	"""
+	model = ShortURL
+	template_name = 'shortener/shortener_list_all.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
 	paginate_by = 40
@@ -197,7 +222,9 @@ class ShortenerListByOwnerView(LoginRequiredMixin, ListView):
 
 
 class ShortenerListView(OwnerListView):
-	""" List all shortened links owned by user. """
+	"""
+	List all shortened links owned by a user.
+	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list.html'
 	context_object_name = 'links'
@@ -224,7 +251,7 @@ class ShortenerListView(OwnerListView):
 class ShortenerAllListView(LoginRequiredMixin, ListView):
 	""" List all shortened links. Ignore private links. """
 	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
+	template_name = 'shortener/shortener_list_all.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
 	paginate_by = 40
@@ -271,7 +298,7 @@ class ShortenerTopListView(OwnerListView):
 class ShortenerTopAllListView(LoginRequiredMixin, ListView):
 	""" List all shortened links that have been clicked, descending order. """
 	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
+	template_name = 'shortener/shortener_list_all.html'
 	context_object_name = 'links'
 	ordering = ['-clicks']
 	paginate_by = 40
@@ -313,7 +340,7 @@ class ShortenerCreateView(OwnerCreateView):
 		existing = ShortURL.objects.filter(long_url=url).first()
 		if existing:
 			messages.warning(self.request, "Thanks, but this URL is already shortened.")
-			return redirect('shortener-detail-exists', pk=existing.pk)
+			return redirect('shortener-detail-all', pk=existing.pk)
 
 		title = get_page_title(url)
 
@@ -364,7 +391,7 @@ class ShortenerDetailView(OwnerDetailView):
 class ShortenerAllDetailView(LoginRequiredMixin, DetailView):
 	""" ShortURL detail view for non-owner links. """
 	model = ShortURL
-	template_name = 'shortener/shortener_detail.html'
+	template_name = 'shortener/shortener_detail_all.html'
 	context_object_name = 'link'
 
 	def get_queryset(self):
@@ -379,25 +406,8 @@ class ShortenerAllDetailView(LoginRequiredMixin, DetailView):
 		return context
 
 
-class ShortenerDetailExistsView(LoginRequiredMixin, DetailView):
-	""" 
-	ShortURL detail view for link that already exists.
-	Presented when the ShortURL is from another user.
-	"""
-	model = ShortURL
-	template_name = 'shortener/shortener_detail.html'
-	context_object_name = 'link'
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page'] = self.request.GET.get('page', 1)
-		short_alias = self.object.short_alias
-		context['page_title'] = f"{short_alias}"
-		return context
-
-
 class ShortenerUpdateView(OwnerUpdateView):
-	""" ShortURL update view. """
+	""" ShortURL update view by owner. """
 	model = ShortURL
 	form_class = ShortURLUpdateForm
 	template_name = 'shortener/shortener_update.html'
@@ -410,13 +420,38 @@ class ShortenerUpdateView(OwnerUpdateView):
 		return qs.select_related('owner').prefetch_related('tags')
 
 	def get_success_url(self):
-		# Capture the page number from the GET request, default to 1
 		page = self.request.GET.get('page', 1)
 		query = self.request.GET.get('q', '')
 		if query:
 			return f"{reverse('shortener-list')}?page={page}&q={query}"
 		return f"{reverse('shortener-list')}?page={page}"
 		#return f"{reverse('shortener-detail', kwargs={'pk': self.object.pk})}?page={page}"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page'] = self.request.GET.get('page', 1)
+		short_alias = self.object.short_alias
+		context['page_title'] = f"Update {short_alias}"
+		return context
+
+
+class ShortenerAllUpdateView(LoginRequiredMixin, UpdateView):
+	""" ShortURL update view. """
+	model = ShortURL
+	form_class = ShortURLUpdateForm
+	template_name = 'shortener/shortener_update.html'
+	context_object_name = 'link'
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		return qs.select_related('owner').prefetch_related('tags')
+
+	def get_success_url(self):
+		page = self.request.GET.get('page', 1)
+		query = self.request.GET.get('q', '')
+		if query:
+			return f"{reverse('shortener-list-all')}?page={page}&q={query}"
+		return f"{reverse('shortener-list-all')}?page={page}"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -715,18 +750,12 @@ def redirect_url(request, alias):
 # 	def item_link(self, item):
 # 		return "/rss/%s/" % (item.id)
 # 	def item_author_name(self, item):
-# 		if (item.username is None) or (item.username == ""):
-# 			return "Unknown"
-# 		else:
-# 			return item.username
+# 			return "psinergylink"
 # 	def item_guid(self, item):
 # 		guid = item.id
 # 		return guid.upper()
 # 	def item_pubdate(self, item):
 # 		return item.created_at
-# 	### should implement
-# 	#def item_updateddate(self, item):
-# 	#	return item.updated
 # 	def get_feed(self, obj, request):
 # 		feedgen = super().get_feed(obj, request)
 # 		feedgen.content_type = "application/xml; charset=utf-8"
