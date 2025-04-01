@@ -36,11 +36,11 @@ from django.views.decorators.cache import cache_page
 
 @login_required
 def tags_download(request):
-	""" Download entire list of tags in system """
+	""" Download list of all tags in system """
 	tags = Tag.objects.order_by('name').values_list('name', flat=True)
 	content = '\n'.join(tags)
 	response = HttpResponse(content, content_type='text/plain')
-	response['Content-Disposition'] = 'attachment; filename="tags.txt"'
+	response['Content-Disposition'] = 'attachment; filename="topics.txt"'
 	return response
 
 
