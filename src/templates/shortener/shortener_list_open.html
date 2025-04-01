@@ -99,7 +99,8 @@
                     {% if link.title == "" or link.title == None %}
                       <strong>Title not available</strong>
                     {% else %}
-                      <strong>{{ link.title|truncatechars:100 }}</strong>
+                      <strong>{{ link.title }}</strong>
+                      <!-- <strong>{{ link.title|truncatechars:100 }}</strong> -->
                     {% endif %}</a><br />
                   </div>
 
