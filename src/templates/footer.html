@@ -2,11 +2,9 @@
 <footer class="text-muted">
   <div class="container" align="center">
     
-    {% if user.is_authenticated %}
     <p class="float-right">
       <a href="#top">Back to top</a>
     </p>
-    {% endif %}
 
     {% if user.is_authenticated %}
     <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list' %}">Psinergy.Link</a> [BETA]</p>
