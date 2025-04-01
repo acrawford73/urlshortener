@@ -46,7 +46,7 @@
 
               {% for tag in tagslist %}
               <tr align="center">
-                <td><a href="{% url 'shortener-list-by-tag' tag.slug %}">{{ tag.name }}</a></td>
+                <td><a href="{% url 'shortener-list-by-tag-all' tag.slug %}">{{ tag.name }}</a></td>
               </tr>
               {% endfor %}
 
