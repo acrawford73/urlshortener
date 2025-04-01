@@ -200,9 +200,9 @@ class ShortenerListAllByTagView(LoginRequiredMixin, ListView):
 		return context
 
 
-class ShortenerByOwnerListView(LoginRequiredMixin, ListView):
+class ShortenerAllByOwnerListView(LoginRequiredMixin, ListView):
 	"""
-	Show shortened links by owner/user.
+	Show shortened links by ANY user.
 	"""
 	model = ShortURL
 	template_name = 'shortener/shortener_list_all.html'
@@ -217,6 +217,27 @@ class ShortenerByOwnerListView(LoginRequiredMixin, ListView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Links'
+		context['total_results'] = self.get_queryset().count()
+		return context
+
+
+class ShortenerByOwnerListView(OwnerListView):
+	"""
+	Show shortened links by owner/user.
+	"""
+	model = ShortURL
+	template_name = 'shortener/shortener_list.html'
+	context_object_name = 'links'
+	ordering = ['-created_at']
+	paginate_by = 40
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk')).filter(private=False)
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'My Links'
 		context['total_results'] = self.get_queryset().count()
 		return context
 

@@ -100,7 +100,7 @@
 
                 {% if user.is_staff %}
                 <td>
-                  <a href="{% url 'shortener-list-owner' link.owner.id %}">{{ link.owner.email|email_user }}</a><br />{{ link.created_at|date:"M j, Y g:iA" }}
+                  <a href="{% url 'shortener-list-owner-all' link.owner.id %}">{{ link.owner.email|email_user }}</a><br />{{ link.created_at|date:"M j, Y g:iA" }}
                 </td>
                 {% endif %}
 

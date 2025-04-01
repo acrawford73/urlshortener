@@ -23,7 +23,8 @@ urlpatterns = [
 	path('detail/all/<uuid:pk>/', 	views.ShortenerAllDetailView.as_view(), 	name='shortener-detail-all'),
 	path('delete/<uuid:pk>/',		views.ShortenerDeleteView.as_view(), 		name='shortener-delete'),
 	path('delete/all/<uuid:pk>/',		views.ShortenerAllDeleteView.as_view(), 	name='shortener-delete-all'),
-	path('all_links/user/<uuid:pk>/',	views.ShortenerByOwnerListView.as_view(), 	name='shortener-list-owner'),
+	path('my_links/user/<uuid:pk>/',	views.ShortenerByOwnerListView.as_view(),	name='shortener-list-owner'),
+	path('all_links/user/<uuid:pk>/',	views.ShortenerAllByOwnerListView.as_view(),	name='shortener-list-owner-all'),
 
 	path('tags/download/', 			views.tags_download, 						name='tags-download'),
 	path('tags/suggestions/', 		views.tags_suggestions, 					name='tags-suggestions'),
