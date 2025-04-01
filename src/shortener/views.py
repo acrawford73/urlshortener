@@ -86,7 +86,7 @@ def tags_suggestions(request):
 
 class ShortenerListViewOpen(ListView):
 	"""
-	List all shortened links, no login, public.
+	List all shortened links, no login, PUBLIC.
 	Private links are skipped.
 	"""
 	model = ShortURL
@@ -112,7 +112,7 @@ class ShortenerListViewOpen(ListView):
 
 class ShortenerListByTagViewOpen(ListView):
 	""" 
-	Shows links by tag name, no login.
+	Shows links by tag name, no login, PUBLIC.
 	Private links are skipped.
 	"""
 	model = ShortURL
