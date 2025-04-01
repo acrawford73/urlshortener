@@ -60,7 +60,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Tags'
+		context['page_title'] = 'Topics'
 		return context
 
 
@@ -128,7 +128,7 @@ class ShortenerListByTagViewOpen(ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Links by Tag='{self.tag.name}'"
+		context['page_title'] = f"Links by Topic='{self.tag.name}'"
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -151,7 +151,7 @@ class ShortenerAllListByTagView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
+		context['page_title'] = f"Links by Topic='{self.tag.name}'"
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -173,7 +173,7 @@ class ShortenerListByTagView(OwnerListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
+		context['page_title'] = f"My Links by Topic='{self.tag.name}'"
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -195,7 +195,7 @@ class ShortenerListAllByTagView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Recent by Tag='{self.tag.name}'"
+		context['page_title'] = f"Links by Topic='{self.tag.name}'"
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -216,7 +216,7 @@ class ShortenerByOwnerListView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Recent'
+		context['page_title'] = 'Links'
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -243,7 +243,7 @@ class ShortenerListView(OwnerListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Recent'
+		context['page_title'] = 'My Links'
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -266,7 +266,7 @@ class ShortenerAllListView(LoginRequiredMixin, ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'All Recent'
+		context['page_title'] = 'All Links'
 		context['total_results'] = self.get_queryset().count()
 		return context
 
