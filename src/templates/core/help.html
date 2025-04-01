@@ -7,33 +7,34 @@
 <!-- Begin page content -->
 <main class="flex-shrink-0">
   <div class="container">
-    <p>&nbsp;</p>
 
     <h2 class="mt-5"><strong>Help</strong></h2><br />
 
     {% if user.is_authenticated %}
     
-    <p><a href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a> functions as a hyperlink (URL) shortener.</p>
+    <p><strong>Psinergy.Link</strong> functions as a hyperlink (URL) shortener.</p>
 
     <p>Click the '<strong>Shorten Link</strong>' button, then simply paste the link into the Long URL text box. Then click '<strong>Shorten</strong>'.</p>
 
     <p>After creating the shortened link, a detail page is presented so that both the <strong>Title</strong> <u>and</u> <strong>Shortened URL</strong> can be copied together. Next, when it is pasted they'll be able to see what the short URL is referring to. It's also for your own reference.</p>
 
-    <p>All new shortened links are presented at the top row on the <strong>Recent</strong> page.</p>
+    <p>All new shortened links are presented at the top row on the <strong>All Links</strong> page.</p>
 
-    <p>Click '<strong>Recent</strong>' to view the most recently shortened URLs.</p>
+    <p>Click '<strong>My Links</strong>' to view the your most recently shortened URLs.</p>
 
-    <p>Click '<strong>Top</strong>' to view the most clicked URLs in descending order.</p>
+    <p>Click '<strong>All Links</strong>' to view everyone's most recently shortened URLs.</p>
+
+    <p>Click the '<strong>View</strong>' column to see link view counts in descending order.</p>
 
     <p>The website will inform you if the URL you're trying to shorten was shortened already, either by you or someone else. This is so that the same short link is shared by everyone for the same online content.</p>
 
-    <p><strong>NOTE:</strong> Unfortunately, for websites that use Cloudflare or skill testing Captchas, this site is not able to acquire webpage titles at this time. Websites such as ResearchGate, MDPI, IEEE, Wiley, to name a few use these security methods. Because of this, the Title may say "Title not available".</p>
+    <p><strong>NOTE:</strong> Unfortunately, for websites that use Cloudflare or skill testing Captchas, this site is not able to acquire webpage titles at this time. Websites such as ResearchGate, ScienceDirect, Wiley, to name a few use these security methods. Because of this, the Title may say "Title not available" or "Just a moment...".</p>
     <p>Titles can be edited - simply grab the related title from the original website.</p>
 
     <br />
     <h3>Maintenance</h3>
 
-    <p>This website may undergo brief maintenance or software upgrades. When this occurs, link redirection may be offline for a short period of time. Notification of maintenance activities will be provided on Telegram.</p>
+    <p>This website may undergo brief maintenance or software upgrades. When this occurs, link redirection may be offline for a short period of time. Notification of maintenance activities may be provided on Telegram.</p>
 
     <p>If the website goes down for any extended period of time, you agree to hold us harmless. There are no financial gains attached to this website.</p>
 

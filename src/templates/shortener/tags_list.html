@@ -9,7 +9,7 @@
 <!-- Begin page content -->
 <main class="flex-shrink-0">
   <div class="container" align="center">
-    <h1 class="mt-5">&nbsp;</h1>
+    <p>&nbsp;</p>
 
     {% if user.is_authenticated %}
 
@@ -31,7 +31,7 @@
       <div class="col-sm-3">&nbsp;</div>
       <div class="col-md-6">
 
-        <p>{% if tagslist %}{{ tagslist.count }}{% else %}0{% endif %} tags. <a href="{% url 'tags-download' %}">Download tags as text file</a></p>
+        <p>{% if tagslist %}{{ tagslist.count }}{% else %}0{% endif %} topics. <a href="{% url 'tags-download' %}">Download all topics as text file</a></p>
 
         <div class="table-responsive">
           <table class="table table-striped table-hover table-md">

@@ -8,8 +8,12 @@
     </p>
     {% endif %}
 
-    <p>&copy; {% now "Y" %} <a href="{% url 'home' %}">Psinergy.Link</a> [BETA]</p>
-    
+    {% if user.is_authenticated %}
+    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list' %}">Psinergy.Link</a> [BETA]</p>
+    {% else %}
+    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list-open' %}">Psinergy.Link</a> [BETA]</p>
+    {% endif %}
+
     <p>
       {% if user.is_authenticated %}
       <a style="margin-right:16px;" href="{% url 'guidelines' %}">Guidelines</a>

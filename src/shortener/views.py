@@ -93,7 +93,7 @@ class ShortenerListViewOpen(ListView):
 	template_name = 'shortener/shortener_list_open.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 100
+	paginate_by = 50
 
 	def get_queryset(self):
 		qs = super().get_queryset()
@@ -119,7 +119,7 @@ class ShortenerListByTagViewOpen(ListView):
 	template_name = 'shortener/shortener_list_open.html'
 	context_object_name = 'links'
 	ordering = ['-created_at']
-	paginate_by = 100
+	paginate_by = 50
 
 	def get_queryset(self):
 		qs = super().get_queryset()
@@ -439,7 +439,7 @@ class ShortenerAllUpdateView(LoginRequiredMixin, UpdateView):
 	""" ShortURL update view. """
 	model = ShortURL
 	form_class = ShortURLUpdateForm
-	template_name = 'shortener/shortener_update.html'
+	template_name = 'shortener/shortener_update_all.html'
 	context_object_name = 'link'
 
 	def get_queryset(self):

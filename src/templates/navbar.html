@@ -1,12 +1,65 @@
-<!-- Navigation for everywhere -->
 
-<header>
+<header class="p-3 text-bg-dark">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <!-- LOGO <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg> -->
+        {% if user.is_authenticated %}
+        <a class="navbar-brand" href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a>
+        {% else %}
+        <a class="navbar-brand" href="{% url 'shortener-list-open' %}"><strong>Psinergy.Link</strong></a>
+        {% endif %}
+     </a>
+
+      {% if user.is_authenticated %}
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
+        <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
+
+        <li><a class="nav-link {% if '/my_links' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="{% url 'shortener-list' %}">My Links</a></li>
+
+        <li><a class="nav-link {% if '/all_links' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="{% url 'shortener-list-all' %}">All Links</a></li>
+
+        <li><a class="nav-link {% if '/topics' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Topics</a></li>
+
+        {% if user.is_staff %}
+        <li><a class="nav-link {% if '/himitsu' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="/himitsu/" target="_blank">Admin</a></li>
+        {% endif %}
+      </ul>
+
+      <div class="text-end">
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li class="nav-item"><a class="nav-link {% if '/accounts/profile' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="{% url 'profile' %}">Profile</a></li>
+          <li class="nav-item"><a class="nav-link inactive text-white-50" aria-current="page" href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+      </div>
+
+      {% else %}
+      
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
+        <!-- <li>&nbsp;&nbsp;&nbsp;&nbsp;</li> -->
+        <li>Exposing Biodigital Convergence</li>
+      </ul>
+
+      <div class="text-end">
+        <button type="button" class="btn btn-outline-light me-2"><a class="nav-link {% if '/login' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'login' %}">Login</a></button>
+        <!-- <button type="button" class="btn btn-outline-light me-2"><a class="nav-link {% if '/accounts/register' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'django_registration_register' %}">Register</a></button> -->
+      </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+</header>
+
+<!-- <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
       {% if user.is_authenticated %}
       <a class="navbar-brand" href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a>
       {% else %}
-      <a class="navbar-brand" href="{% url 'home' %}"><strong>Psinergy.Link</strong></a>
+      <a class="navbar-brand" href="{% url 'shortener-list-open' %}"><strong>Psinergy.Link</strong></a>
       {% endif %}
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -45,9 +98,9 @@
         {% else %}
           
           <li class="nav-item">
-<!--              <li class="nav-item">
+              <li class="nav-item">
               <a class="nav-link {% if '/accounts/register' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'django_registration_register' %}">Register</a>
-            </li> -->
+            </li>
             <li class="nav-item">
               <a class="nav-link {% if '/login' in request.path %}active text-white{% else %}inactive{% endif %}" aria-current="page" href="{% url 'login' %}">Login</a>
             </li>
@@ -59,4 +112,4 @@
       </div>
     </div>
   </nav>
-</header>
+</header> -->
