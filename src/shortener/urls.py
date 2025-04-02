@@ -16,13 +16,17 @@ urlpatterns = [
 	path('my_links/top/', 			views.ShortenerTopListView.as_view(), 		name='shortener-list-top'),
 	path('all_links/top/',		 	views.ShortenerTopAllListView.as_view(), 	name='shortener-list-top-all'),
 	
-	path('create/', 				views.ShortenerCreateView.as_view(), 		name='shortener-create'),
-	path('update/<uuid:pk>/', 		views.ShortenerUpdateView.as_view(), 		name='shortener-update'),
-	path('update/all/<uuid:pk>/', 	views.ShortenerAllUpdateView.as_view(), 	name='shortener-update-all'),
-	path('detail/<uuid:pk>/', 		views.ShortenerDetailView.as_view(), 		name='shortener-detail'),
-	path('detail/all/<uuid:pk>/', 	views.ShortenerAllDetailView.as_view(), 	name='shortener-detail-all'),
-	path('delete/<uuid:pk>/',		views.ShortenerDeleteView.as_view(), 		name='shortener-delete'),
-	path('delete/all/<uuid:pk>/',		views.ShortenerAllDeleteView.as_view(), 		name='shortener-delete-all'),
+	path('create/', 					views.ShortenerCreateView.as_view(), 		name='shortener-create'),
+	
+	path('my_links/update/<uuid:pk>/', 	views.ShortenerUpdateView.as_view(), 		name='shortener-update'),
+	path('all_links/update/<uuid:pk>/', views.ShortenerAllUpdateView.as_view(), 	name='shortener-update-all'),
+	
+	path('my_links/detail/<uuid:pk>/', 	views.ShortenerDetailView.as_view(), 		name='shortener-detail'),
+	path('all_links/detail/<uuid:pk>/', views.ShortenerAllDetailView.as_view(), 	name='shortener-detail-all'),
+	
+	path('my_links/delete/<uuid:pk>/',	views.ShortenerDeleteView.as_view(), 		name='shortener-delete'),
+	path('all_links/delete/<uuid:pk>/',	views.ShortenerAllDeleteView.as_view(), 	name='shortener-delete-all'),
+	
 	path('my_links/user/<uuid:pk>/',	views.ShortenerByOwnerListView.as_view(),		name='shortener-list-owner'),
 	path('all_links/user/<uuid:pk>/',	views.ShortenerAllByOwnerListView.as_view(),	name='shortener-list-owner-all'),
 
