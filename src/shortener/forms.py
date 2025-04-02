@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
-from taggit.forms import TagWidget
+from taggit.forms import TagField, TagWidget
 from .models import ShortURL
 
 
@@ -13,10 +13,14 @@ class ShortURLForm(forms.ModelForm):
 
 
 class ShortURLUpdateForm(forms.ModelForm):
-	#tags = forms.CharField(widget=forms.TextInput(attrs={'id': 'tag-input', 'multiple': 'multiple', 'data-role': 'tagsinput'}), required=False)
 	class Meta:
 		model = ShortURL
-		fields = ['title', 'long_url', 'tags'] #, 'notes']
+		fields = ['title', 'long_url', 'tags']
 		widgets = {
-			'tags': TagWidget(attrs={'class': 'form-control', 'id': 'tag-input', 'multiple': 'multiple', 'data-role': 'tagsinput'}),
+			'tags': TagWidget(attrs={
+				'class': 'form-control',
+				'id': 'tag-input',
+				'multiple': 'multiple',
+				'data-role': 'tagsinput'
+			}),
 		}
