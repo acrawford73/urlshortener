@@ -784,7 +784,7 @@ def redirect_url(request, alias):
 class ShortURLRSSFeed(Feed):
 	title = "Psinergy.link RSS Feed"
 	link = "/feed/rss/"
-	description = "Latest Short URLs"
+	description = "Recent links curated by Psinergists"
 	feed_copyright = "2025 PSINERGY.LINK"
 	ttl = 600
 	def items(self):
