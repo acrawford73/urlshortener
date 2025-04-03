@@ -30,9 +30,10 @@ from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
-# from django.contrib.syndication.views import Feed
-# from django.utils.feedgenerator import Atom1Feed
+from django.contrib.syndication.views import Feed
+from django.utils.feedgenerator import Atom1Feed
 
+# -----
 
 @login_required
 def tags_download(request):
@@ -779,36 +780,35 @@ def redirect_url(request, alias):
 	return HttpResponseRedirect(url.long_url)
 
 
-### RSS Feed
-# class ShortURLRSSFeed(Feed):
-# 	title = "ShortURL Feed"
-# 	link = "/recents/rss/"
-# 	description = "Latest Short URLs"
-# 	feed_copyright = "PSINERGY.LINK"
-# 	ttl = 600
-# 	def items(self):
-# 		return ShortURL.objects.filter(private=False).order_by("-created_at")[:50]
-# 	def item_title(self, item):
-# 		return item.title
-# 	def item_description(self, item):
-# 		# if (item.long_description is None) or (item.long_description == ""):
-# 		# 	item.long_description = "Long description not available"
-# 		# return item.long_description
-# 		return ""
-# 	def item_link(self, item):
-# 		return "/rss/%s/" % (item.id)
-# 	def item_author_name(self, item):
-# 			return "psinergylink"
-# 	def item_guid(self, item):
-# 		guid = item.id
-# 		return guid.upper()
-# 	def item_pubdate(self, item):
-# 		return item.created_at
-# 	def get_feed(self, obj, request):
-# 		feedgen = super().get_feed(obj, request)
-# 		feedgen.content_type = "application/xml; charset=utf-8"
-# 		return feedgen
+## RSS Feed
+class ShortURLRSSFeed(Feed):
+	title = "Psinergy.link RSS Feed"
+	link = "/feed/rss/"
+	description = "Latest Short URLs"
+	feed_copyright = "2025 PSINERGY.LINK"
+	ttl = 600
+	def items(self):
+		return ShortURL.objects.prefetch_related('tags').filter(private=False).order_by('-created_at')[:50]
+	def item_title(self, item):
+		return item.title
+	def item_description(self, item):
+		description = ", ".join(str(tag) for tag in item.tags.all())
+		return description
+	def item_link(self, item):
+		return f"/{item.short_alias}/"
+	def item_author_name(self, item):
+		return "Psinergists"
+	def item_guid(self, item):
+		return str(item.id).lower()
+	def item_pubdate(self, item):
+		return item.created_at
+	def item_categories(self, item):
+		return [str(tag) for tag in item.tags.all()]
+	def get_feed(self, obj, request):
+		feedgen = super().get_feed(obj, request)
+		feedgen.content_type = "application/xml; charset=utf-8"
+		return feedgen
 
-# class ShortURLAtomFeed(ShortURLRSSFeed):
-# 	feed_type = Atom1Feed
-# 	subtitle = ShortURLRSSFeed.description
+class ShortURLAtomFeed(ShortURLRSSFeed):
+	feed_type = Atom1Feed
+	subtitle = ShortURLRSSFeed.description
