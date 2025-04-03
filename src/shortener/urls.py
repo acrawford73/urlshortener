@@ -7,7 +7,7 @@ urlpatterns = [
 
 	# Public without login
 	path('',							views.ShortenerListViewOpen.as_view(), 		name='shortener-list-open'),
-	path('share/tag/<slug:tag_slug>/',	views.ShortenerListByTagViewOpen.as_view(), name='shortener-list-by-tag-open'),
+	path('list/tag/<slug:tag_slug>/',	views.ShortenerListByTagViewOpen.as_view(), name='shortener-list-by-tag-open'),
 
 	# Login only
 	path('my_links/',				views.ShortenerListView.as_view(), 			name='shortener-list'),
