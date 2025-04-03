@@ -1,10 +1,8 @@
 ## URL Shortener
 
-Purpose: To condense long URLs to so that they're shareable.
+Purpose: To condense long URLs so they're shareable.
 
 Example: `https://yourdomain.com/a1b2c3`
-
-Operating System: Ubuntu 22.04 LTS with Python 3.10+
 
 ## Domain
 
@@ -13,7 +11,7 @@ Register one domain name for this project.
 ## Dev Environment
 
 - Ubuntu 22.04 LTS VM with 1 Core, 2 GB memory
-- Virtualbox
+- Python 3.10+
 
 ### System packages
 
