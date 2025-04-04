@@ -10,48 +10,28 @@
 
 		<h2 class="mt-5"><strong>FAQ</strong></h2><br />
 
-		{% if user.is_authenticated %}
-
 		<h4>What does this website do?</h4>
 		<p>The main function is a Hyperlink/URL shortener.</p>
 
 		<h4>What is a URL shortener?</h4>
 		<p>A URL shortener condenses any valid web address into a shortened one. When the shortened URL is clicked, the browser redirected to the same original web address URL.</p>
 		<p>To use the shortener, you copy and paste the full original link into this website, then it is condensed into a shareable link.</p>
-		<p>Your shortened links look like this: <strong>psinergy.link/abc123</strong>. You copy this shortened address then paste it anywhere appropriate.</p>
+		<p>Shortened links look like this: <strong>psinergy.link/abc123</strong>. You copy this shortened address then paste it anywhere you wish.</p>
 
 		<h4>Why even bother do this?</h4>
-		<p>Psinergist researchers are champions of content sharing; often Google Search URLs. Most of the time those search URLs are massive, ~1000 characters. They take up too much space when posted. So a shortened link is a more &quot;professional&quot; method.</p>
+		<p>Psinergist researchers are champions of content sharing, often Google Search URLs. Most of the time those search URLs are massive, ~1000 characters, taking up too much space when posted. So a shortened link is a more &quot;professional&quot; method. It also has became a useful ledger of bookmarks.</p>
+
+		<h4>What are the main topics that are offered on this site?</h4>
+		<p>The primary topic is related to exposing <u>biodigital convergence</u> technologies and its tentacles such as nanotechnology, biosensors, biophotonics, bio-cyber interfaces, WBAN, BCI, bio-cyber security, transhumanism, etc. Also network-centric warfare, which is another huge topic on its own.</p>
 
 		<h4>How long do the links persist? Do they expire?</h4>
-		<p>The shortened links do not expire. They'll persist as long as the service is available. If the shortened link is no longer needed, just click the Delete icon under the 'Actions' column.</p>
+		<p>The shortened links do not expire. They'll persist as long as the service is available.</p>
+
+		<h4>What gives you the credibility?</h4>
+		<p>Every man and woman has the right to self-determination. We read &amp; study. We aren't confined by academic institutions, big industry, or NDA contracts. We are deeply disgusted by these technologies. We choose to learn and share this information to help save lives.</p>
 
 		<h4>Who is behind this? Can I contact them?</h4>
 		<p>Someone within the Psinergist community. Yes, on Telegram.</p>
-
-		<br />
-		<h3>Website Features</h3>
-		<p>
-			<ul>
-				<li>Condenses valid URLs into shareable URLs.</li>
-				<li>The Title of the original website is stored with the shortened URL.</li>
-				<li>The Shortened URL with the Title can be easily copied by clicking a button.</li>
-				<li>Titles and Tags can be updated.</li>
-				<li>Shortened URLs can be deleted, if necessary. However, anywhere the link was previously shared will return a &quot;404 Not Found&quot; when clicked.</li>
-				<li>The shortener checks if the original URL has been shortened already. If so, the existing record is provided.</li>
-				<li>Shortened URLs are listed by Recent, or by Top (most clicked) in descending order.</li>
-				<li>Shortened links are searchable by Title and Tag.</li>
-				<li>For Google Search and Google Patent Search URLs, the search query is captured for the Title of the shortened link.</li>
-				<li>Tags can be added for each shortened link.</li>
-				<li>Clicking a tag lists all shortened links with that tag.</li>
-			</ul>
-		</p>
-
-		{% else %}
-
-		<p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
-
-		{% endif %}
 
 	<!-- container end -->
 	</div>

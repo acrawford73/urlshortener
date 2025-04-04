@@ -40,6 +40,24 @@
 
     <p>In case the site gets taken offline, well, thank you for your kind contributions.</p>
 
+    <br />
+    <h3>Website Features</h3>
+    <p>
+        <ul>
+            <li>Condenses valid URLs into shareable URLs.</li>
+            <li>The Title of the original website is stored with the shortened URL.</li>
+            <li>The Shortened URL with the Title can be easily copied by clicking a button.</li>
+            <li>Titles and Tags can be updated.</li>
+            <li>Shortened URLs can be deleted, if necessary. However, anywhere the link was previously shared will return a &quot;404 Not Found&quot; when clicked.</li>
+            <li>The shortener checks if the original URL has been shortened already. If so, the existing record is provided.</li>
+            <li>Shortened URLs are listed by Recent, or by Top (most clicked) in descending order.</li>
+            <li>Shortened links are searchable by Title and Tag.</li>
+            <li>For Google Search and Google Patent Search URLs, the search query is captured for the Title of the shortened link.</li>
+            <li>Tags can be added for each shortened link.</li>
+            <li>Clicking a tag lists all shortened links with that tag.</li>
+        </ul>
+    </p>
+
     {% else %}
     <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
     {% endif %}

@@ -48,7 +48,7 @@ class Guidelines(TemplateView):
 		return context
 
 
-class FAQ(LoginRequiredMixin, TemplateView):
+class FAQ(TemplateView):
 	template_name = 'core/faq.html'
 
 	def get_context_data(self, **kwargs):
