@@ -9,7 +9,7 @@
 <!-- Begin page content -->
 
 <main class="flex-shrink-0">
-	<div class="container" align="center">
+	<div class="container">
 
 		{% if user.is_authenticated %}
 
@@ -53,7 +53,7 @@
 				dataType: 'json',
 				delay: 250,
 				data: function(params) {
-					return { term: params.term, context: "{{ link.short_alias }}" }; // Pass context
+					return { term: params.term, context: "{{ link.short_alias }}" };
 				},
 				processResults: function(data) {
 					return { results: data.map(tag => ({ id: tag, text: tag })) };
