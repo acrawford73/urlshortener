@@ -90,7 +90,7 @@
                   {% endif %}</a><br />
 
                   {% for tag in link.tags.all %}
-                    <a href="{% url 'shortener-list-by-tag-all' tag.slug %}"><span class="badge text-bg-success">{{ tag.name }}</span></a>
+                    <a href="{% url 'shortener-list-by-tag-all' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px;>{{ tag.name }}</span></a>
                   {% endfor %}
                 </td>
 

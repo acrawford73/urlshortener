@@ -71,7 +71,7 @@
                     {% endif %}</a><br />
                   </div>
 
-                  <div>{% for tag in link.tags.all %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success">#{{ tag.name }}</span></a> {% endfor %}</div>
+                  <div>{% for tag in link.tags.all %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px;">#{{ tag.name }}</span></a> {% endfor %}</div>
                 </td>
 
                 <td>
