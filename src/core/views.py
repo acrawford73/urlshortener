@@ -2,7 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
+
+@method_decorator(cache_page(60*60), name='dispatch')
 class Terms(TemplateView):
 	template_name = 'core/terms.html'
 	
@@ -12,6 +16,7 @@ class Terms(TemplateView):
 		return context
 
 
+@method_decorator(cache_page(60*60), name='dispatch')
 class Privacy(TemplateView):
 	template_name = 'core/privacy.html'
 	
@@ -21,6 +26,7 @@ class Privacy(TemplateView):
 		return context
 
 
+@method_decorator(cache_page(60*60), name='dispatch')
 class License(TemplateView):
 	template_name = 'core/license.html'
 
@@ -30,6 +36,7 @@ class License(TemplateView):
 		return context
 
 
+@method_decorator(cache_page(60*60), name='dispatch')
 class Help(LoginRequiredMixin, TemplateView):
 	template_name = 'core/help.html'
 
@@ -39,6 +46,7 @@ class Help(LoginRequiredMixin, TemplateView):
 		return context
 
 
+@method_decorator(cache_page(60*60), name='dispatch')
 class Guidelines(TemplateView):
 	template_name = 'core/guidelines.html'
 
@@ -48,6 +56,7 @@ class Guidelines(TemplateView):
 		return context
 
 
+@method_decorator(cache_page(60*60), name='dispatch')
 class FAQ(TemplateView):
 	template_name = 'core/faq.html'
 
