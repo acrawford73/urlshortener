@@ -85,6 +85,7 @@ def tags_suggestions(request):
 	return JsonResponse([], safe=False)
 
 
+@method_decorator(cache_page(60*10), name='dispatch')
 class ShortenerListViewOpen(ListView):
 	"""
 	List all shortened links, no login, PUBLIC.
@@ -111,6 +112,7 @@ class ShortenerListViewOpen(ListView):
 		return context
 
 
+@method_decorator(cache_page(60*10), name='dispatch')
 class ShortenerListByTagViewOpen(ListView):
 	""" 
 	Shows links by tag name, no login, PUBLIC.
