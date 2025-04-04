@@ -99,7 +99,8 @@ class ShortenerListViewOpen(ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
+		#qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
+		qs = qs.prefetch_related('tags').filter(private=False)
 		query = self.request.GET.get('q')
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
@@ -783,6 +784,7 @@ def redirect_url(request, alias):
 
 
 ## RSS Feed
+@method_decorator(cache_page(60*10), name='dispatch')
 class ShortURLRSSFeed(Feed):
 	title = "Psinergy.link RSS Feed"
 	link = "/feed/rss/"
@@ -811,6 +813,7 @@ class ShortURLRSSFeed(Feed):
 		feedgen.content_type = "application/xml; charset=utf-8"
 		return feedgen
 
+@method_decorator(cache_page(60*10), name='dispatch')
 class ShortURLAtomFeed(ShortURLRSSFeed):
 	feed_type = Atom1Feed
 	subtitle = ShortURLRSSFeed.description
