@@ -38,7 +38,7 @@ urlpatterns = [
 
 	#path('tags/autocomplete/', 	views.TagAutocompleteView.as_view(), name='tags_autocomplete'),
 
-	# keep this last
+	# Redirector
 	path('<str:alias>/',	views.redirect_url, 		name='redirect-url'),
 	#
 
