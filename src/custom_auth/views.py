@@ -36,7 +36,9 @@ class CustomPasswordResetView(FormView):
 				reset_link = request.build_absolute_uri(
 					reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
 				)
-			return render(request, 'registration/password_reset_link.html', {'reset_link': reset_link})
+				return render(request, 'registration/password_reset_link.html', {'reset_link': reset_link})
+			else:
+				return render(request, 'registration/password_reset_error.html')
 		return render(request, 'registration/password_reset_complete.html')  # If email not found, let them think it worked
 	
 	def get_context_data(self, **kwargs):

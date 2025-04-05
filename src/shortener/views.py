@@ -75,6 +75,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 # 		return JsonResponse(suggestions, safe=False)
 # 	return JsonResponse([], safe=False)
 
+
 @login_required
 def tags_suggestions(request):
 	term = request.GET.get('term', '').strip()
@@ -85,7 +86,9 @@ def tags_suggestions(request):
 	return JsonResponse([], safe=False)
 
 
-@method_decorator(cache_page(60*10), name='dispatch')
+CACHE_TTL = 60 * 10
+
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')
 class ShortenerListViewOpen(ListView):
 	"""
 	List all shortened links, no login, PUBLIC.
@@ -113,7 +116,7 @@ class ShortenerListViewOpen(ListView):
 		return context
 
 
-@method_decorator(cache_page(60*10), name='dispatch')
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')
 class ShortenerListByTagViewOpen(ListView):
 	""" 
 	Shows links by tag name, no login, PUBLIC.
