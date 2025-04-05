@@ -784,7 +784,6 @@ def redirect_url(request, alias):
 
 
 ## RSS Feed
-@method_decorator(cache_page(60*10), name='dispatch')
 class ShortURLRSSFeed(Feed):
 	title = "Psinergy.link RSS Feed"
 	link = "/feed/rss/"
@@ -813,7 +812,6 @@ class ShortURLRSSFeed(Feed):
 		feedgen.content_type = "application/xml; charset=utf-8"
 		return feedgen
 
-@method_decorator(cache_page(60*10), name='dispatch')
 class ShortURLAtomFeed(ShortURLRSSFeed):
 	feed_type = Atom1Feed
 	subtitle = ShortURLRSSFeed.description
