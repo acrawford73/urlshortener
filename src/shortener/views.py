@@ -1,3 +1,4 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, unquote
@@ -29,6 +30,7 @@ from taggit.models import Tag
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_GET
 
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
@@ -76,14 +78,72 @@ class TagsListView(LoginRequiredMixin, ListView):
 # 	return JsonResponse([], safe=False)
 
 
+@require_GET
 @login_required
 def tags_suggestions(request):
 	term = request.GET.get('term', '').strip()
+	context = request.GET.get('context')  # You can use this to filter based on context if needed
+	qs = Tag.objects.all()
 	if term:
-		tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)[:10]
-		tag_list = list(tags)
-		return JsonResponse([{"id": tag, "text": tag} for tag in tag_list], safe=False)
-	return JsonResponse([], safe=False)
+		qs = qs.filter(name__istartswith=term)
+		#qs = qs.filter(name__icontains=term)
+	tags = qs.order_by('name').values_list('name', flat=True).distinct()[:10]
+	return JsonResponse(list(tags), safe=False)
+
+	# term = request.GET.get('term', '').strip()
+	# if term:
+	# 	tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)[:10]
+	# 	tag_list = list(tags)
+	# 	return JsonResponse([{"id": tag, "text": tag} for tag in tag_list], safe=False)
+	# return JsonResponse([], safe=False)
+
+
+# def update_link(request, pk):
+# 	link = get_object_or_404(ShortURL, pk=pk)
+
+# 	if request.method == "POST":
+# 		form = ShortURLUpdateForm(request.POST, instance=link)
+# 		if form.is_valid():
+# 			link = form.save(commit=False)
+# 			link.save()
+# 			tags_raw = form.cleaned_data['tags']  # This is a list of tags
+# 			clean_tags = [tag.strip() for tag in tags_raw.split(',') if tag.strip()]
+# 			link.tags.set(clean_tags)
+# 			return redirect('shortener-list')
+# 	else:
+# 		form = ShortURLUpdateForm(instance=link)
+
+# 	return render(request, 'shortener/shortener_update.html', {'form': form, 'link': link})
+
+
+def update_link(request, pk):
+	link = get_object_or_404(ShortURL, pk=pk)
+
+	if request.method == "POST":
+		form = ShortURLUpdateForm(request.POST, instance=link)
+		if form.is_valid():
+			link = form.save(commit=False)
+			link.save()
+			tags_raw = form.cleaned_data['tags']
+
+			# Handle either JSON or comma-separated strings
+			clean_tags = []
+			try:
+				parsed = json.loads(tags_raw)  # Try parsing JSON (from Tagify)
+				if isinstance(parsed, list):
+					clean_tags = [tag['value'].strip() for tag in parsed if 'value' in tag and tag['value'].strip()]
+			except json.JSONDecodeError:
+				# Fall back to comma-separated string
+				clean_tags = [tag.strip() for tag in tags_raw.split(',') if tag.strip()]
+			link.tags.set(clean_tags)
+			return redirect('shortener-list')
+	else:
+		form = ShortURLUpdateForm(instance=link)
+
+	return render(request, 'shortener/shortener_update.html', {'form': form, 'link': link })
+
+
+
 
 
 CACHE_TTL = 60 * 10
@@ -361,13 +421,13 @@ class ShortenerCreateView(OwnerCreateView):
 		# Check if owner shortened this link already
 		existing = ShortURL.objects.filter(long_url=url, owner=self.request.user).first()
 		if existing:
-			messages.warning(self.request, "Thanks, but this URL is already shortened.")
+			messages.warning(self.request, "Thanks, but this link is already shortened.")
 			return redirect('shortener-detail', pk=existing.pk)
 
 		# Check if anyone else shortened this link already
 		existing = ShortURL.objects.filter(long_url=url).first()
 		if existing:
-			messages.warning(self.request, "Thanks, but this URL is already shortened.")
+			messages.warning(self.request, "Thanks, but this link is already shortened.")
 			return redirect('shortener-detail-all', pk=existing.pk)
 
 		title = get_page_title(url)

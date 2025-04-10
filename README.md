@@ -57,3 +57,14 @@ Follow the [Installation](deploy/installation.md) instructions.
 ### Server Configuration
 
 Follow the [Configuration](deploy/configuration.md) instructions.
+
+## Access Levels
+
+### User
+
+- Create, update, delete your own links
+
+### Staff
+
+- Create, update, delete all links in system
+- Create, update, delete topics

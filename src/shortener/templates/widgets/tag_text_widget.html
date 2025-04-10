@@ -1,0 +1,3 @@
+<input type="text" name="{{ widget.name }}" value="{{ widget.value|stringformat:'s' }}"
+{% include 'django/forms/widgets/attrs.html' %}>
+<div id="selected-tags" class="mt-2"></div>

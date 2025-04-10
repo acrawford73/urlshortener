@@ -44,7 +44,6 @@
               <tr class="table-primary">
                 <th>&nbsp;</th>
                 <th>Recent Links</th>
-                <th>Source</th>
                 <th>Posted</th>
               </tr>
             </thead>
@@ -59,7 +58,7 @@
                   <a class="btn btn-sm btn-outline-primary rounded-pill px-2" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a><br />
 
                   <button style="margin-top: 5px;" class="btn btn-sm btn-outline-success rounded-pill px-2 copy-btn">Copy</button><br /><span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
-                  <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}" data-title="{% if link.title %}{{ link.title|truncatechars:120 }}{% else %}Title not available{% endif %}" data-tags="{% for tag in link.tags.all %}#{{ tag.name }} {% endfor %}"></div>
+                  <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title|truncatechars:120 }}{% else %}Title not available{% endif %}" data-tags="{% for tag in link.tags.all %}#{{ tag.name }} {% endfor %}"></div>
                 </td>
 
                 <td align="left">
@@ -71,11 +70,9 @@
                     {% endif %}</a><br />
                   </div>
 
-                  <div>{% for tag in link.tags.all %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px;">#{{ tag.name }}</span></a> {% endfor %}</div>
-                </td>
+                  <div>{{ link.long_url|long_url_website }}</div>
 
-                <td>
-                  {{ link.long_url|long_url_website }}
+                  <div>{% for tag in link.tags.all %}{% if tag.slug %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px; margin-right: 1px;">#{{ tag.name }}</span></a> {% endif %}{% endfor %}</div>
                 </td>
 
                 <td>
