@@ -8,6 +8,9 @@
 
 <!-- Begin page content -->
 
+<!-- 'use-boostrap-tag' requires BS 5.3.3 -->
+<link href="{% static 'css/use-bootstrap-tag.min.css' %}" rel="stylesheet">
+
 <main class="flex-shrink-0">
 	<div class="container">
 
@@ -20,7 +23,7 @@
 			{% csrf_token %}
 			{{ form|crispy }}
 		
-			<div id="suggested-tags" class="mt-2"></div>
+			<!-- <div id="suggested-tags" class="mt-2"></div> -->
 
 			<br /><br />
 			<div align="center">
@@ -37,6 +40,11 @@
 
 	<!-- container end -->
 	</div>
+
+	<script src="{% static 'js/use-bootstrap-tag.min.js' %}"></script>
+	<script>
+	UseBootstrapTag(document.getElementById('id_tags'))
+	</script>
 
 </main>
 

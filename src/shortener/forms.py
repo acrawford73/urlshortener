@@ -1,7 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
-from taggit.forms import TagWidget
 from taggit.utils import parse_tags
 from .models import ShortURL
 

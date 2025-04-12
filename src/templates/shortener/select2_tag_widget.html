@@ -1,9 +1,0 @@
-<select name="{{ widget.name }}"
-	id="{{ widget.attrs.id }}"
-	class="form-control select2"
-	multiple="multiple"
-	{% include "django/forms/widgets/attrs.html" %}>
-	{% for option in widget.value %}
-	<option value="{{ option }}" selected="selected">{{ option }}</option>
-	{% endfor %}
-</select>
