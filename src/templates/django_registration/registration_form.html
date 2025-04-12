@@ -12,8 +12,8 @@
 	{% col "col-md-6" %}
 		<h2>Register</h2>
 		<br />
-		<p>For the email address, use your Telegram username with '@psinergy.link', so we have an idea who you are for activation. No emails are sent from this server.</p>
-		<p>By registering on this private website you are agreeing to the <a href="{% url 'guidelines' %}" target="_blank">Guidelines</a>, <a href="{% url 'terms' %}" target="_blank">Terms</a>, and <a href="{% url 'privacy' %}" target="_blank">Privacy Policy</a>.</p>
+		<p>For the email address, use a unique username with '@psinergy.link'. No emails are sent from this server.</p>
+		<p>By registering on this private community website you are agreeing to the <a href="{% url 'guidelines' %}" target="_blank">Guidelines</a>, <a href="{% url 'terms' %}" target="_blank">Terms</a>, and <a href="{% url 'privacy' %}" target="_blank">Privacy Policy</a>.</p>
 		<br />
 		<form id="registration" method="post" action="">
 			{% csrf_token %}
