@@ -63,8 +63,10 @@ Follow the [Configuration](deploy/configuration.md) instructions.
 ### User
 
 - Create, update, delete your own links
+- View all links
+- View all topics
 
 ### Staff
 
-- Create, update, delete all links in system
+- Create, update, delete all links
 - Create, update, delete topics
