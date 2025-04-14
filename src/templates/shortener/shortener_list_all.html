@@ -75,9 +75,11 @@
                 {% endif %}
                 
                 <td>
-                  <a class="btn btn-sm btn-outline-primary rounded-pill px-2" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a>
-
-                  <button style="margin-top: 5px;" class="btn btn-sm btn-outline-success rounded-pill px-2 copy-btn">Copy</button><br /><span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
+                  <div class="d-flex flex-column">
+                    <a class="btn btn-sm btn-outline-primary rounded-pill px-2 mb-1" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a>
+                    <button class="btn btn-sm btn-outline-success rounded-pill px-2 copy-btn mb-1">Copy</button>
+                    <span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
+                  </div>
                   <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
                 </td>
 
