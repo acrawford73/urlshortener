@@ -82,7 +82,7 @@
                 </td>
 
                 <td align="left">
-                  <a href="{% url 'shortener-detail-all' link.id %}?page={{ page_obj.number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                  {% if link.private %}<span class="badge rounded-pill text-bg-warning">Private</span> {% endif %}<a href="{% url 'shortener-detail-all' link.id %}?page={{ page_obj.number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
                   {% if link.title == "" or link.title == None %}
                     <strong>Title not available</strong>
                   {% else %}

@@ -90,60 +90,6 @@ def tags_suggestions(request):
 	tags = qs.order_by('name').values_list('name', flat=True).distinct()[:10]
 	return JsonResponse(list(tags), safe=False)
 
-	# term = request.GET.get('term', '').strip()
-	# if term:
-	# 	tags = Tag.objects.filter(name__icontains=term).values_list('name', flat=True)[:10]
-	# 	tag_list = list(tags)
-	# 	return JsonResponse([{"id": tag, "text": tag} for tag in tag_list], safe=False)
-	# return JsonResponse([], safe=False)
-
-
-# def update_link(request, pk):
-# 	link = get_object_or_404(ShortURL, pk=pk)
-
-# 	if request.method == "POST":
-# 		form = ShortURLUpdateForm(request.POST, instance=link)
-# 		if form.is_valid():
-# 			link = form.save(commit=False)
-# 			link.save()
-# 			tags_raw = form.cleaned_data['tags']  # This is a list of tags
-# 			clean_tags = [tag.strip() for tag in tags_raw.split(',') if tag.strip()]
-# 			link.tags.set(clean_tags)
-# 			return redirect('shortener-list')
-# 	else:
-# 		form = ShortURLUpdateForm(instance=link)
-
-# 	return render(request, 'shortener/shortener_update.html', {'form': form, 'link': link})
-
-
-def update_link(request, pk):
-	link = get_object_or_404(ShortURL, pk=pk)
-
-	if request.method == "POST":
-		form = ShortURLUpdateForm(request.POST, instance=link)
-		if form.is_valid():
-			link = form.save(commit=False)
-			link.save()
-			tags_raw = form.cleaned_data['tags']
-
-			# Handle either JSON or comma-separated strings
-			clean_tags = []
-			try:
-				parsed = json.loads(tags_raw)  # Try parsing JSON (from Tagify)
-				if isinstance(parsed, list):
-					clean_tags = [tag['value'].strip() for tag in parsed if 'value' in tag and tag['value'].strip()]
-			except json.JSONDecodeError:
-				# Fall back to comma-separated string
-				clean_tags = [tag.strip() for tag in tags_raw.split(',') if tag.strip()]
-			link.tags.set(clean_tags)
-			return redirect('shortener-list')
-	else:
-		form = ShortURLUpdateForm(instance=link)
-
-	return render(request, 'shortener/shortener_update.html', {'form': form, 'link': link })
-
-
-
 
 
 CACHE_TTL = 60 * 10
@@ -245,28 +191,6 @@ class ShortenerListByTagView(OwnerListView):
 		return context
 
 
-class ShortenerListAllByTagView(LoginRequiredMixin, ListView):
-	""" 
-	Shows all links by tag name.
-	"""
-	model = ShortURL
-	template_name = 'shortener/shortener_list_all.html'
-	context_object_name = 'links'
-	ordering = ['-created_at']
-	paginate_by = 40
-
-	def get_queryset(self):
-		qs = super().get_queryset()
-		self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-		return qs.select_related('owner').prefetch_related('tags').filter(tags__slug=self.kwargs.get('tag_slug')).filter(private=False)
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page_title'] = f"Links by Topic='{self.tag.name}'"
-		context['total_results'] = self.get_queryset().count()
-		return context
-
-
 class ShortenerAllByOwnerListView(LoginRequiredMixin, ListView):
 	"""
 	Show shortened links by ANY user.
@@ -300,7 +224,7 @@ class ShortenerByOwnerListView(OwnerListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk')).filter(private=False)
+		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk'))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -346,7 +270,11 @@ class ShortenerAllListView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
+
+		#qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
+		qs = qs.select_related('owner').prefetch_related('tags')
+		qs = qs.filter(Q(private=False) | Q(owner=self.request.user))
+
 		query = self.request.GET.get('q')
 		if query:
 			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
@@ -357,7 +285,6 @@ class ShortenerAllListView(LoginRequiredMixin, ListView):
 		context['page_title'] = 'All Links'
 		context['total_results'] = self.get_queryset().count()
 		return context
-
 
 
 class ShortenerTopListView(OwnerListView):
@@ -439,7 +366,7 @@ class ShortenerCreateView(OwnerCreateView):
 		while ShortURL.objects.filter(short_alias=short_alias).exists():
 			attempts += 1
 			if attempts >= MAX_ATTEMPTS:
-				print("Failed unique alias generation after 20 tries!")
+				print("Failed unique alias generation!")
 				contnue
 			short_alias = generate_unique_alias(url)
 
@@ -630,19 +557,9 @@ def search_check(search_domain, search_url):
 		return extract_query_param(search_url, QUERY_PATTERN)
 	return None
 
-# def search_check(search_domain, search_url):
-# 	title = None
-# 	if re.search(search_domain, search_url):
-# 		# Get text between "q=" and w/wo "&"
-# 		match = re.search(r'q=([^&]+)(?:&|$)', search_url)
-# 		if match:
-# 			result = unquote(match.group(1))
-# 			title = result.replace('+',' ')
-# 			title = title.strip()[:475]
-# 	return title
 
 def get_page_title(url):
-	"""Fetches the title of a given webpage."""
+	"""Fetches the title of a given URL webpage."""
 
 	## Level 1
 	# Check search engines
