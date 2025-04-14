@@ -3,14 +3,14 @@
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
         <!-- LOGO <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg> -->
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
         <a class="navbar-brand" href="{% url 'shortener-list' %}"><strong>Psinergy.Link</strong></a>
         {% else %}
         <a class="navbar-brand" href="{% url 'shortener-list-open' %}"><strong>Psinergy.Link</strong></a>
         {% endif %}
      </a>
 
-      {% if user.is_authenticated %}
+      {% if request.user.is_authenticated %}
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
         <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
@@ -21,7 +21,7 @@
 
         <li><a class="nav-link {% if '/topics' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="{% url 'tags-list' %}">Topics</a></li>
 
-        {% if user.is_staff %}
+        {% if request.user.is_staff %}
         <li><a class="nav-link {% if '/himitsu' in request.path %}active text-white{% else %}inactive text-white-50{% endif %}" aria-current="page" href="/himitsu/" target="_blank">Admin</a></li>
         {% endif %}
       </ul>

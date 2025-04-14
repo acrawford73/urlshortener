@@ -203,7 +203,13 @@ class ShortenerAllByOwnerListView(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		qs = super().get_queryset()
-		return qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk')).filter(private=False)
+		qs = qs.select_related('owner').prefetch_related('tags').filter(owner=self.kwargs.get('pk'))
+		# When selecting by user: 
+		# - don't show private links for other users
+		# - show your own private links
+		if str(self.request.user.pk) != str(self.kwargs.get('pk')):
+			qs = qs.filter(private=False)
+		return qs
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -271,7 +277,6 @@ class ShortenerAllListView(LoginRequiredMixin, ListView):
 	def get_queryset(self):
 		qs = super().get_queryset()
 
-		#qs = qs.select_related('owner').prefetch_related('tags').filter(private=False)
 		qs = qs.select_related('owner').prefetch_related('tags')
 		qs = qs.filter(Q(private=False) | Q(owner=self.request.user))
 
