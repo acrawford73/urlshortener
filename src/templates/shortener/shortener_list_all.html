@@ -52,11 +52,7 @@
                 <th>&nbsp;</th>
                 <th align="left">Short URLs</th>
                 <th><a href="{% url 'shortener-list-top-all' %}">Views</a></th>
-                {% if user.is_staff %}
-                <th>User / Posted</th>
-                {% else %}
                 <th>Posted</th>
-                {% endif %}
               </tr>
             </thead>
 
@@ -80,6 +76,9 @@
                 
                 <td>
                   <a class="btn btn-sm btn-outline-primary rounded-pill px-2" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a>
+
+                  <button style="margin-top: 5px;" class="btn btn-sm btn-outline-success rounded-pill px-2 copy-btn">Copy</button><br /><span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
+                  <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
                 </td>
 
                 <td align="left">
@@ -122,6 +121,8 @@
 
     <!-- row end -->
     </div>
+
+    <script src="{% static 'js/copy-button.js' %}"></script>
 
     {% else %}
     <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>

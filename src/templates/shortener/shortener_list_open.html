@@ -52,13 +52,12 @@
               {% for link in links %}
 
               <tr>
-
                 <td align="center">
                   {{ link.created_at|date:"M j" }}<br />
                   <a class="btn btn-sm btn-outline-primary rounded-pill px-2" href="{% url 'redirect-url' link.short_alias %}" target="_blank" role="button">{{ link.short_alias }}</a><br />
 
                   <button style="margin-top: 5px;" class="btn btn-sm btn-outline-success rounded-pill px-2 copy-btn">Copy</button><br /><span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
-                  <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title|truncatechars:120 }}{% else %}Title not available{% endif %}" data-tags="{% for tag in link.tags.all %}#{{ tag.name }} {% endfor %}"></div>
+                  <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
                 </td>
 
                 <td align="left">
@@ -72,7 +71,7 @@
 
                   <div>{{ link.long_url|long_url_website }}</div>
 
-                  <div>{% for tag in link.tags.all %}{% if tag.slug %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px; margin-right: 1px;">#{{ tag.name }}</span></a> {% endif %}{% endfor %}</div>
+                  <div>{% for tag in link.tags.all %}{% if tag.slug %}<a href="{% url 'shortener-list-by-tag-open' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px; margin-right: 1px;">{{ tag.name }}</span></a> {% endif %}{% endfor %}</div>
                 </td>
               </tr>
 
@@ -91,73 +90,7 @@
     <!-- row end -->
     </div>
 
-
-<script>
-  // Function to display a temporary message on the page
-  function showMessage(button, duration = 5000) {
-      let messageSpan = button.closest("tr").querySelector(".copy-message");
-      if (messageSpan) {
-          messageSpan.textContent = "Copied!";
-          messageSpan.style.display = "inline";
-          setTimeout(() => {
-              messageSpan.textContent = "";
-              messageSpan.style.display = "none";
-          }, duration);
-      }
-  }
-
-  // Fallback function using a temporary textarea for older browsers
-  function fallbackCopyText(text, button) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-      document.execCommand('copy');
-      showMessage(button); // Pass the button to showMessage
-    } catch (err) {
-      console.error('Fallback: Unable to copy', err);
-    }
-    document.body.removeChild(textarea);
-  }
-
-  function copyText(event) {
-      let button = event.target; // Get the clicked button
-      let row = button.closest("tr");
-      let dataDiv = row.querySelector(".copy-data");
-
-      if (dataDiv) {
-          // Extract values
-          let title = dataDiv.getAttribute("data-title");
-          let alias = dataDiv.getAttribute("data-alias");
-          let tags = dataDiv.getAttribute("data-tags");
-
-          // Format text for copying
-          let text = `${title}\n${alias}\n${tags}`;
-
-          // Check if the Clipboard API is available
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text)
-              .then(() => {
-                showMessage(button); // Pass the button to showMessage
-              })
-              .catch(err => {
-                console.error('Failed to copy using Clipboard API, using fallback method', err);
-                fallbackCopyText(text, button); // Pass the button to fallbackCopyText
-              });
-          } else {
-            // Use the fallback method if Clipboard API is not available
-            fallbackCopyText(text, button); // Pass the button to fallbackCopyText
-          }
-      }
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".copy-btn").forEach(button => {
-        button.addEventListener("click", copyText);
-    });
-  });
-</script>
+    <script src="{% static 'js/copy-button.js' %}"></script>
 
   <!-- container end -->
   </div>

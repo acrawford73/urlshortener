@@ -18,3 +18,9 @@ def long_url_website(value):
 	ext = tldextract.extract(value)
 	domain = f"{ext.domain}.{ext.suffix}".strip()
 	return domain if ext.suffix else ext.domain.strip()
+
+
+@register.filter(name='links_copy')
+def links_copy(value):
+	"""Turns a tags field into comma delimited list"""
+	return ', '.join(str(tag) for tag in value.all())

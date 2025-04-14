@@ -17,34 +17,28 @@
 
     <p><a href="{% url 'shortener-create' %}"><button class="btn btn-primary rounded-pill px-3" type="button">Shorten us up another link</button></a></p>
 
+    <!-- alert message -->
     <div class="row">
-      <div class="col-sm-3">&nbsp;</div>
+      <div class="col-sm-3"></div>
         <div class="col-sm-6 table-responsive">
-          <p>{% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-info">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}<p>
+          <p>{% if messages %}{% for message in messages %}<div class="alert alert-info">{{ message }}</div>{% endfor %}{% endif %}<p>
         </div>
-      <div class="col-sm-3">&nbsp;</div>
+      <div class="col-sm-3"></div>
     </div>
 
     <div class="row">
-      <div class="col-sm-1">&nbsp;</div>
+      <div class="col-sm-1"></div>
         <div class="col-sm-10 table-responsive">
 
-          <p>
-            <button id="copyBtn" class="btn btn-success rounded-pill px-3">Copy</button>&nbsp;&nbsp;
-            {% if link.owner == user or user.is_staff %}
-            <a href="{% url 'shortener-update-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit Link</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'shortener-delete-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="deleteBtn" class="btn btn-danger rounded-pill px-3">Delete</button></a>
-            {% endif %}
-          </p>
+          {% if link.owner == user or user.is_staff %}<p><a href="{% url 'shortener-update-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="editBtn" class="btn btn-info rounded-pill px-3">Edit Link</button></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'shortener-delete-all' link.id %}?page={{ page }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"><button id="deleteBtn" class="btn btn-danger rounded-pill px-3">Delete</button></a></p>{% endif %}
 
-          <div id="copyMessage"></div><br />
+           <div class="copy-block" style="margin-top: 20px;">
+            <button class="btn btn-success rounded-pill px-3 copy-btn">Copy</button>
+            <span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
+            <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
+          </div>
 
+          <br />
           <table class="table">
             <tbody>
               <tr>
@@ -57,7 +51,7 @@
               </tr>
               <tr>
                 <th class="table-primary">Tags</th>
-                <td id="shortTags">{% for tag in link.tags.all %}<span class="badge text-bg-success">#{{ tag.slug }}</span> {% endfor %}</td>
+                <td id="shortTags">{% for tag in link.tags.all %}<span class="badge text-bg-success">{{ tag.name }}</span> {% endfor %}</td>
               </tr>
               <tr>
                 <th class="table-primary">Original</th>
@@ -91,11 +85,11 @@
           </table>
 
         </div>
-      <div class="col-sm-1">&nbsp;</div>
+      <div class="col-sm-1"></div>
 
     <!-- row end -->
     </div>
-    <script src="{% static 'js/copy-button.js' %}"></script>
+    <script src="{% static 'js/copy-button-detail.js' %}"></script>
 
     {% else %}
     <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
