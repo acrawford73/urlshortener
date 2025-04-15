@@ -11,6 +11,6 @@ urlpatterns = [
 	path('faq/', views.FAQ.as_view(), name='faq'),
 
 	# Robots
-	path('robots.txt', views.Robots.as_view(), name='robots'),
+	path('robots.txt', views.Robots.as_view(content_type='text/plain'), name='robots'),
 
 ]
