@@ -66,3 +66,8 @@ class FAQ(TemplateView):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'FAQ'
 		return context
+
+
+@method_decorator(cache_page(300), name='dispatch')
+class Robots(TemplateView):
+	template_name = 'robots.txt'

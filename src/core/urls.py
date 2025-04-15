@@ -10,4 +10,7 @@ urlpatterns = [
 	path('guidelines/', views.Guidelines.as_view(), name='guidelines'),
 	path('faq/', views.FAQ.as_view(), name='faq'),
 
+	# Robots
+	path('robots.txt', views.Robots.as_view(), name='robots'),
+
 ]
