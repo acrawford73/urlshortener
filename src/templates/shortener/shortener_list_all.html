@@ -51,7 +51,6 @@
                 {% endif %}
                 <th>&nbsp;</th>
                 <th align="left">Short URLs</th>
-                <th><a href="{% url 'shortener-list-top-all' %}">Views</a></th>
                 <th>Posted</th>
               </tr>
             </thead>
@@ -97,8 +96,6 @@
                     {% if tag.slug %}<a href="{% url 'shortener-list-by-tag-all' tag.slug %}"><span class="badge text-bg-success" style="margin-top: 1px;">{{ tag.name }}</span></a> {% endif %}
                   {% endfor %}
                 </td>
-
-                <td>{{ link.clicks }}</td>
 
                 <td>
                   {% if user.is_staff %}

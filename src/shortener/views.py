@@ -1,3 +1,4 @@
+import time
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -35,7 +36,44 @@ from django.views.decorators.http import require_GET
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 
+from functools import wraps
+
+
 # -----
+
+
+def throttle_view(rate, per):
+	"""Throttle redirect requests"""
+	def decorator(view_func):
+		@wraps(view_func)
+		def wrapped(request, *args, **kwargs):
+			ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR')).split(',')[0]
+			key = f"throttle:{ip}"
+			history = cache.get(key, [])
+			now = time.time()
+
+			# Filter timestamps older than the window
+			history = [t for t in history if now - t < per]
+
+			if len(history) >= rate:
+				response = HttpResponse("Rate limit exceeded", status=429)
+				response["Retry-After"] ="600"
+				return response
+
+			history.append(now)
+			cache.set(key, history, timeout=per)
+			return view_func(request, *args, **kwargs)
+		return wrapped
+	return decorator
+
+
+@throttle_view(rate=60, per=60)  # 60 requests per IP per minute
+@cache_page(60 * 10, key_prefix='redirect_url')  # Cache for 10 minutes
+def redirect_url(request, alias):
+	"""Redirect all ShortURL clicks to the original URL."""
+	url = get_object_or_404(ShortURL, short_alias=alias)
+	return HttpResponseRedirect(url.long_url)
+
 
 @login_required
 def tags_download(request):
@@ -288,52 +326,6 @@ class ShortenerAllListView(LoginRequiredMixin, ListView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'All Links'
-		context['total_results'] = self.get_queryset().count()
-		return context
-
-
-class ShortenerTopListView(OwnerListView):
-	""" List all owner's shortened links that have been clicked, descending order. """
-	model = ShortURL
-	template_name = 'shortener/shortener_list.html'
-	context_object_name = 'links'
-	ordering = ['-clicks']
-	paginate_by = 40
-
-	def get_queryset(self):
-		qs = super().get_queryset()
-		qs = qs.select_related('owner').prefetch_related('tags').filter(clicks__gt=0)
-		query = self.request.GET.get('q')
-		if query:
-			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
-		return qs
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'My Top Views'
-		context['total_results'] = self.get_queryset().count()
-		return context
-
-
-class ShortenerTopAllListView(LoginRequiredMixin, ListView):
-	""" List all shortened links that have been clicked, descending order. """
-	model = ShortURL
-	template_name = 'shortener/shortener_list_all.html'
-	context_object_name = 'links'
-	ordering = ['-clicks']
-	paginate_by = 40
-
-	def get_queryset(self):
-		qs = super().get_queryset()
-		qs = qs.select_related('owner').prefetch_related('tags').filter(clicks__gt=0).filter(private=False)
-		query = self.request.GET.get('q')
-		if query:
-			qs = qs.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
-		return qs
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['page_title'] = 'Top Views'
 		context['total_results'] = self.get_queryset().count()
 		return context
 
@@ -757,15 +749,6 @@ def generate_unique_alias(url):
 	alias = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
 	if not ShortURL.objects.filter(short_alias=alias).exists():
 		return alias
-
-
-@cache_page(60 * 10, key_prefix='redirect_url')  # Cache for 10 minutes
-def redirect_url(request, alias):
-	"""Redirect all ShortURL clicks to the original URL."""
-	url = get_object_or_404(ShortURL, short_alias=alias)
-	url.clicks += 1
-	url.save()
-	return HttpResponseRedirect(url.long_url)
 
 
 ## RSS Feed
