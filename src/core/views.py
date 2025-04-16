@@ -68,6 +68,6 @@ class FAQ(TemplateView):
 		return context
 
 
-@method_decorator(cache_page(3600), name='dispatch')
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')
 class Robots(TemplateView):
 	template_name = 'robots.txt'

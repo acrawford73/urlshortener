@@ -12,6 +12,7 @@ def clear_cache_shorturl_update(sender, instance, **kwargs):
 	cache.set(cache_key, instance, timeout=300)  # Cache for 5 min
 	cache.delete('shorturl_list')
 
+
 @receiver(post_delete, sender=ShortURL)
 def clear_cache_shorturl_delete(sender, instance, **kwargs):
 	cache_key = f"shorturl_{instance.id}"
