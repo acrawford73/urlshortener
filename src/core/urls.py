@@ -13,4 +13,7 @@ urlpatterns = [
 	# Robots
 	path('robots.txt', views.Robots.as_view(content_type='text/plain'), name='robots'),
 
+	# Security
+	path('.well-known/security.txt', views.Security.as_view(content_type='text/plain'), name='security'),
+
 ]

@@ -71,3 +71,8 @@ class FAQ(TemplateView):
 @method_decorator(cache_page(CACHE_TTL), name='dispatch')
 class Robots(TemplateView):
 	template_name = 'robots.txt'
+
+
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')
+class Security(TemplateView):
+	template_name = 'security.txt'
