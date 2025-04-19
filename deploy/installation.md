@@ -103,40 +103,16 @@ sudo dpkg-reconfigure unattended-upgrades
 sudo apt-get install redis-server
 ```
 
-3. Redis configuration in Django `settings.py` (done later):
-
-- For Redis local:
-
-```
-CACHES = {
-    'session': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': ['127.0.0.1:11211'],
-    },
-}
-```
-
-- For Redis cluster (replace IPs):
-
-```
-CACHES = {
-    'session': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': ['127.0.0.1:11211','127.0.0.2:11211','127.0.0.3:11211'],
-    },
-}
-```
-
 ## PostgreSQL Database
 
 ### Change idle session timeout
 
-- There is an idle connection issue with PostgreSQL and Django 4.x. The database setting CONN_MAX_AGE is not honored.
+- There is an idle connection issue with PostgreSQL and Django 4.x. The database setting CONN_MAX_AGE is not honored. As a workaround:
 
 1. Edit `/etc/postgresql/14/main/postgresql.conf`
 
 ```
-idle_session_timeout = 60000
+idle_session_timeout = 600000
 ```
 
 2. Restart PostgreSQL database
@@ -201,8 +177,7 @@ sudo timedatectl set-timezone America/New_York
 
 ## Deploy Django project source.
 
-- Navigate to **/home/django**
-- Get the project source from Github.
+- Navigate to `/home/django` and get the project source from Github.
 
 ```
 cd /home/django
@@ -211,11 +186,11 @@ git clone git@github.com:acrawford73/shortener.link.git
 
 ### Configure Environment File
 
-1. Copy the sample environment file.
+1. Copy the sample environment file to `.env`.
 
 ```
 cp /home/django/shortener.link/deploy/env_example /home/django/shortener.link/.env
-chmod 644 /home/django/shortener.link/.env
+chmod 640 /home/django/shortener.link/.env
 ```
 
 2. Adjust `.env` parameters.
@@ -266,9 +241,9 @@ REGISTRATION_AUTO_LOGIN=False
 
 ## Install Pip Packages
 
-The Python binary is at **/usr/bin/local/python3**, so Pip packages are installed right on the server.
+The Python binary is at `/usr/bin/local/python3`, so Pip packages are installed right on the server, not in a virtual environment.
 
-1. Create a symlink for **python**.
+1. Create a symlink for `python`.
 
 ```
 sudo ln -s /usr/bin/local/python3 /usr/bin/local/python
@@ -288,6 +263,72 @@ pip install -r requirements.txt
 pip install playwright
 playwright install-deps
 playwright install
+```
+
+## Prepare Redis Configuration
+
+Redis configuration in Django `/settings.py`:
+
+- For Redis local:
+
+```
+CACHES = {
+	'default': {
+		'BACKEND': 'django_redis.cache.RedisCache',
+		'LOCATION': REDIS_LOCATION,
+		'KEY_PREFIX': 'default',
+		'OPTIONS': {
+			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+			'CONNECTION_POOL_KWARGS': {
+				'max_connections': 200,
+				'retry_on_timeout': True,
+			}
+		}
+	},
+	'session': {
+		'BACKEND': 'django_redis.cache.RedisCache',
+		'LOCATION': REDIS_LOCATION,
+		'KEY_PREFIX': 'session',
+		'OPTIONS': {
+			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+			'CONNECTION_POOL_KWARGS': {
+				'max_connections': 200,
+				'retry_on_timeout': True,
+			}
+		}
+	},
+}
+```
+
+- For Redis cluster (replace IPs):
+
+```
+CACHES = {
+	'default': {
+		'BACKEND': 'django_redis.cache.RedisCache',
+		'LOCATION': ['127.0.0.1:11211','127.0.0.2:11211','127.0.0.3:11211'],
+		'KEY_PREFIX': 'default',
+		'OPTIONS': {
+			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+			'CONNECTION_POOL_KWARGS': {
+				'max_connections': 200,
+				'retry_on_timeout': True,
+			}
+		}
+	},
+	'session': {
+		'BACKEND': 'django_redis.cache.RedisCache',
+		'LOCATION': ['127.0.0.1:11211','127.0.0.2:11211','127.0.0.3:11211'],
+		'KEY_PREFIX': 'session',
+		'OPTIONS': {
+			'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+			'CONNECTION_POOL_KWARGS': {
+				'max_connections': 200,
+				'retry_on_timeout': True,
+			}
+		}
+	},
+}
 ```
 
 ## Prepare Django Project

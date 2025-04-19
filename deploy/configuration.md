@@ -9,6 +9,7 @@
 5. Final Test
 6. Backup Cron
 
+
 ## Update DNS records
 
 1. The domain you purchased at the domain registrar must point to Digital Ocean nameservers.
@@ -291,7 +292,7 @@ The website should appear successfully. Login with the admin user that was creat
 
 ```
 #!/bin/bash
-DB_NAME="psinergydb"
+DB_NAME="shortenerdb"
 DB_USER="django"
 BACKUP_DIR="/home/django/backups"
 TIMESTAMP=$(date +"%Y%m%d%H%M")
