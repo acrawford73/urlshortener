@@ -18,7 +18,7 @@ class ShortURL(models.Model):
 	long_url = models.URLField(default="", max_length=2048, null=False, blank=False, \
 		help_text="Place the full URL starting with https://")
 	created_at = models.DateTimeField(auto_now_add=True, editable=False)
-	#updated = models.DateTimeField(auto_now=True)
+	updated = models.DateTimeField(auto_now=True)
 	clicks = models.PositiveIntegerField(default=0, editable=False)
 	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	tags = TaggableManager(through='UUIDTaggedItem', blank=True, related_name='shorturls')

@@ -772,7 +772,7 @@ class ShortURLRSSFeed(Feed):
 	def item_guid(self, item):
 		return str(item.id).lower()
 	def item_pubdate(self, item):
-		return item.created_at
+		return item.created
 	def item_categories(self, item):
 		return [str(tag) for tag in item.tags.all()]
 	def get_feed(self, obj, request):

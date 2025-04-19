@@ -67,6 +67,10 @@
                 <th class="table-primary">Added</th>
                 <td>{{ link.created_at|date:"F j, Y g:iA" }}</td>
               </tr>
+              <tr>
+                <th class="table-primary">Updated</th>
+                <td>{{ link.updated|date:"F j, Y g:iA" }}</td>
+              </tr>
               {% if link.owner == user or user.is_staff %}
               <tr>
                 <th class="table-primary">Private</th>
