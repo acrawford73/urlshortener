@@ -58,10 +58,30 @@ def search_check(search_domain, search_url):
     return None
 
 
+DOCUMENT_EXTENSIONS = {'.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt'}
+IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg', '.webp'}
+VIDEO_EXTENSIONS = {'.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.webm', '.m4v'}
+AUDIO_EXTENSIONS = {'.mp3', '.wav', '.ogg', '.aac', '.flac', '.m4a', '.wma'}
+ALL_EXTENSIONS = DOCUMENT_EXTENSIONS | IMAGE_EXTENSIONS | VIDEO_EXTENSIONS | AUDIO_EXTENSIONS
+
+def is_direct_file_link(url: str) -> bool:
+    path = urlparse(url).path.lower()
+    for ext in ALL_EXTENSIONS:
+        if path.endswith(ext):
+            return ext
+    return None
+
+
 def fetch_page_title(url):
     """Fetches the title of a given webpage."""
 
     ## Level 1
+    # Check direct links to files
+    ext = is_direct_file_link(url)
+    if ext:
+        return f"Direct link to {ext.split('.')[1].upper()} file! Please rename this Title field."
+
+    ## Level 2
     # Check search engines
     for name, pattern in SEARCH_PATTERNS.items():
         if title := search_check(pattern, url):
@@ -74,12 +94,12 @@ def fetch_page_title(url):
             title = unquote(match.group(1)).replace('+',' ').strip()[:475]
             return f"{title} - Google Patents Search"
 
-    ## Level 2 or 3
+    ## Level 3 or 4
     # Fallback: Try to fetch the page title
     return fetch_title_from_html(url) or asyncio.run(async_get_title_playwright(url))
 
 
-## Level 2 - BS4
+## Level 3 - BS4
 def fetch_title_from_html(url):
     host_url = url
     server_host = urlparse(host_url).netloc
@@ -111,7 +131,7 @@ def fetch_title_from_html(url):
     return None
 
 
-## Level 3 - Browser Simulator
+## Level 4 - Browser Simulator
 async def async_get_title_playwright(url):
     """Fetches the title using Playwright for JavaScript-rendered pages."""
     try:
@@ -157,14 +177,14 @@ class Command(BaseCommand):
 
         count = 0
         for url in urls:
-            # Ignore directly linked files
-            longurl = urlparse(url)
-            if longurl.path.lower().endswith((
-                    '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', 
-                    '.xml', '.ppt', '.pptx', '.csv', '.rtf', '.ods', '.ots', 
-                    '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
-                    '.jpeg', '.jpg', '.png', '.gif', '.svg')):
-                continue
+            # # Ignore directly linked files
+            # longurl = urlparse(url)
+            # if longurl.path.lower().endswith((
+            #         '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', 
+            #         '.xml', '.ppt', '.pptx', '.csv', '.rtf', '.ods', '.ots', 
+            #         '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
+            #         '.jpeg', '.jpg', '.png', '.gif', '.svg')):
+            #     continue
 
             MAX_ATTEMPTS = 20
             attempts = 0
@@ -187,12 +207,17 @@ class Command(BaseCommand):
 
                 title = fetch_page_title(url)
 
+                private = False
+                if title.startswith("Direct link to"):
+                    private = True
+
                 short_url = ShortURL(
                     id=uuid.uuid4(),
                     long_url=url,
                     short_alias=short_alias,
                     title=title,
-                    owner=owner
+                    owner=owner,
+                    private=private
                 )
                 short_url.save()
                 print(f'{count}: {short_alias}, {title}, {url}')
