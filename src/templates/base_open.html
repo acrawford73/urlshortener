@@ -38,26 +38,23 @@
 
 {% include 'navbar.html' %}
 
-  <div class="container">
-   <a id="#top"></a>
+<div class="container">
+  <a id="#top"></a>
 
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    
-    {% include 'footer.html' %}
-
-  </div> <!-- /container -->
-
-
-  <!-- Bootstrap core JavaScript
-  ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="{% static 'js/bootstrap.bundle.min.js' %}" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
   
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+  {% include 'footer.html' %}
+
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>
 </html>

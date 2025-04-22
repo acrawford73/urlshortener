@@ -370,6 +370,8 @@ class ShortenerCreateView(OwnerCreateView):
 		shorturl = form.save(commit=False)
 		shorturl.owner = self.request.user
 		shorturl.title = title
+		if title.startswith("Direct link to"):
+			shorturl.private = True
 		shorturl.short_alias = short_alias
 		shorturl.save()
 		form.save_m2m()
@@ -555,10 +557,30 @@ def search_check(search_domain, search_url):
 	return None
 
 
+DOCUMENT_EXTENSIONS = {'.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt'}
+IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg', '.webp'}
+VIDEO_EXTENSIONS = {'.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.webm', '.m4v'}
+AUDIO_EXTENSIONS = {'.mp3', '.wav', '.ogg', '.aac', '.flac', '.m4a', '.wma'}
+ALL_EXTENSIONS = DOCUMENT_EXTENSIONS | IMAGE_EXTENSIONS | VIDEO_EXTENSIONS | AUDIO_EXTENSIONS
+
+def is_direct_file_link(url: str) -> bool:
+	path = urlparse(url).path.lower()
+	for ext in ALL_EXTENSIONS:
+		if path.endswith(ext):
+			return ext
+	return None
+
+
 def get_page_title(url):
 	"""Fetches the title of a given URL webpage."""
 
 	## Level 1
+	# Check direct links to files
+	ext = is_direct_file_link(url)
+	if ext:
+		return f"Direct link to {ext.split('.')[1].upper()} file! Please rename this Title field."
+
+	## Level 2
 	# Check search engines
 	for name, pattern in SEARCH_PATTERNS.items():
 		if title := search_check(pattern, url):
@@ -576,7 +598,7 @@ def get_page_title(url):
 	return fetch_title_from_html(url) or asyncio.run(async_get_title_playwright(url))
 
 
-## Level 2 - Requests & BS4
+## Level 3 - Requests & BS4
 def fetch_title_from_html(url):
 	host_url = url
 	server_host = urlparse(host_url).netloc
@@ -608,7 +630,7 @@ def fetch_title_from_html(url):
 	return None
 
 
-## Level 3 - Browser Simulator
+## Level 4 - Browser Simulator
 async def async_get_title_playwright(url):
 	"""Fetches the title using Playwright for JavaScript-rendered pages."""
 	try:
