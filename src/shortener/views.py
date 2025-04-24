@@ -590,7 +590,7 @@ def get_page_title(url):
 	if re.search(r'patents\.google\.[^/]+/\?', url):
 		match = re.search(r'q=\(([^)]+)\)(?:&|$)', url)
 		if match:
-			title = unquote(match.group(1)).replace('+',' ').strip()[:475]
+			title = unquote(match.group(1)).replace('\n','').replace('+', ' ').strip()[:475]
 			return f"{title} - Google Patents Search"
 
 	## Level 2 or 3

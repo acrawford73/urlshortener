@@ -91,7 +91,7 @@ def fetch_page_title(url):
     if re.search(r'patents\.google\.[^/]+/\?', url):
         match = re.search(r'q=\(([^)]+)\)(?:&|$)', url)
         if match:
-            title = unquote(match.group(1)).replace('+',' ').strip()[:475]
+            title = unquote(match.group(1)).replace('\n','').replace('+',' ').strip()[:475]
             return f"{title} - Google Patents Search"
 
     ## Level 3 or 4
@@ -175,16 +175,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'File not found: {file_path}'))
             return
 
-        count = 0
+        count_url = 0
         for url in urls:
-            # # Ignore directly linked files
-            # longurl = urlparse(url)
-            # if longurl.path.lower().endswith((
-            #         '.txt', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', 
-            #         '.xml', '.ppt', '.pptx', '.csv', '.rtf', '.ods', '.ots', 
-            #         '.mp4', '.m4v', '.avi', '.m4a', '.mp3', '.ogg', '.wav',
-            #         '.jpeg', '.jpg', '.png', '.gif', '.svg')):
-            #     continue
 
             MAX_ATTEMPTS = 20
             attempts = 0
@@ -220,13 +212,13 @@ class Command(BaseCommand):
                     private=private
                 )
                 short_url.save()
-                print(f'{count}: {short_alias}, {title}, {url}')
-                count += 1
+                print(f'{count_url}: {short_alias}, {title}, {url}')
+                count_url += 1
                 time.sleep(random.uniform(0.05, 0.15))
             except Exception as e:
-                logging.error(f"Error saving URL: {e}", extra={'dcount': count, 'alias': short_alias, 'url': url})
+                logging.error(f"Error saving URL: {e}", extra={'dcount': count_url, 'alias': short_alias, 'url': url})
 
-        if count == 0:
+        if count_url == 0:
             self.stdout.write(self.style.SUCCESS(f'No URLs were imported.'))
         else:
-            self.stdout.write(self.style.SUCCESS(f'Successfully imported {count} URLs with titles.'))
+            self.stdout.write(self.style.SUCCESS(f'Successfully imported {count_url} URLs with titles.'))
