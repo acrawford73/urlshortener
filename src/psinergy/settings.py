@@ -179,7 +179,7 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
-        'CONN_MAX_AGE': 600,
+        'CONN_MAX_AGE': int(config('DB_CONN_MAX_AGE')),
         'TIME_ZONE': 'UTC',
     }
 }
@@ -347,24 +347,6 @@ CACHES = {
         }
     },
 }
-
-# CACHES = {
-    # 'default': {
-    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-    #     'LOCATION': REDIS_LOCATION,
-    # },
-    # 'session': {
-    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-    #     'LOCATION': REDIS_LOCATION,
-    #     'KEY_PREFIX': 'session'
-    # },
-    
-    # 'celery': {
-    #     'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-    #     'LOCATION': REDIS_LOCATION,
-    #     'KEY_PREFIX': 'celery'
-    # },
-# }
 
 
 ### CELERY
