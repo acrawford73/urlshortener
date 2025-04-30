@@ -369,9 +369,10 @@ class ShortenerCreateView(OwnerCreateView):
 
 		shorturl = form.save(commit=False)
 		shorturl.owner = self.request.user
-		shorturl.title = title
-		if title.startswith("Direct link to"):
-			shorturl.private = True
+		if title != None:
+			shorturl.title = title
+			if title.startswith("Direct link to"):
+				shorturl.private = True
 		shorturl.short_alias = short_alias
 		shorturl.save()
 		form.save_m2m()

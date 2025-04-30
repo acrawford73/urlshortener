@@ -23,7 +23,13 @@
             <tbody>
               <tr>
                 <th class="table-primary">Title</th>
-                <td>{{ link.title }}</td>
+                <td>
+                  {% if link.title == "" or link.title == None %}
+                    <strong>Title not available</strong>
+                  {% else %}
+                    <strong>{{ link.title }}</strong>
+                  {% endif %}
+                </td>
               </tr>
               <tr>
                 <th class="table-primary">Short</th>
