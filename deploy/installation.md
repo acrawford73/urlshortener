@@ -29,8 +29,11 @@ sudo apt-get upgrade
 ## Change server hostname to the domain
 
 ```
-sudo hostnamectl shortener.link
+sudo hostnamectl set-hostname shortener.link
 ```
+
+Reboot.
+
 
 ## Configure SSH
 

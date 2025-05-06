@@ -50,7 +50,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/django/shortener.link/src
-ExecStart=/usr/bin/gunicorn3 --name=shortener --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py shortener.wsgi:application
+ExecStart=/usr/bin/gunicorn3 --name=shortener --error-logfile /var/log/gunicorn/error.log --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py shortener.wsgi:application
 Restart=always
 SyslogIdentifier=gunicorn
 User=django
@@ -282,7 +282,7 @@ sudo systemctl restart nginx
 
 ## Final Test
 
-Using your browser, navigate to your custom domain [https://domain.com](https://domain.com).
+Using your browser, navigate to your custom domain `https://shortener.link`.
 
 The website should appear successfully. Login with the admin user that was created during the installation guide.
 
