@@ -32,7 +32,7 @@ The CAA record is for whitelisting 'letsencrypt.com'. Settings:
 
 ```
 Hostname = @
-Authority Granted For = letsencrypt.com
+Authority Granted For = letsencrypt.org
 Tag = issue
 Flags = 0
 TTL = 3600 (default)
@@ -209,7 +209,7 @@ server {
 
 server {
     if ($request_method ~ ^(OPTIONS)$ ) {
-		return 403;
+        return 403;
     }
 
     listen 443 ssl;
