@@ -38,6 +38,35 @@ Flags = 0
 TTL = 3600 (default)
 ```
 
+After setting DNS records, check periodically whether they have been updated.
+
+```
+dig shortener.link
+```
+
+The response should look similar to this:
+
+```
+; <<>> DiG 9.10.6 <<>> shortener.link
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 16991
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;shortener.link.            IN  A
+
+;; ANSWER SECTION:
+shortener.link.     3600    IN  A   45.55.137.34
+
+;; Query time: 123 msec
+;; SERVER: 10.1.0.1#53(10.1.0.1)
+;; WHEN: Wed May 07 15:14:30 ADT 2025
+;; MSG SIZE  rcvd: 59
+```
+
 ## Configure Gunicorn Service
 
 ### /etc/systemd/system/gunicorn.service
@@ -50,7 +79,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/django/shortener.link/src
-ExecStart=/usr/bin/gunicorn3 --name=shortener --error-logfile /var/log/gunicorn/error.log --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py shortener.wsgi:application
+ExecStart=/usr/bin/gunicorn3 --name=shortener --bind unix:/home/django/gunicorn.socket --error-logfile /var/log/gunicorn/error.log --config /etc/gunicorn.d/gunicorn.py shortener.wsgi:application
 Restart=always
 SyslogIdentifier=gunicorn
 User=django
@@ -182,7 +211,7 @@ server {
     if ($request_method ~ ^(OPTIONS)$ ) {
 		return 403;
     }
-    
+
     listen 443 ssl;
     #listen [::]:80 ipv6only=on;
 
@@ -221,7 +250,6 @@ server {
     }
 
 }
-
 ```
 
 4. After any Nginx configuration changes:
@@ -250,7 +278,7 @@ The **--nginx** parameter installs certificate, key, and configures Nginx config
 1. Register and create certificates for the domain.
 
 ```
-sudo certbot --nginx -d shortener.link
+sudo certbot -v --nginx -d shortener.link
 ```
 
 2. Certbot adds a few lines to the Nginx configuration. Review the sites-enabled/shortener.link file. 

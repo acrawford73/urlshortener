@@ -184,7 +184,7 @@ sudo timedatectl set-timezone America/New_York
 
 ```
 cd /home/django
-git clone git@github.com:acrawford73/shortener.link.git
+git clone git@github.com:acrawford73/urlshortener.git
 ```
 
 ### Configure Environment File
@@ -192,8 +192,8 @@ git clone git@github.com:acrawford73/shortener.link.git
 1. Copy the sample environment file to `.env`.
 
 ```
-cp /home/django/shortener.link/deploy/env_example /home/django/shortener.link/.env
-chmod 640 /home/django/shortener.link/.env
+cp /home/django/urlshortener/deploy/env_example /home/django/urlshortener/.env
+chmod 640 /home/django/urlshortener/.env
 ```
 
 2. Adjust `.env` parameters.
@@ -244,18 +244,18 @@ REGISTRATION_AUTO_LOGIN=False
 
 ## Install Pip Packages
 
-The Python binary is at `/usr/bin/local/python3`, so Pip packages are installed right on the server, not in a virtual environment.
+The Python binary is at `/usr/bin/python3`, so Pip packages are installed right on the server, not in a virtual environment.
 
 1. Create a symlink for `python`.
 
 ```
-sudo ln -s /usr/bin/local/python3 /usr/bin/local/python
+sudo ln -s /usr/bin/python3 /usr/bin/python
 ```
 
-2. Install project Pip packages.
+2. Install project Pip packages, as the `django` user.
 
 ```
-cd /home/django/shortener.link/
+cd /home/django/urlshortener/
 
 pip install -r requirements.txt
 ```
