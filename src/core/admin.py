@@ -1,3 +1,3 @@
 from django.contrib import admin
 
-admin.site.site_header = "Psinergy.Link Administration"
+admin.site.site_header = "BioDigCon.Link Administration"

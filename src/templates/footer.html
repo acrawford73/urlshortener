@@ -9,9 +9,9 @@
     </p>
 
     {% if user.is_authenticated %}
-    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list' %}">Psinergy.Link</a> [BETA]</p>
+    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list' %}">BioDigCon.Link</a> [BETA]</p>
     {% else %}
-    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list-open' %}">Psinergy.Link</a> [BETA]</p>
+    <p>&copy; {% now "Y" %} <a href="{% url 'shortener-list-open' %}">BioDigCon.Link</a> [BETA]</p>
     {% endif %}
 
     <p>
@@ -26,7 +26,6 @@
     </p>
 
     <p>This website is run by a private community of researchers.</p>
-    <p>There is no affiliation with the Psinergy channel. &rsqb;</p>
 
   </div>
 </footer>

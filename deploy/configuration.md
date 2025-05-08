@@ -193,7 +193,7 @@ ln -s /etc/nginx/sites-available/shortener.link /etc/nginx/sites-enabled/shorten
 
 3. Configure /etc/nginx/sites-available/shortener.link
 
-The SSL configurations will be missing from the configuration file. SSL configurations are added by the Certbot installer).
+The SSL configurations will be missing from the configuration file. The SSL configurations are added by the Certbot installer. Do not add the SSL configurations mentioned here.
 
 ```
 upstream app_server {

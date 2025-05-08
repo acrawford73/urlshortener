@@ -776,10 +776,10 @@ def generate_unique_alias(url):
 
 ## RSS Feed
 class ShortURLRSSFeed(Feed):
-	title = "Psinergy.link RSS Feed"
+	title = "BioDigCon.link RSS Feed"
 	link = "/feed/rss/"
-	description = "Recent links curated by Psinergists"
-	feed_copyright = "2025 PSINERGY.LINK"
+	description = "Recent curated links"
+	feed_copyright = "2025 BIODIGCON.LINK"
 	ttl = 600
 	def items(self):
 		return ShortURL.objects.prefetch_related('tags').filter(private=False).order_by('-created_at')[:50]
@@ -791,7 +791,7 @@ class ShortURLRSSFeed(Feed):
 	def item_link(self, item):
 		return f"/{item.short_alias}/"
 	def item_author_name(self, item):
-		return "Psinergists"
+		return "Researchers"
 	def item_guid(self, item):
 		return str(item.id).lower()
 	def item_pubdate(self, item):
