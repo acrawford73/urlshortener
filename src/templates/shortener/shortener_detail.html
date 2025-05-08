@@ -35,7 +35,7 @@
            <div class="copy-block" style="margin-top: 20px;">
             <button class="btn btn-success rounded-pill px-3 copy-btn">Copy</button>
             <span class="copy-message text-success" style="display: none; font-size: 0.8em; margin-left: 5px;"></span>
-            <div class="copy-data" data-alias="https://psinergy.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
+            <div class="copy-data" data-alias="https://biodigcon.link/{{ link.short_alias }}/" data-title="{% if link.title %}{{ link.title }}{% else %}Title not available{% endif %}" data-tags="{{ link.tags|links_copy }}"></div>
           </div>
 
           <br />
@@ -53,7 +53,7 @@
               </tr>
               <tr>
                 <th class="table-primary">Short</th>
-                <td id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://psinergy.link/{{ link.short_alias }}/</strong></a></td>
+                <td id="shortAlias"><a href="{% url 'redirect-url' link.short_alias %}" target="_blank"><strong>https://biodigcon.link/{{ link.short_alias }}/</strong></a></td>
               </tr>
               <tr>
                 <th class="table-primary">Tags</th>
