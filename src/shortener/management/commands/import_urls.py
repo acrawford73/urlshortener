@@ -199,10 +199,12 @@ class Command(BaseCommand):
 
                 title = fetch_page_title(url)
 
-                if title != None:
-                    private = False
-                    if title.startswith("Direct link to"):
-                        private = True
+                # Changed to all imported links set to private, review first
+                private = True
+                # if title != None:
+                #     private = False
+                #     if title.startswith("Direct link to"):
+                #         private = True
 
                 short_url = ShortURL(
                     id=uuid.uuid4(),
