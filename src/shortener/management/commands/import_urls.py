@@ -187,7 +187,7 @@ class Command(BaseCommand):
                 attempts += 1
                 if attempts >= MAX_ATTEMPTS:
                     logging.error(f"Failed unique alias generation for URL: {url}")
-                    self.stdout.write(self.style.ERROR(f'Failed unique alias generation: {url}'))
+                    self.stdout.write(self.style.ERROR(f'{count_url}: Failed unique alias generation: {url}'))
                     count_url += 1
                     continue
                 short_alias = generate_short_alias()
@@ -197,7 +197,7 @@ class Command(BaseCommand):
                 existing = ShortURL.objects.filter(long_url=url).first()
                 if existing:
                     logging.error(f'URL already shortened: {url}')
-                    self.stdout.write(self.style.ERROR(f'URL already shortened: {url}'))
+                    self.stdout.write(self.style.ERROR(f'{count_url}: URL already shortened: {url}'))
                     count_url += 1
                     continue
 
@@ -231,3 +231,4 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'No URLs were imported.'))
         else:
             self.stdout.write(self.style.SUCCESS(f'Successfully imported {count_import} URLs with titles.'))
+        print()
