@@ -196,8 +196,8 @@ class Command(BaseCommand):
                 # Check if link is shortened already
                 existing = ShortURL.objects.filter(long_url=url).first()
                 if existing:
-                    logging.error(f'URL already shortened: {url}')
-                    self.stdout.write(self.style.ERROR(f'{count_url}: URL already shortened: {url}'))
+                    logging.warning(f'URL already shortened: {url}')
+                    self.stdout.write(self.style.WARNING(f'{count_url}: URL already shortened: {url}'))
                     count_url += 1
                     continue
 
