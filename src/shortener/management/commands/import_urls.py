@@ -176,6 +176,8 @@ class Command(BaseCommand):
             return
 
         count_url = 0
+        count_import = 0
+
         for url in urls:
 
             MAX_ATTEMPTS = 20
@@ -186,6 +188,7 @@ class Command(BaseCommand):
                 if attempts >= MAX_ATTEMPTS:
                     logging.error(f"Failed unique alias generation for URL: {url}")
                     self.stdout.write(self.style.ERROR(f'Failed unique alias generation: {url}'))
+                    count_url += 1
                     continue
                 short_alias = generate_short_alias()
 
@@ -195,12 +198,14 @@ class Command(BaseCommand):
                 if existing:
                     logging.error(f'URL already shortened: {url}')
                     self.stdout.write(self.style.ERROR(f'URL already shortened: {url}'))
+                    count_url += 1
                     continue
 
                 title = fetch_page_title(url)
 
-                # Changed to all imported links set to private, review first
+                # Changed all imported links set to private, review first
                 private = True
+
                 # if title != None:
                 #     private = False
                 #     if title.startswith("Direct link to"):
@@ -217,6 +222,7 @@ class Command(BaseCommand):
                 short_url.save()
                 print(f'{count_url}: {short_alias}, {title}, {url}')
                 count_url += 1
+                count_import += 1
                 time.sleep(random.uniform(0.05, 0.15))
             except Exception as e:
                 logging.error(f"Error saving URL: {e}", extra={'dcount': count_url, 'alias': short_alias, 'url': url})
@@ -224,4 +230,4 @@ class Command(BaseCommand):
         if count_url == 0:
             self.stdout.write(self.style.SUCCESS(f'No URLs were imported.'))
         else:
-            self.stdout.write(self.style.SUCCESS(f'Successfully imported {count_url} URLs with titles.'))
+            self.stdout.write(self.style.SUCCESS(f'Successfully imported {count_import} URLs with titles.'))
