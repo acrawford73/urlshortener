@@ -71,7 +71,6 @@ Follow the [Configuration](deploy/configuration.md) instructions.
 - Create, update, delete all links
 - Create, update, delete topics
 
-
 ## Incomplete apps
 
 - news
