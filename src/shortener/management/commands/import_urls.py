@@ -180,52 +180,53 @@ class Command(BaseCommand):
 
         for url in urls:
 
-            MAX_ATTEMPTS = 20
-            attempts = 0
-            short_alias = generate_short_alias()
-            while ShortURL.objects.filter(short_alias=short_alias).exists():
-                attempts += 1
-                if attempts >= MAX_ATTEMPTS:
-                    logging.error(f"Failed unique alias generation for URL: {url}")
-                    self.stdout.write(self.style.ERROR(f'{count_url}: Failed unique alias generation: {url}'))
-                    count_url += 1
-                    continue
+            if url.contains('https://') or url.contains('http://'):
+                MAX_ATTEMPTS = 20
+                attempts = 0
                 short_alias = generate_short_alias()
+                while ShortURL.objects.filter(short_alias=short_alias).exists():
+                    attempts += 1
+                    if attempts >= MAX_ATTEMPTS:
+                        logging.error(f"Failed unique alias generation for URL: {url}")
+                        self.stdout.write(self.style.ERROR(f'{count_url}: Failed unique alias generation: {url}'))
+                        count_url += 1
+                        continue
+                    short_alias = generate_short_alias()
 
-            try:
-                # Check if link is shortened already
-                existing = ShortURL.objects.filter(long_url=url).first()
-                if existing:
-                    logging.warning(f'URL already shortened: {url}')
-                    self.stdout.write(self.style.WARNING(f'{count_url}: URL already shortened: {url}'))
+                try:
+                    # Check if link is shortened already
+                    existing = ShortURL.objects.filter(long_url=url).first()
+                    if existing:
+                        logging.warning(f'URL already shortened: {url}')
+                        self.stdout.write(self.style.WARNING(f'{count_url}: URL already shortened: {url}'))
+                        count_url += 1
+                        continue
+
+                    title = fetch_page_title(url)
+
+                    # Changed all imported links set to private, review first
+                    private = True
+
+                    # if title != None:
+                    #     private = False
+                    #     if title.startswith("Direct link to"):
+                    #         private = True
+
+                    short_url = ShortURL(
+                        id=uuid.uuid4(),
+                        long_url=url,
+                        short_alias=short_alias,
+                        title=title,
+                        owner=owner,
+                        private=private
+                    )
+                    short_url.save()
+                    print(f'{count_url}: {short_alias}, {title}, {url}')
                     count_url += 1
-                    continue
-
-                title = fetch_page_title(url)
-
-                # Changed all imported links set to private, review first
-                private = True
-
-                # if title != None:
-                #     private = False
-                #     if title.startswith("Direct link to"):
-                #         private = True
-
-                short_url = ShortURL(
-                    id=uuid.uuid4(),
-                    long_url=url,
-                    short_alias=short_alias,
-                    title=title,
-                    owner=owner,
-                    private=private
-                )
-                short_url.save()
-                print(f'{count_url}: {short_alias}, {title}, {url}')
-                count_url += 1
-                count_import += 1
-                time.sleep(random.uniform(0.05, 0.15))
-            except Exception as e:
-                logging.error(f"Error saving URL: {e}", extra={'dcount': count_url, 'alias': short_alias, 'url': url})
+                    count_import += 1
+                    time.sleep(random.uniform(0.05, 0.15))
+                except Exception as e:
+                    logging.error(f"Error saving URL: {e}", extra={'dcount': count_url, 'alias': short_alias, 'url': url})
 
         if count_url == 0:
             self.stdout.write(self.style.SUCCESS(f'No URLs were imported.'))
