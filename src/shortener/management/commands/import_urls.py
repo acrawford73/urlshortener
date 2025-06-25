@@ -180,7 +180,8 @@ class Command(BaseCommand):
 
         for url in urls:
 
-            if url.contains('https://') or url.contains('http://'):
+            # If line is not a URL then skip it
+            if url.startswith('https://') or url.startswith('http://'):
                 MAX_ATTEMPTS = 20
                 attempts = 0
                 short_alias = generate_short_alias()
