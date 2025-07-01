@@ -1,4 +1,7 @@
 # robots.txt
+User-agent: Googlebot
+Allow: /
+
 User-agent: *
 Disallow: /login/
 Disallow: /logout/
