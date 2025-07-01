@@ -3,6 +3,7 @@ User-agent: Googlebot
 Allow: /
 
 User-agent: *
+Disallow: /links/tag/
 Disallow: /login/
 Disallow: /logout/
 Disallow: /faq/
