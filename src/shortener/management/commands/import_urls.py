@@ -182,6 +182,15 @@ class Command(BaseCommand):
 
             # If line is not a URL then skip it
             if url.startswith('https://') or url.startswith('http://'):
+                
+                # Check if link is shortened already
+                existing = ShortURL.objects.filter(long_url=url).first()
+                if existing:
+                    logging.warning(f'URL already shortened: {url}')
+                    self.stdout.write(self.style.WARNING(f'{count_url}: URL already shortened: {url}'))
+                    count_url += 1
+                    continue
+
                 MAX_ATTEMPTS = 20
                 attempts = 0
                 short_alias = generate_short_alias()
@@ -195,14 +204,6 @@ class Command(BaseCommand):
                     short_alias = generate_short_alias()
 
                 try:
-                    # Check if link is shortened already
-                    existing = ShortURL.objects.filter(long_url=url).first()
-                    if existing:
-                        logging.warning(f'URL already shortened: {url}')
-                        self.stdout.write(self.style.WARNING(f'{count_url}: URL already shortened: {url}'))
-                        count_url += 1
-                        continue
-
                     title = fetch_page_title(url)
 
                     # Changed all imported links set to private, review first
@@ -225,7 +226,7 @@ class Command(BaseCommand):
                     print(f'{count_url}: {short_alias}, {title}, {url}')
                     count_url += 1
                     count_import += 1
-                    time.sleep(random.uniform(0.05, 0.15))
+                    time.sleep(random.uniform(0.05, 0.25))
                 except Exception as e:
                     logging.error(f"Error saving URL: {e}", extra={'dcount': count_url, 'alias': short_alias, 'url': url})
 
