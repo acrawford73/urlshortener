@@ -85,7 +85,7 @@ def tags_download(request):
 	return response
 
 
-class TagsListView(LoginRequiredMixin, ListView):
+class TagsListView(ListView):
 	""" Show Tags List """
 	model = Tag
 	template_name = 'shortener/tags_list.html'
