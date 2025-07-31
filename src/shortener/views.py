@@ -68,7 +68,7 @@ def throttle_view(rate, per):
 
 
 @throttle_view(rate=60, per=60)  # 60 requests per IP per minute
-@cache_page(60 * 10, key_prefix='redirect_url')  # Cache for 10 minutes
+@cache_page(60 * 60, key_prefix='redirect_url')  # Cache for one hour
 def redirect_url(request, alias):
 	"""Redirect all ShortURL clicks to the original URL."""
 	url = get_object_or_404(ShortURL, short_alias=alias)
@@ -130,7 +130,7 @@ def tags_suggestions(request):
 
 
 
-CACHE_TTL = 60 * 10
+CACHE_TTL = 60 * 30
 
 @method_decorator(cache_page(CACHE_TTL), name='dispatch')
 class ShortenerListViewOpen(ListView):
