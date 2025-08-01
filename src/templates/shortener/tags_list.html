@@ -44,7 +44,11 @@
 
               {% for tag in tagslist %}
               <tr align="center">
+                {% if user.is_authenticated %}
                 <td><a href="{% url 'shortener-list-by-tag-all' tag.slug %}">{{ tag.name }}</a></td>
+                {% else %}
+                <td><a href="{% url 'shortener-list-by-tag-open' tag.slug %}">{{ tag.name }}</a></td>
+                {% endif %}
               </tr>
               {% endfor %}
 
