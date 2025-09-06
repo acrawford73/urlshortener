@@ -85,6 +85,7 @@ def tags_download(request):
 	return response
 
 
+@method_decorator(cache_page(60 * 30), name='dispatch')
 class TagsListView(ListView):
 	""" Show Tags List """
 	model = Tag
