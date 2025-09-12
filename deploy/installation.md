@@ -4,7 +4,7 @@ The following project installation guide is based on Digital Ocean's Marketplace
 
 This image uses Django v5.0, but this project uses the latest v4.2.x version. It also includes Nginx, PostgreSQL, Certbot, and Gunicorn.
 
-For demonstration purposes, the guide will use "shortener.link" as the web domain.
+For demonstration purposes, this guide will use "shortener.link" as the web domain.
 
 ## Summary
 
@@ -70,7 +70,13 @@ AllowUsers django
 PermitRootLogin no
 ```
 
-6. Restart the SSHD service.
+6. Save and exit.
+
+```
+:wq
+```
+
+7. Restart the SSHD service.
 
 ```
 systemctl restart sshd
