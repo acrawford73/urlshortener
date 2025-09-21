@@ -32,7 +32,8 @@ urlpatterns = [
 
 	path('topics/download/', 			views.tags_download, 						name='tags-download'),
 	path('tags/suggestions/', 			views.tags_suggestions, 					name='tags-suggestions'),
-	path('topics/',						views.TagsListView.as_view(),				name='tags-list'),
+	path('topics/all/',					views.TagsListView.as_view(),				name='tags-list'),
+	path('topics/',						views.TagsListViewOpen.as_view(),			name='tags-list-open'),
 
 	# Redirector
 	path('<str:alias>/',	views.redirect_url, 		name='redirect-url'),

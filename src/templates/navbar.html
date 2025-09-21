@@ -81,9 +81,9 @@
               <span>Exposing Biodigital Convergence</span>
             </li>
             <li class="nav-item">
-              <a href="{% url 'tags-list' %}"
-                 class="nav-link {% if request.resolver_match.url_name == 'tags-list' %}active text-white{% else %}text-white-50{% endif %}"
-                 {% if request.resolver_match.url_name == 'tags-list' %}aria-current="page"{% endif %}>
+              <a href="{% url 'tags-list-open' %}"
+                 class="nav-link {% if request.resolver_match.url_name == 'tags-list-open' %}active text-white{% else %}text-white-50{% endif %}"
+                 {% if request.resolver_match.url_name == 'tags-list-open' %}aria-current="page"{% endif %}>
                 Topics
               </a>
             </li>

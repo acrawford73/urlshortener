@@ -85,11 +85,32 @@ def tags_download(request):
 	return response
 
 
-@method_decorator(cache_page(60 * 30), name='dispatch')
-class TagsListView(ListView):
+#@method_decorator(cache_page(60 * 30), name='dispatch')
+class TagsListView(LoginRequiredMixin, ListView):
 	""" Show Tags List """
 	model = Tag
 	template_name = 'shortener/tags_list.html'
+	context_object_name = 'tagslist'
+	ordering = ['slug']
+
+	def get_queryset(self):
+		qs = super().get_queryset()
+		query = self.request.GET.get('q')
+		if query:
+			qs = qs.filter(name__icontains=query)
+		return qs
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['page_title'] = 'Topics'
+		return context
+
+
+@method_decorator(cache_page(60 * 30), name='dispatch')
+class TagsListViewOpen(ListView):
+	""" Show Tags List """
+	model = Tag
+	template_name = 'shortener/tags_list_open.html'
 	context_object_name = 'tagslist'
 	ordering = ['slug']
 
