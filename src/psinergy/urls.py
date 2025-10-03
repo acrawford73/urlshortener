@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
+from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     path('himitsu/', admin.site.urls),
 
     #Apps
+    path('index.html', RedirectView.as_view(url='/', permanent=True)),  # redirect
     #path('', include('home.urls')),
     path('', include('custom_auth.urls')),
     path('', include('core.urls')),
