@@ -106,7 +106,7 @@ class TagsListView(LoginRequiredMixin, ListView):
 		return context
 
 
-@method_decorator(cache_page(60 * 30), name='dispatch')
+# Note: Removed cache_page decorator to prevent caching user authentication state in navbar
 class TagsListViewOpen(ListView):
 	""" Show Tags List """
 	model = Tag
@@ -154,7 +154,7 @@ def tags_suggestions(request):
 
 CACHE_TTL = 60 * 30
 
-@method_decorator(cache_page(CACHE_TTL), name='dispatch')
+# Note: Removed cache_page decorator to prevent caching user authentication state in navbar
 class ShortenerListViewOpen(ListView):
 	"""
 	List all shortened links, no login, PUBLIC.
@@ -182,7 +182,7 @@ class ShortenerListViewOpen(ListView):
 		return context
 
 
-@method_decorator(cache_page(CACHE_TTL), name='dispatch')
+# Note: Removed cache_page decorator to prevent caching user authentication state in navbar
 class ShortenerListByTagViewOpen(ListView):
 	""" 
 	Shows links by tag name, no login, PUBLIC.
