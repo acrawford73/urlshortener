@@ -29,7 +29,7 @@ sudo apt-get upgrade
 ## Change server hostname to the domain
 
 ```
-sudo hostnamectl set-hostname shortener.link
+sudo hostnamectl set-hostname shortener
 ```
 
 Reboot.
