@@ -1,24 +1,27 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth import get_user_model
-from django.urls import reverse, reverse_lazy
-
-from django.views.generic.edit import FormView
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import LoginView, PasswordResetConfirmView, PasswordResetDoneView
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.views.generic.edit import FormView
 
+from django.contrib.auth import get_user_model
 from django_registration.backends.one_step.views import RegistrationView
-from django.contrib.auth import login
+
+from shortener.models import ShortURL
+from shortener.utils.throttle import check_rate_limit
 
 from .forms import CustomAuthenticationForm
-from shortener.models import ShortURL
 
 
 User = get_user_model()
+
+PASSWORD_RESET_RATE = 5
+PASSWORD_RESET_WINDOW = 60 * 60
 
 
 class CustomPasswordResetView(FormView):
@@ -26,21 +29,28 @@ class CustomPasswordResetView(FormView):
 	form_class = PasswordResetForm
 
 	def post(self, request, *args, **kwargs):
+		if not check_rate_limit(request, 'throttle:password_reset', PASSWORD_RESET_RATE, PASSWORD_RESET_WINDOW):
+			return HttpResponse("Rate limit exceeded. Please try again later.", status=429)
+
 		form = self.get_form()
-		if form.is_valid():
-			email = form.cleaned_data['email']
-			user = User.objects.filter(email=email).first()
-			if user:
-				uid = urlsafe_base64_encode(force_bytes(user.pk))
-				token = default_token_generator.make_token(user)
-				reset_link = request.build_absolute_uri(
-					reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-				)
-				return render(request, 'registration/password_reset_link.html', {'reset_link': reset_link})
-			else:
-				return render(request, 'registration/password_reset_error.html')
-		return render(request, 'registration/password_reset_complete.html')  # If email not found, let them think it worked
-	
+		if not form.is_valid():
+			return self.form_invalid(form)
+
+		email = form.cleaned_data['email']
+		user = User.objects.filter(email=email).first()
+		context = {'page_title': 'Password Reset Link'}
+
+		if user:
+			uid = urlsafe_base64_encode(force_bytes(user.pk))
+			token = default_token_generator.make_token(user)
+			context['reset_link'] = request.build_absolute_uri(
+				reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+			)
+
+		response = render(request, 'registration/password_reset_link.html', context)
+		response['Cache-Control'] = 'no-store'
+		return response
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['page_title'] = 'Password Reset'
@@ -73,7 +83,6 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 class CustomRegistrationView(RegistrationView):
 	def register(self, form):
 		user = form.save()
-		# Prevent auto-login
 		return user
 
 	def get_context_data(self, **kwargs):

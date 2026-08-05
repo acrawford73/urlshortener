@@ -89,6 +89,35 @@ Group=django
 WantedBy=multi-user.target
 ```
 
+### Celery worker (title fetching)
+
+Production requires a Celery worker for background title fetching when links are created. Run alongside Gunicorn using the same Redis broker configured in `REDIS_LOCATION`.
+
+Example `/etc/systemd/system/celery.service`:
+
+```
+[Unit]
+Description=Celery worker for Django
+After=network.target redis.service
+
+[Service]
+WorkingDirectory=/home/django/shortener.link/src
+ExecStart=/home/django/shortener.link/bin/celery -A psinergy worker --loglevel=info
+Restart=always
+User=django
+Group=django
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```
+sudo systemctl enable celery
+sudo systemctl start celery
+```
+
 #### NOTE: /etc/gunicorn.d/gunicorn.py
 
 For reference only.

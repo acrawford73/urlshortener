@@ -5,12 +5,17 @@ from .models import ShortURL, UUIDTaggedItem
 from taggit.models import Tag
 
 
+def _clear_redirect_cache(instance):
+	cache.delete(f"redirect:{instance.short_alias}")
+
+
 @receiver(post_save, sender=ShortURL)
 def clear_cache_shorturl_update(sender, instance, **kwargs):
 	cache_key = f"shorturl_{instance.id}"
 	cache.delete(cache_key)
-	cache.set(cache_key, instance, timeout=300)  # Cache for 5 min
+	cache.set(cache_key, instance, timeout=300)
 	cache.delete('shorturl_list')
+	_clear_redirect_cache(instance)
 
 
 @receiver(post_delete, sender=ShortURL)
@@ -18,6 +23,7 @@ def clear_cache_shorturl_delete(sender, instance, **kwargs):
 	cache_key = f"shorturl_{instance.id}"
 	cache.delete(cache_key)
 	cache.delete('shorturl_list')
+	_clear_redirect_cache(instance)
 
 
 @receiver([post_save, post_delete], sender=UUIDTaggedItem)

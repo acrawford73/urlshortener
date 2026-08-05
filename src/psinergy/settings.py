@@ -22,10 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 APP_NAME ='BioDigCon.Link'
 
+PRODUCTION = config('PRODUCTION', default=False, cast=bool)
+
 # SECURITY WARNING: Keep the secret key used in production secret!
 # SECURITY WARNING: Don't run with debug turned on in production!
 
-if config('PRODUCTION', default=False, cast=bool) == True:
+if PRODUCTION == True:
     DEBUG = False
     SECRET_KEY = config('PROD_SECRET_KEY')
     SECRET_KEY_FALLBACK = config('PROD_SECRET_KEY_FALLBACK')
@@ -217,7 +219,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-if config('PRODUCTION', default=False, cast=bool) == True:
+if PRODUCTION == True:
     LOCAL_STATIC_CDN = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
     STATIC_URL = '/static/'
 else:
@@ -350,50 +352,24 @@ CACHES = {
 
 
 ### CELERY
-# from celery.schedules import crontab
 
-# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
-# CELERY_EMAIL_TASK_CONFIG = {
-#     "queue": "short_tasks",
-# }
-
-# CELERY_BROKER_URL = REDIS_LOCATION
-# CELERY_RESULT_BACKEND = REDIS_LOCATION
-# CELERY_ACCEPT_CONTENT = ["application/json"]
-# CELERY_TASK_SERIALIZER = "json"
-# CELERY_RESULT_SERIALIZER = "json"
-# CELERY_TIMEZONE = TIME_ZONE
-# CELERY_SOFT_TIME_LIMIT = 2 * 60 * 60
-# CELERY_WORKER_PREFETCH_MULTIPLIER = 1
-# CELERYD_PREFETCH_MULTIPLIER = 1
-
-# CELERY_BEAT_SCHEDULE = {
-#     # Clear expired sessions, every sunday 1:01am 
-#     # By default Django has 2 week expire date
-#     "clear_sessions": {
-#         "task": "clear_sessions",
-#         "schedule": crontab(hour=1, minute=1, day_of_week=6),
-#     },
-#     "get_list_of_popular_media": {
-#         "task": "get_list_of_popular_media",
-#         "schedule": crontab(minute=1, hour="*/10"),
-#     },
-#     "update_listings_thumbnails": {
-#         "task": "update_listings_thumbnails",
-#         "schedule": crontab(minute=2, hour="*/30"),
-#     },
-# }
-
-# CELERY_TASK_ALWAYS_EAGER = False
-# if os.environ.get("TESTING"):
-#     CELERY_TASK_ALWAYS_EAGER = True
+CELERY_BROKER_URL = REDIS_LOCATION[0] if isinstance(REDIS_LOCATION, (list, tuple)) else REDIS_LOCATION
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_SOFT_TIME_LIMIT = 2 * 60 * 60
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_BEAT_SCHEDULE = {}
+CELERY_TASK_ALWAYS_EAGER = not PRODUCTION
 
 
 if DEBUG:
     import mimetypes
     mimetypes.add_type('application/javascript', '.js', True)
 
-    INTERNAL_IPS = ALLOWED_HOSTS
+    INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
     INSTALLED_APPS += (
         'debug_toolbar',
