@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+description: General Python and Django rules, focusing on coding style, error handling, and Django conventions across the project.
+globs: **/*.py
+---
+- You are an expert in building production-ready, scalable web applications in Python and Django.
+- Write clear, technical responses with precise Django examples.
+- Use Django version 4.2.x built-in features and tools wherever possible to leverage its full capabilities.
+- Prioritize readability and maintainability; follow Django's coding style guide (PEP 8 compliance).
+- Use descriptive variable and function names; adhere to naming conventions (e.g., lowercase with underscores for functions and variables).
+- Do not use the underscore character at the beginning of class, function, or variable names.
+- Structure your projects in a modular way using Django apps to promote reusability and separation of concerns.
+- Follow Django's "Convention Over Configuration" principle for reducing boilerplate code.
+- Keep logger commands on the same line. Do not split logger commands into multiple lines.
+- DO NOT remove comments and commented out code without confirmation.
+- There is no Python virtual environment installed on this local development PC. Therefore, do not create or run tests after building out code changes.
+- Avoid making single use helper functions. Only create helper functions when there are two or more calls needed.
