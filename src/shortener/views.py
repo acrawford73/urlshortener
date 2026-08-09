@@ -59,13 +59,10 @@ def redirect_url(request, alias):
 	if cached is not None:
 		if cached == '':
 			raise Http404
-		ShortURL.objects.filter(short_alias=alias, private=False).update(clicks=F('clicks') + 1)
+		ShortURL.objects.filter(short_alias=alias).update(clicks=F('clicks') + 1)
 		return HttpResponseRedirect(cached)
 
 	shorturl = get_object_or_404(ShortURL, short_alias=alias)
-	if shorturl.private:
-		cache.set(cache_key, '', timeout=REDIRECT_CACHE_TTL)
-		raise Http404
 
 	cache.set(cache_key, shorturl.long_url, timeout=REDIRECT_CACHE_TTL)
 	ShortURL.objects.filter(pk=shorturl.pk).update(clicks=F('clicks') + 1)
